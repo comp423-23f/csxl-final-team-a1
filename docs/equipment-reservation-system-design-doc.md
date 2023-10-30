@@ -64,7 +64,7 @@ As any Persona, I want to click on an item and be taken to the items page on URL
 
 Subtasks:
 
-1. Showing a reservation chart (possibly an hourly calendar of the week). This will be developed in next steps, so for now just have this item exist here and call a `show_reservation_calendar` function.
+1. Showing a reservation chart (possibly an hourly calendar of the week). This will be developed in next steps, so for now just have this item exist here and call a `show_reservation_calendar` widget.
 2. On the `/ambassador` path only, I should be able to see an edit button that allows me to change information about the item and a delete button that allows me to remove the item.
 
 ### Story F
@@ -74,7 +74,7 @@ As Sally Student, I should be able to reserve equipment using the calendar item,
 Subtasks:
 
 1. Set a notification for when the user's reserved session ends.
-2. Implement the `show_reservation_calendar` function.
+2. Implement the `show_reservation_calendar` widget.
 
 ### Story G
 
