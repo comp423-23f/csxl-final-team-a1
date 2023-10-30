@@ -111,14 +111,21 @@ Subtasks:
 ## 4. Wireframes
 ### Story A and B
 ![image info](./images/agreement.png)
+
 Equipment reservation is added to the navbar menu.  Before checking out an item for the first time, Sally Student must view and accept the agreement.
 
 ### Story D
 ![image info](./images/items.png)
-Both Amy Ambassador and Sally Student should be able to access the library of equipment and their availability status.  Each type of equipment is listed in its own card and grouped by whether it is available or not with a brief description.  Available equipment types have a button that links to story E.
-### Story E
+
+Both Amy Ambassador and Sally Student should be able to access the library of equipment and their availability status.  Each type of equipment is listed in its own card and grouped by whether it is available or not with a brief description.  Available equipment types have a button that links to story E.  The my checkouts button links to Sally Student's checkout history.
+![image info](./images/history.png)
+
+Sally Student can view current and previous checkouts including device ID, type, dates, and status.
+### Story E and F
 Valid date range
 ![image info](./images/validcheckout.png)
+
 Invalid date range
 ![image info](./images/invalidcheckout.png)
+
 Both Amy Ambassador and Sally Student can click on the checkout button for available equipment types. These equipment types have a brief description, and instructions for using a calendar widget to checkout the equipment.  If a valid date range is selected, the button will be styled as active and work, if not the button will be grayed out and not work. The number of available devices is listed beneath each date.
