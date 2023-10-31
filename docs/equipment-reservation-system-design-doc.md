@@ -121,26 +121,31 @@ Subtasks:
 4. Club leaders can checkout multiple materials.
 
 ## 4. Wireframes
+
 ### Story A and B
+
 ![image info](./images/agreement.png)
 
-Equipment reservation is added to the navbar menu.  Before checking out an item for the first time, Sally Student must view and accept the agreement.
+Equipment reservation is added to the navbar menu. Before checking out an item for the first time, Sally Student must view and accept the agreement.
 
 ### Story D
+
 ![image info](./images/items.png)
 
-Both Amy Ambassador and Sally Student should be able to access the library of equipment and their availability status.  Each type of equipment is listed in its own card that is grouped by whether it is currently available.  Each card has a button that redirects to a page to view availability and checkout. Cards in the currently available section have the button labeled "checkout"; cards in the currently  unavailable section have the button labeled "view availability".  The my checkouts button links to Sally Student's checkout history.
+Both Amy Ambassador and Sally Student should be able to access the library of equipment and their availability status. Each type of equipment is listed in its own card that is grouped by whether it is currently available. Each card has a button that redirects to a page to view availability and checkout. Cards in the currently available section have the button labeled "checkout"; cards in the currently unavailable section have the button labeled "view availability". The my checkouts button links to Sally Student's checkout history.
 ![image info](./images/history.png)
 
 Sally Student can view current and previous checkouts including device ID, type, dates, and status.
+
 ### Story E and F
+
 Valid date range
 ![image info](./images/validcheckout.png)
 
 Invalid date range
 ![image info](./images/invalidcheckout.png)
 
-Both Amy Ambassador and Sally Student can view a page with availability of a type of equipment displayed in a grid. The page for each type has a brief description, and instructions for using the grid widget to select dates.  If a valid date range is selected, the user can checkout the device with the button.
+Both Amy Ambassador and Sally Student can view a page with availability of a type of equipment displayed in a grid. The page for each type has a brief description, and instructions for using the grid widget to select dates. If a valid date range is selected, the user can checkout the device with the button.
 
 ## 5. Technical Requirements Implementation Opportunities and Planning
 
@@ -193,6 +198,13 @@ c. Unique Item Model: additional model contains unique items and necessary infor
 
 - `id` column should be a unique identification number.
 - `equipment_type` relational mapping that connects the unique item to the Equipment Type Model.
-- `reserved_dates` hash map relating student reservation time.
-- `return_date` hash map relating students to return statuses.
-- `return_description` hash map relating students to return descriptions.
+- `display_status` true if item is available for display, false if not.
+
+d. Reservations Model: additional model to track all reservations and returns
+
+- `item_id` relates what unique item was reserved.
+- `user_id` relates what user reserved the item.
+- `check_out` contains the date the student is first getting the item.
+- `expected_return_date` contains the date the student should return the item.
+- `actual_return_date` contains the date the student actually returned the item.
+- `return_description` contains the description of the item after the student returned.
