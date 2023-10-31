@@ -117,7 +117,7 @@ Equipment reservation is added to the navbar menu.  Before checking out an item 
 ### Story D
 ![image info](./images/items.png)
 
-Both Amy Ambassador and Sally Student should be able to access the library of equipment and their availability status.  Each type of equipment is listed in its own card and grouped by whether it is available or not with a brief description.  Available equipment types have a button that links to story E.  The my checkouts button links to Sally Student's checkout history.
+Both Amy Ambassador and Sally Student should be able to access the library of equipment and their availability status.  Each type of equipment is listed in its own card that is grouped by whether it is currently available.  Each card has a button that redirects to a page to view availability and checkout. Cards in the currently available section have the button labeled "checkout"; cards in the currently  unavailable section have the button labeled "view availability".  The my checkouts button links to Sally Student's checkout history.
 ![image info](./images/history.png)
 
 Sally Student can view current and previous checkouts including device ID, type, dates, and status.
@@ -128,4 +128,4 @@ Valid date range
 Invalid date range
 ![image info](./images/invalidcheckout.png)
 
-Both Amy Ambassador and Sally Student can click on the checkout button for available equipment types. These equipment types have a brief description, and instructions for using a calendar widget to checkout the equipment.  If a valid date range is selected, the button will be styled as active and work, if not the button will be grayed out and not work. The number of available devices is listed beneath each date.
+Both Amy Ambassador and Sally Student can view a page with availability of a type of equipment displayed in a grid. The page for each type has a brief description, and instructions for using the grid widget to select dates.  If a valid date range is selected, the user can checkout the device with the button.
