@@ -216,18 +216,22 @@ d. Reservations Model: additional model to track all reservations and returns
     addition of this new equipment reservation system.
 
 2.  Additions: A new directory for all equipment related routes will be created
-    with the following files. - `reservations.py` - `admin.py`
+    with the following files. 
+    
+    - `equipment_reservation.py`
+    - `equipment_ambassador.py`
+    - `equipment_root.py`
 
     `equipment_reservation.py` will contain the routes:
 
-    - `draft_equipment_reservation`
-    - `get_equipment_reservation`
-    - `list_all_equipment_availability`
-    - `get_item_availability`
-    - `update_reservation`
-    - `cancel_reservation`
-    - `get_user_agreement`
-    - `get_item_details`
+    - `draft_equipment_reservation` - `POST`
+    - `get_equipment_reservation` - `GET`
+    - `list_all_equipment_availability` - `GET`
+    - `get_item_availability` - `GET`
+    - `update_reservation` - `PUT`
+    - `cancel_reservation` - `DELETE`
+    - `get_user_agreement` - `GET`
+    - `get_item_details` - `GET`
 
     These will function in a similar way to the current coworking reservation
     routes as Sally Student will interact with the UI similarly with the
@@ -240,18 +244,18 @@ d. Reservations Model: additional model to track all reservations and returns
 
     `equipment_ambassador.py` will contain the routes:
 
-    - `create_equipment_checkout`
-    - `active_and_upcoming_equipment_reservations`
-    - `checkin_equipment`
+    - `create_equipment_checkout` - `POST`
+    - `active_and_upcoming_equipment_reservations` - `GET`
+    - `checkin_equipment` - `POST` (or possibly `PUT`)
 
     Similarly to coworking reservations, Amy Ambassador (or Rhonda Root) will
     interact with these routes to view reservations and confirm a checkin started online Additionally, the ambassador will need to be able to check equipment back in as well.
 
     `equipment_root.py` will contain the routes:
 
-    - `add_equipment_type`
-    - `modify_equipment_type`
-    - `delete_equipment_type`
+    - `add_equipment_type` - `POST`
+    - `modify_equipment_type` - `PUT`
+    - `delete_equipment_type` - `DELETE`
 
     Only Rhonda Root will be able to access these routes to add, modify and
     delete equipment types in the system.
