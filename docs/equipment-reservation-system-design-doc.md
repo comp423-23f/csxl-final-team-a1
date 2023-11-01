@@ -235,12 +235,14 @@ d. Reservations Model: additional model to track all reservations and returns
 
     These will function in a similar way to the current coworking reservation
     routes as Sally Student will interact with the UI similarly with the
-    ability to draft, update and cancel reservations. Listing all equipment
-    reservations as well as a specific item's reservations will be possible for
-    different menus (such as the equipment reservations page and the calendar
-    page for a certain item). Additionally, in the same area as the
-    reservations we need to have a way to access the user agreement and item
-    details.
+    ability to draft (`draft_equipment_reservation`), update 
+    (`update_reservation`) and cancel (`cancel_reservation`) reservations. 
+    Listing all equipment reservations (`list_all_equipment_availability`) as 
+    well as a specific item's reservations (`get_equipment_reservation`) will 
+    be possible for different menus (such as the equipment reservations page 
+    and the calendar page for a certain item). Additionally, in the same area 
+    as the reservations we need to have a way to access the user agreement 
+    (`get_user_agreement`) and item details (`get_item_details`). 
 
     `equipment_ambassador.py` will contain the routes:
 
@@ -249,7 +251,11 @@ d. Reservations Model: additional model to track all reservations and returns
     - `checkin_equipment` - `POST` (or possibly `PUT`)
 
     Similarly to coworking reservations, Amy Ambassador (or Rhonda Root) will
-    interact with these routes to view reservations and confirm a checkin started online Additionally, the ambassador will need to be able to check equipment back in as well.
+    interact with these routes to view all types of reservations
+    (`active_and_upcoming_equipment_reservations`) and confirm a checkout 
+    (`create_equipment_checkout`) that was started online. Additionally, the 
+    ambassador will need to be able to check equipment back in 
+    (`checkin_equipment`) as well.
 
     `equipment_root.py` will contain the routes:
 
