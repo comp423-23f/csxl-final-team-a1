@@ -118,9 +118,13 @@ Equipment reservation is added to the navbar menu.  Before checking out an item 
 
 ![Root User Equipment List](./images/User_Admin_View.png)
 
-User Admin's will have this view of equipment items as well as if they are marked as damanged. They can toggle the damaged flag as well as view any notes or delete the equipment. They can also create a new equpiment using the "Create" button and filling out the following form.
+User Admin's will have this view of equipment types. They can create a new equpiment using the "Create" button and filling out the following form. They can also click on the "View/Edit" button to add Equipment Items and change details about the equipment type.
 
-![Root User Create Equipment](./images/User_Admin_Create_Equipment.png)
+![Root User Create Equipment](./images/User_Admin_Create_Equipment_Type.png)
+
+![Root User Equip Type Edit](./images/User_Admin_Edit_Equipment_Type.png)
+
+In this view, the Admin can edit the type fields, add/delete new items, view (possibly edit) notes, and flag/unflag items as damaged. Flagging an item as damaged will remove it from the available item pool that students can reserve from.
 
 ### Story D
 ![image info](./images/items.png)
@@ -143,10 +147,10 @@ Both Amy Ambassador and Sally Student can view a page with availability of a typ
 
 Ambassadors will see an "Ambassadors" button to allow them to navigate to the ambassadors equipment page.
 
-![Ambassador Main Page](./images/Equipment_Check_In_Out_Ambassadors.png)
+![Ambassador Main Page](./images/Ambassador_CheckIn-Out.png)
 
 In this view, ambassadors will see 2 lists, one for pending check outs, or reservations, that are upcoming, and can click on the "Lend" button when the student comes to pick up their equipment. The other list will contain the equipment that has been checked out along with the due date that it is back. When a student drops  off their used equipment, the ambassador will click on the "return" button and will be redirected to the inspection page.
 
 ![Ambassador Inspection Form](./images/Ambassador_Inspection.png)
 
-This view will contain the same information as the previous, but will also include any previous notes on product damage. The Ambassador can also add additional notes if any extra wear/tear is noticed. If none, or after adding notes, the ambassador can click the "Submit" button to complete the check-in. Additionally, if the equipment is damaged beyond use, the ambassador can click the "Mark As Damaged" button, then should communicate with the admin to discuss next steps.
+This view will contain the same information as the previous, but will also include any previous notes on product damage. The Ambassador can edit the notes if any extra wear/tear is noticed. If none, or after adding notes, the ambassador can click the "Submit" button to complete the check-in. Additionally, if the equipment is damaged beyond use, the ambassador can click the "Mark As Damaged" button, then should communicate with the admin to discuss next steps.
