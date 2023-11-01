@@ -208,3 +208,50 @@ d. Reservations Model: additional model to track all reservations and returns
 - `expected_return_date` contains the date the student should return the item.
 - `actual_return_date` contains the date the student actually returned the item.
 - `return_description` contains the description of the item after the student returned.
+
+### 4. API Route Modifications and Additions
+
+1.  Modifications: No existing routes will need any modifications for the
+    addition of this new equipment reservation system.
+
+2.  Additions: A new directory for all equipment related routes will be created
+with the following files. 
+    - `reservations.py` 
+    - `admin.py`
+
+    `equipment_reservation.py` will contain the routes:
+    - draft_equipment_reservation
+    - get_equipment_reservation
+    - list_all_equipment_availability
+    - get_item_availability
+    - update_reservation
+    - cancel_reservation
+    - get_user_agreement
+    - get_item_details
+
+    These will function in a similar way to the current coworking reservation 
+    routes as Sally Student will interact with the UI similarly with the 
+    ability to draft, update and cancel reservations. Listing all equipment
+    reservations as well as a specific item's reservations will be possible for 
+    different menus (such as the equipment reservations page and the calendar 
+    page for a certain item). Additionally, in the same area as the 
+    reservations we need to have a way to access the user agreement and item 
+    details.
+
+    `equipment_ambassador.py` will contain the routes:
+    - create_equipment_checkout
+    - active_and_upcoming_equipment_reservations
+    - checkin_equipment
+
+    Similarly to coworking reservations, Amy Ambassador will interact with these
+    routes to view reservations and confirm a checkin started online 
+    Additionally, the ambassador will need to be able to check equipment back 
+    in as well.
+
+    `equipment_root.py` will contain the routes:
+    - add_equipment_type
+    - modify_equipment_type
+    - delete_equipment_type
+
+    Only Rhonda Root will be able to access these routes to add, modify and 
+    delete equipment types in the system.
