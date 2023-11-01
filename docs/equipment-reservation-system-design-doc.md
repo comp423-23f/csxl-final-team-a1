@@ -255,7 +255,8 @@ d. Reservations Model: additional model to track all reservations and returns
     (`active_and_upcoming_equipment_reservations`) and confirm a checkout 
     (`create_equipment_checkout`) that was started online. Additionally, the 
     ambassador will need to be able to check equipment back in 
-    (`checkin_equipment`) as well.
+    (`checkin_equipment`) as well, which can simultaneously send information 
+    about any possible damage to the equipment.
 
     `equipment_root.py` will contain the routes:
 
@@ -264,7 +265,8 @@ d. Reservations Model: additional model to track all reservations and returns
     - `delete_equipment_type` - `DELETE`
 
     Only Rhonda Root will be able to access these routes to add, modify and
-    delete equipment types in the system.
+    delete equipment types in the system. Modification of the equipment type 
+    can be the method of marking equipment as broken.
 
 ### 5. Security and Privacy Concerns
 
