@@ -220,14 +220,14 @@ with the following files.
     - `admin.py`
 
     `equipment_reservation.py` will contain the routes:
-    - draft_equipment_reservation
-    - get_equipment_reservation
-    - list_all_equipment_availability
-    - get_item_availability
-    - update_reservation
-    - cancel_reservation
-    - get_user_agreement
-    - get_item_details
+    - `draft_equipment_reservation`
+    - `get_equipment_reservation`
+    - `list_all_equipment_availability`
+    - `get_item_availability`
+    - `update_reservation`
+    - `cancel_reservation`
+    - `get_user_agreement`
+    - `get_item_details`
 
     These will function in a similar way to the current coworking reservation 
     routes as Sally Student will interact with the UI similarly with the 
@@ -239,19 +239,29 @@ with the following files.
     details.
 
     `equipment_ambassador.py` will contain the routes:
-    - create_equipment_checkout
-    - active_and_upcoming_equipment_reservations
-    - checkin_equipment
+    - `create_equipment_checkout`
+    - `active_and_upcoming_equipment_reservations`
+    - `checkin_equipment`
 
-    Similarly to coworking reservations, Amy Ambassador will interact with these
-    routes to view reservations and confirm a checkin started online 
-    Additionally, the ambassador will need to be able to check equipment back 
-    in as well.
+    Similarly to coworking reservations, Amy Ambassador (or Rhonda Root) will
+    interact with these routes to view reservations and confirm a checkin started online Additionally, the ambassador will need to be able to check equipment back in as well.
 
     `equipment_root.py` will contain the routes:
-    - add_equipment_type
-    - modify_equipment_type
-    - delete_equipment_type
+    - `add_equipment_type`
+    - `modify_equipment_type`
+    - `delete_equipment_type`
 
     Only Rhonda Root will be able to access these routes to add, modify and 
     delete equipment types in the system.
+
+### 5. Security and Privacy Concerns
+
+As discussed previously, equipment type additions, modifications, and deletions
+are all exclusive to Rhonda Root as these are infrequent actions of the highest 
+security. Additionally, the final equipment checkins and checkouts are 
+exclusive to Amy Ambassador and Rhonda Root in order to maintain the security 
+of expensive equipment items. Any role, but generally Sally Student can view 
+availability and create, update, and delete reservations however no other 
+student should be able to see these created reservations to maintain privacy.
+However, viewing data such as availability, item details, and the user 
+agreement are open to every user.
