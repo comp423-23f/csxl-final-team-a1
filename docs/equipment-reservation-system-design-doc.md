@@ -204,7 +204,8 @@ d. Reservations Model: additional model to track all reservations and returns
 
 - `item_id` relates what unique item was reserved.
 - `user_id` relates what user reserved the item.
-- `check_out` contains the date the student is first getting the item.
+- `check_out_date` contains the date the student is first getting the item.
+- `ambassador_check_out` boolean that track if the student actually checked out the item (should be used to cancel the reservation if not true after the expected date).
 - `expected_return_date` contains the date the student should return the item.
 - `actual_return_date` contains the date the student actually returned the item.
 - `return_description` contains the description of the item after the student returned.
@@ -215,11 +216,10 @@ d. Reservations Model: additional model to track all reservations and returns
     addition of this new equipment reservation system.
 
 2.  Additions: A new directory for all equipment related routes will be created
-with the following files. 
-    - `reservations.py` 
-    - `admin.py`
+    with the following files. - `reservations.py` - `admin.py`
 
     `equipment_reservation.py` will contain the routes:
+
     - `draft_equipment_reservation`
     - `get_equipment_reservation`
     - `list_all_equipment_availability`
@@ -229,16 +229,17 @@ with the following files.
     - `get_user_agreement`
     - `get_item_details`
 
-    These will function in a similar way to the current coworking reservation 
-    routes as Sally Student will interact with the UI similarly with the 
+    These will function in a similar way to the current coworking reservation
+    routes as Sally Student will interact with the UI similarly with the
     ability to draft, update and cancel reservations. Listing all equipment
-    reservations as well as a specific item's reservations will be possible for 
-    different menus (such as the equipment reservations page and the calendar 
-    page for a certain item). Additionally, in the same area as the 
-    reservations we need to have a way to access the user agreement and item 
+    reservations as well as a specific item's reservations will be possible for
+    different menus (such as the equipment reservations page and the calendar
+    page for a certain item). Additionally, in the same area as the
+    reservations we need to have a way to access the user agreement and item
     details.
 
     `equipment_ambassador.py` will contain the routes:
+
     - `create_equipment_checkout`
     - `active_and_upcoming_equipment_reservations`
     - `checkin_equipment`
@@ -247,21 +248,22 @@ with the following files.
     interact with these routes to view reservations and confirm a checkin started online Additionally, the ambassador will need to be able to check equipment back in as well.
 
     `equipment_root.py` will contain the routes:
+
     - `add_equipment_type`
     - `modify_equipment_type`
     - `delete_equipment_type`
 
-    Only Rhonda Root will be able to access these routes to add, modify and 
+    Only Rhonda Root will be able to access these routes to add, modify and
     delete equipment types in the system.
 
 ### 5. Security and Privacy Concerns
 
 As discussed previously, equipment type additions, modifications, and deletions
-are all exclusive to Rhonda Root as these are infrequent actions of the highest 
-security. Additionally, the final equipment checkins and checkouts are 
-exclusive to Amy Ambassador and Rhonda Root in order to maintain the security 
-of expensive equipment items. Any role, but generally Sally Student can view 
-availability and create, update, and delete reservations however no other 
+are all exclusive to Rhonda Root as these are infrequent actions of the highest
+security. Additionally, the final equipment checkins and checkouts are
+exclusive to Amy Ambassador and Rhonda Root in order to maintain the security
+of expensive equipment items. Any role, but generally Sally Student can view
+availability and create, update, and delete reservations however no other
 student should be able to see these created reservations to maintain privacy.
-However, viewing data such as availability, item details, and the user 
+However, viewing data such as availability, item details, and the user
 agreement are open to every user.
