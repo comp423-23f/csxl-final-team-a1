@@ -93,6 +93,7 @@ Subtasks:
 
 1. Set a notification for when the user's reserved session ends.
 2. Implement the `show_reservation_calendar` widget.
+3. Make sure a student cannot reserve more than one item at a time.
 
 ### Story G
 
@@ -104,6 +105,10 @@ Subtasks:
 
 1. Entering unique ID number or scanning a QR code to find the item in the database.
 2. Save the check-in to a database.
+
+### Story H
+
+As Sally Student, I should be able to see my checkout history, because I want to keep track of the I have checked out and all my due dates.
 
 ### Opportunities for Extra Stories
 
