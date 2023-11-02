@@ -20,7 +20,7 @@ multi-day reservations and the ability to view equipment availability.
 Students are the main users of the CSXL. They might use it frequently to work and study or go
 to office hours if they are held there. In this case, they are familiarized with the CSXL website and possibly have personal communication with the ambassadors.
 
-Students can also not frequently or never use the lab. Then they are probably unfamiliar to the website and have no personal communciation with ambassadors. Therefore, it is important to have the feature be accessible through the main menu and possibly have a description of it on the landing page of the CSXL (for non-logged users).
+Students can also not frequently or never use the lab. Then they are probably unfamiliar to the website and have no personal communication with ambassadors. Therefore, it is important to have the feature be accessible through the main menu and possibly have a description of it on the landing page of the CSXL (for non-logged users).
 
 In any case, the student should have a smooth experience viewing and reserving equipments through the website and going to the lab to pick them up or use them. This means the student needs to be able to choose the equipment through the website and see its availability. Then, they should be guided through the process of picking it up and be informed about when the session ends (it would help if they are also notified via message or email at that time).
 
@@ -28,7 +28,7 @@ The student should also be able to sign agreements required to reserve an equipm
 
 ### Amy Ambassador
 
-Ambassadors are the main personas responsible for organizing the lab. They will be the keeping track of returns, communicating with students and compeleting other essential parts of the equipment reservation process. The majority of their tasks will be completed through the CSXL website, although they can probably rely on communicating with students personally during the reservation.
+Ambassadors are the main personas responsible for organizing the lab. They will be the keeping track of returns, communicating with students and completing other essential parts of the equipment reservation process. The majority of their tasks will be completed through the CSXL website, although they can probably rely on communicating with students personally during the reservation.
 
 Also, ambassadors should be able to confirm information about reservations, notify any unpredicted changes to students that made reservations, and edit reservations.
 
@@ -87,12 +87,13 @@ Subtasks:
 
 ### Story F
 
-As Sally Student, I should be able to reserve equipment using the calendar item, so that I can easily set the preffered times or dates.
+As Sally Student, I should be able to reserve equipment using the calendar item, so that I can easily set the preferred times or dates.
 
 Subtasks:
 
 1. Set a notification for when the user's reserved session ends.
 2. Implement the `show_reservation_calendar` widget.
+3. Make sure a student cannot reserve more than one item at a time.
 
 ### Story G
 
@@ -107,11 +108,7 @@ Subtasks:
 
 ### Story H
 
-As Amy Ambassador, I should be able to change that equipment's status to unavailable or change it back to available.
-
-Subtasks:
-
-1. Uniquely unavailable or available items are marked accordingly in the database. (To make the frontend work easier, mark the item as unavailable for a long period of time [1 semester or year]).
+As Sally Student, I should be able to see my checkout history, because I want to keep track of the I have checked out and all my due dates.
 
 ### Opportunities for Extra Stories
 
@@ -119,6 +116,9 @@ Subtasks:
 2. Saving favorite equipments or most used.
 3. Instead of showing every single unique item and its availability, show just the type of equipment and a single calendar for all their combined availability.
 4. Club leaders can checkout multiple materials.
+5. Remove or add to availability.
+6. Student did not return on expected date button.
+7. Email notifications.
 
 ## 4. Wireframes
 
@@ -176,7 +176,7 @@ This view will contain the same information as the previous, but will also inclu
 
 ### 1. Direct Dependencies from Original Code Base
 
-a. Authentication and permissions˝this will be essential for access to the each URL path.
+a. Authentication and permissions: this will be essential for access to the each URL path.
 
 b. User model: will be used for all reservation and agreement functionalities.
 
@@ -206,7 +206,7 @@ e. Calendar Widget: shows all the available and unavailable dates for each item,
 
 f. Check-in Component: allows checking items back in.
 
-### 3. Additional and Editted Models
+### 3. Additional and Edited Models
 
 a. User Model:
 
@@ -241,8 +241,8 @@ d. Reservations Model: additional model to track all reservations and returns
     addition of this new equipment reservation system.
 
 2.  Additions: A new directory for all equipment related routes will be created
-    with the following files. 
-    
+    with the following files.
+
     - `equipment_reservation.py`
     - `equipment_ambassador.py`
     - `equipment_root.py`
@@ -260,14 +260,14 @@ d. Reservations Model: additional model to track all reservations and returns
 
     These will function in a similar way to the current coworking reservation
     routes as Sally Student will interact with the UI similarly with the
-    ability to draft (`draft_equipment_reservation`), update 
-    (`update_reservation`) and cancel (`cancel_reservation`) reservations. 
-    Listing all equipment reservations (`list_all_equipment_availability`) as 
-    well as a specific item's reservations (`get_equipment_reservation`) will 
-    be possible for different menus (such as the equipment reservations page 
-    and the calendar page for a certain item). Additionally, in the same area 
-    as the reservations we need to have a way to access the user agreement 
-    (`get_user_agreement`) and item details (`get_item_details`). 
+    ability to draft (`draft_equipment_reservation`), update
+    (`update_reservation`) and cancel (`cancel_reservation`) reservations.
+    Listing all equipment reservations (`list_all_equipment_availability`) as
+    well as a specific item's reservations (`get_equipment_reservation`) will
+    be possible for different menus (such as the equipment reservations page
+    and the calendar page for a certain item). Additionally, in the same area
+    as the reservations we need to have a way to access the user agreement
+    (`get_user_agreement`) and item details (`get_item_details`).
 
     `equipment_ambassador.py` will contain the routes:
 
@@ -275,12 +275,12 @@ d. Reservations Model: additional model to track all reservations and returns
     - `active_and_upcoming_equipment_reservations` - `GET`
     - `checkin_equipment` - `POST` (or possibly `PUT`)
 
-    Similarly to coworking reservations, Amy Ambassador (or Rhonda Root) will
+    Similarly to co-working reservations, Amy Ambassador (or Rhonda Root) will
     interact with these routes to view all types of reservations
-    (`active_and_upcoming_equipment_reservations`) and confirm a checkout 
-    (`create_equipment_checkout`) that was started online. Additionally, the 
-    ambassador will need to be able to check equipment back in 
-    (`checkin_equipment`) as well, which can simultaneously send information 
+    (`active_and_upcoming_equipment_reservations`) and confirm a checkout
+    (`create_equipment_checkout`) that was started online. Additionally, the
+    ambassador will need to be able to check equipment back in
+    (`checkin_equipment`) as well, which can simultaneously send information
     about any possible damage to the equipment.
 
     `equipment_root.py` will contain the routes:
@@ -290,7 +290,7 @@ d. Reservations Model: additional model to track all reservations and returns
     - `delete_equipment_type` - `DELETE`
 
     Only Rhonda Root will be able to access these routes to add, modify and
-    delete equipment types in the system. Modification of the equipment type 
+    delete equipment types in the system. Modification of the equipment type
     can be the method of marking equipment as broken.
 
 ### 5. Security and Privacy Concerns
