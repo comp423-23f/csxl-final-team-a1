@@ -14,3 +14,6 @@ class EquipmentType(BaseModel):
     title: str = ""
     description: str = ""
     max_reservation_time: int = 3
+
+    def __hash__(self) -> int:
+        return self.id.__hash__()

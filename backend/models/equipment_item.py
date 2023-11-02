@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from equipment_type import EquipmentType
+from .equipment_type import EquipmentType
 
 
 class EquipmentItem(BaseModel):
