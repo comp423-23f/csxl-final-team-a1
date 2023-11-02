@@ -5,7 +5,8 @@ class EquipmentType(BaseModel):
     """
     Pydantic model to represent how `EquipmentType`s are identified in the system.
 
-    This model is based on
+    This model is based on the `EquipmentTypeEntity` model, which defines the shape
+    of the `EquipmentType` database in the PostgreSQL database.
 
     """
 
