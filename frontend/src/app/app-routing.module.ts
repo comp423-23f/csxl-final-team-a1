@@ -36,6 +36,14 @@ const routes: Routes = [
       )
   },
   {
+    path: 'equipment-reservations',
+    title: 'Equipment Reservations',
+    loadChildren: () =>
+      import('./equipment/equipment.module').then(
+        (m) => m.EquipmentModule
+      )
+  },
+  {
     path: 'events',
     title: 'Experimental',
     loadChildren: () =>
