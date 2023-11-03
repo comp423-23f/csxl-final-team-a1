@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { EquipmentDisplayComponent } from './equipment-display/equipment-display.component';
 import { EquipmentCard } from './widgets/equipment_card/equipment-card.widget';
 import { MatCardModule } from '@angular/material/card';
+import { EquipmentRoutingModule } from './equipment-routing.module';
 
 
 
@@ -12,6 +13,7 @@ import { MatCardModule } from '@angular/material/card';
     EquipmentCard
   ],
   imports: [
+    EquipmentRoutingModule,
     CommonModule,
     MatCardModule,
   ]
