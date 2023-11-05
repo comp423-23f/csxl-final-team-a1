@@ -1,6 +1,8 @@
 export default interface EquipmentType {
-    name: string;
+    id: Number;
+    title: string;
     img_url: string;
     num_available: Number;
     description: string;
+    max_reservation_time: Number;
 }

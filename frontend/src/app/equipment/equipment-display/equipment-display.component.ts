@@ -8,8 +8,7 @@ import EquipmentService from '../equipment.service';
   styleUrls: ['./equipment-display.component.css']
 })
 export class EquipmentDisplayComponent {
-  constructor(private equipment: EquipmentService) {
-  }
+  constructor(private equipment: EquipmentService) {}
 
   types: EquipmentType[] = this.equipment.getEquipmentTypes();
 }
