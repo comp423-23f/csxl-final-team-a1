@@ -1,3 +1,15 @@
-<div>
-    <equipment-card />
+<div class="base">
+    <h2>Available Equipment</h2>
+    <div class="equipment-cards">
+        <div *ngFor="let type of types">
+            <equipment-card [type]="type" *ngIf="(type.num_available > 0)"/>
+        </div>
+    </div>
+
+    <h2>Unavailable Equipment</h2>
+    <div class="equipment-cards">
+        <div *ngFor="let type of types">
+            <equipment-card [type]="type" *ngIf="(type.num_available <= 0)"/>
+        </div>
+    </div>
 </div>

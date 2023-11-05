@@ -1,0 +1,10 @@
+.equipment-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    row-gap: 1rem;
+}
+
+.base {
+    padding: 1rem;
+}
