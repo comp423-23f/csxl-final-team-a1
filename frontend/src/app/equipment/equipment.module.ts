@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+
+import { MatCardModule } from '@angular/material/card';
+import { MatButton, MatButtonModule } from '@angular/material/button';
+
+import { EquipmentRoutingModule } from './equipment-routing.module';
 import { EquipmentDisplayComponent } from './equipment-display/equipment-display.component';
 import { EquipmentCard } from './widgets/equipment_card/equipment-card.widget';
-import { MatCardModule } from '@angular/material/card';
-import { EquipmentRoutingModule } from './equipment-routing.module';
-
-
 
 @NgModule({
   declarations: [
@@ -16,6 +18,7 @@ import { EquipmentRoutingModule } from './equipment-routing.module';
     EquipmentRoutingModule,
     CommonModule,
     MatCardModule,
+    MatButtonModule,
   ]
 })
 export class EquipmentModule { }

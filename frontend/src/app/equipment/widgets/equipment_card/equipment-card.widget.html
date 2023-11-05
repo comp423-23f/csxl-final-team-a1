@@ -1,17 +1,13 @@
 <mat-card class="card" appearance="outlined">
-  <!-- Card Header Row (Logo, Name, Members) -->
-  <mat-card-header class="header">
-    <mat-card-title class="name">Quest 3</mat-card-title>
-  </mat-card-header>
+  <div class="centered-container">
+    <h2>{{ type.name }}</h2>
 
-  <!-- Organization Description -->
-  <mat-card-content>
-    <img src='../../../assets/favicon.png' class='logo'/>
-    <p>Available 2/6</p>
-  </mat-card-content>
+    <img src='{{ type.img_url }}' class='img'/>
+    <p>{{ type.num_available }} Available</p>
+    
 
-  <!-- Organization Links & Details -->
-  <mat-card-actions>
-    <button mat-stroked-button>Reserve</button>
-  </mat-card-actions>
+    <a class="details-link" [routerLink]="['/equipment-reservations']">
+      <button mat-stroked-button>Check Out</button>
+    </a>
+  </div>  
 </mat-card>
