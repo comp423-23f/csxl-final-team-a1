@@ -1,8 +1,8 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from ..database import db_session
-from ..models.equipment_type import EquipmentType
-from ..models.equipment_item import EquipmentItem
+from ..models.equipment.type_details import EquipmentType, TypeDetails
+from ..models.equipment.item_details import EquipmentItem, ItemDetails
 
 
 class EquipmentService:
@@ -13,11 +13,12 @@ class EquipmentService:
             id=0, title="Quest VR", description="blabla", max_reservation_time=3
         )
     ]
-    items: list[EquipmentItem] = [
-        EquipmentItem(id=0, equipment_type=equipments[0], display_status=True),
-        EquipmentItem(id=1, equipment_type=equipments[0], display_status=True),
-        EquipmentItem(id=2, equipment_type=equipments[0], display_status=False),
+    items: list[ItemDetails] = [
+        ItemDetails(id=0, equipment_type=equipments[0], display_status=True),
+        ItemDetails(id=1, equipment_type=equipments[0], display_status=True),
+        ItemDetails(id=2, equipment_type=equipments[0], display_status=False),
     ]
+
 
     def __init__(
         self,
@@ -38,6 +39,8 @@ class EquipmentService:
                 eqs[item.equipment_type] += 1
 
         return eqs
+    
+    # TODO: Add tests for these 2 methods
 
     # def get_items_by_type(self, availability: bool) -> list[EquipmentItem]:
     #     """Return all unique items filtered by their type and availability."""

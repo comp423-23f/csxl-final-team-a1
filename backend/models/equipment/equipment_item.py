@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from .equipment_type import EquipmentType
 
 
 class EquipmentItem(BaseModel):
@@ -10,8 +9,8 @@ class EquipmentItem(BaseModel):
     This model is based on the `EquipmentItemEntity` model, which defines the shape
     of the `EquipmentItem` database in the PostgreSQL database.
 
+    display_status - turns false on any event that the item is not available (i.e. is checked out or damaged)
     """
 
     id: int | None = None
-    equipment_type: EquipmentType
     display_status: bool = True
