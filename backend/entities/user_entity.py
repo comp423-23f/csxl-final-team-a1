@@ -1,7 +1,7 @@
 """Definition of SQLAlchemy table-backed object mapping entity for Users."""
 
 
-from sqlalchemy import Integer, String
+from sqlalchemy import Integer, String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Self
 from .entity_base import EntityBase
@@ -35,6 +35,8 @@ class UserEntity(EntityBase):
     last_name: Mapped[str] = mapped_column(String(64), nullable=False, default="")
     # Pronouns of the user
     pronouns: Mapped[str] = mapped_column(String(32), nullable=False, default="")
+    # Equipment ToS agreement status of the user
+    agreement_status: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     # GitHub username of the user
     github: Mapped[str] = mapped_column(String(32), nullable=False, default="")
     # GitHub ID of the user
@@ -72,6 +74,7 @@ class UserEntity(EntityBase):
             first_name=model.first_name,
             last_name=model.last_name,
             pronouns=model.pronouns,
+            agreement_status=model.agreement_status,
             github=model.github,
             github_id=model.github_id,
             github_avatar=model.github_avatar,
@@ -95,6 +98,7 @@ class UserEntity(EntityBase):
             github_id=self.github_id,
             github_avatar=self.github_avatar,
             pronouns=self.pronouns,
+            agreement_status=self.agreement_status,
         )
 
     def update(self, model: User) -> None:
@@ -114,3 +118,4 @@ class UserEntity(EntityBase):
         self.github = model.github
         self.github_id = model.github_id or None
         self.github_avatar = model.github_avatar or ""
+        self.agreement_status = model.agreement_status
