@@ -29,7 +29,7 @@ def list_all_equipments(
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
 def update_user_agreement_status(
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
-    user_svc: UserService = Depends()):
+    user_service: UserService = Depends()):
     """
     Updates a User's agreement_status field to be true
 
@@ -37,14 +37,14 @@ def update_user_agreement_status(
         UserDetails - the updated UserDetails object
     """
     pid, _ = pid_onyen
-    user = user_svc.get(pid)
+    user = user_service.get(pid)
     if user is None:
         raise Exception("User not found!")
 
     user.agreement_status = True
-    user = user_svc.update(user, user)
+    user = user_service.update(user, user)
 
-    user_details = user_svc.get(user.pid)
+    user_details = user_service.get(user.pid)
     if user_details:
         return user_details
     else:
