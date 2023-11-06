@@ -12,7 +12,7 @@ class EquipmentType(BaseModel):
 
     id: int | None = None
     title: str = ""
-    image_url: str = ""
+    img_url: str = ""
     num_available: int = 0
     description: str = ""
     max_reservation_time: int = 3
