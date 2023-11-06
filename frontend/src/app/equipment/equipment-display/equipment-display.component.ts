@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 import EquipmentType from '../equipment-type.model';
 import EquipmentService from '../equipment.service';
 
@@ -10,5 +11,5 @@ import EquipmentService from '../equipment.service';
 export class EquipmentDisplayComponent {
   constructor(private equipment: EquipmentService) {}
 
-  types: EquipmentType[] = this.equipment.getEquipmentTypes();
+  types$: Observable<EquipmentType[]> = this.equipment.getEquipmentTypes();
 }

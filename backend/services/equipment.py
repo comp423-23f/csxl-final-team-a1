@@ -10,13 +10,17 @@ class EquipmentService:
 
     equipments: list[EquipmentType] = [
         EquipmentType(
-            id=0, title="Quest VR", description="blabla", max_reservation_time=3
+            id=0, title="Quest VR", description="blabla", max_reservation_time=3, img_url="https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6494/6494864_rd.jpg;maxHeight=640;maxWidth=550"
+        ),
+        EquipmentType(
+            id=1, title="iPad", description="hihi", max_reservation_time=2, img_url="https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/ipad-10th-gen-finish-unselect-gallery-1-202212_FMT_WHH?wid=1280&hei=720&fmt=p-jpg&qlt=95&.v=1667592096723"
         )
     ]
     items: list[ItemDetails] = [
         ItemDetails(id=0, equipment_type=equipments[0], display_status=True),
         ItemDetails(id=1, equipment_type=equipments[0], display_status=True),
         ItemDetails(id=2, equipment_type=equipments[0], display_status=False),
+        ItemDetails(id=4, equipment_type=equipments[1], display_status=False)
     ]
 
     def __init__(
