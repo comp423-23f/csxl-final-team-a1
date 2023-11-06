@@ -260,7 +260,7 @@ d. Reservations Model: additional model to track all reservations and returns
     - `get_item_availability` - `GET`
     - `update_reservation` - `PUT`
     - `cancel_reservation` - `DELETE`
-    - `get_user_agreement` - `GET`
+    - `update_user_agreement_status` - `PUT`
     - `get_item_details` - `GET`
 
     These will function in a similar way to the current coworking reservation
@@ -271,8 +271,8 @@ d. Reservations Model: additional model to track all reservations and returns
     well as a specific item's reservations (`get_equipment_reservation`) will
     be possible for different menus (such as the equipment reservations page
     and the calendar page for a certain item). Additionally, in the same area
-    as the reservations we need to have a way to access the user agreement
-    (`get_user_agreement`) and item details (`get_item_details`).
+    as the reservations we need to have a way to update the user agreement 
+    status (`get_user_agreement`) and get item details (`get_item_details`).
 
     `equipment_ambassador.py` will contain the routes:
 
