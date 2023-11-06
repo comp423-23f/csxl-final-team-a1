@@ -10,7 +10,7 @@ export default class EquipmentService {
 
   constructor(private http: HttpClient) { }
 
-  //Return equipment types - dummy data, soon to be replaced by GET request data
+  //Return equipment types requested from backend.
   getEquipmentTypes(): Observable<EquipmentType[]> {
     return this.http.get<EquipmentType[]>("/api/equipment/list-all-equipments");
   }
