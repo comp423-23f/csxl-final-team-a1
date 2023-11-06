@@ -25,6 +25,7 @@ def list_all_equipments(
     """
     return equipment_service.get_all_types()
 
+
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
 def update_user_agreement_status(
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
@@ -48,3 +49,4 @@ def update_user_agreement_status(
         return user_details
     else:
         raise Exception("Unexpected internal server error.")
+
