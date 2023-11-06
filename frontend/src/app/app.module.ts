@@ -47,7 +47,7 @@ import { EventFilterPipe } from './event/event-filter/event-filter.pipe';
     HomeComponent,
     AboutComponent,
     GateComponent,
-    ProfileEditorComponent
+    ProfileEditorComponent,
   ],
   imports: [
     /* Angular */

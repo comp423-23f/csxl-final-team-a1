@@ -1,0 +1,13 @@
+<mat-card class="card" appearance="outlined">
+  <div class="centered-container">
+    <h2>{{ type.title }}</h2>
+
+    <img src='{{ type.img_url }}' class='img'/>
+    <p>{{ type.num_available }} Available</p>
+    
+
+    <a class="details-link" [routerLink]="['/equipment-reservations']">
+      <button mat-stroked-button>Check Out</button>
+    </a>
+  </div>  
+</mat-card>
