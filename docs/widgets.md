@@ -181,7 +181,7 @@ export class WidgetName {
 
 There are a few things to note with this template. First is the `selector` property passed into the `@Component` decorator. Note that this is what you will use to refer to your widget in HTML! So, in a component's HTML, you would call this widget using `<widget-name />`. 
 
-Second, once you create the template, ***you must declare it in a module!!*** Follow the steps in the previous part to determine whether your widget will be globally or locally used. Then, in the correct Modules file, add it to the list for the `declarations` property in the `@NgModule` decorator.
+Second, once you create the template, ***you must declare it in a module!!*** Follow the steps in the previous part to determine whether your widget will be globally or locally used. Then, in the correct Modules file, add the name of the class created (in this case, `WidgetName`) to the list for the `declarations` property in the `@NgModule` decorator.
 
 
 ### Pass Data into Widgets Using Inputs
@@ -232,6 +232,8 @@ There is a problem here with widgets that you may have already been thinking ahe
 
 For this, we can use the `@Output` decorator! While slightly more complicated than inputs, outputs for widgets are extremely powerful and useful to connect widgets to their parent components.
 
+**The big idea here is that we need a way to *pass data* from widgets back to components** - the reverse of what we were doing with `@Input()`. That way, the parent component can run functions *using the output of the widget*.
+
 Let's recall a normal Angular button. You would define an action like so:
 
 ```html
@@ -240,14 +242,17 @@ Let's recall a normal Angular button. You would define an action like so:
 
 **Note that the `( )` syntax denotes an Event Binding in Angular!**
 
-What is actually happening here? In this example, whenever the button is pressed, data is *emitted* out of the button and to the component to handle. When this *emission* occurs, the function passed into `(click)` is run.
+What is actually happening here? In this example, whenever the button is pressed, the function passed into `(click)` is run. The `(click)` event and the `myAction()` function are being bound together.
 
 This will not make too much sense without a relevant example.
 
 Say that in the Organization Component, we define a function `joinOrganization(org: Organization)` that we want to run whever we press the join button for a specific organization. 
 
+Recall that the Organization Component still has many Organization cards as before, and the "Join Org" button would be on each *widget* rather than in the component directly. So, we need to define some way that the Organization Component knows which organization to join when one of these buttons is pressed.
+
 In our ***widget***, we want to define an output field.
 
+**organization-card.widget.ts**
 ```ts
 @Component({
     selector: 'organization-card',
@@ -267,10 +272,11 @@ export class OrganizationCard {
 }
 ```
 
-There is a decent amount to unpack here - first, the use of `EventEmitter`. You can see that it takes a generic type of `Organization` in a similar way that `Observables` do. ***We want to set this up so that when the join button is pressed. this event emitter will emit some data to the component.***
+There is a decent amount to unpack here - first, the use of `EventEmitter`. You can see that it takes a generic type of `Organization` in a similar way that `Observables` do. ***We want to set this up so that when the join button is pressed, this event emitter will emit some data to the component.***
 
 Before we do that step, let's look at what this would look like in the component's HTML now:
 
+**organization-page.component.html**
 ```html
 <organization-card
   [organization]="organization"
@@ -279,12 +285,23 @@ Before we do that step, let's look at what this would look like in the component
   />
 ```
 
-We can see that we now have access to this `(joinButtonPressed)` output! Looks like `<button>`'s `(click)`, right? You would probably want to put the component's `joinOrganization(org: Organization)` in here now, which is the correct idea! But, what would our organization input be?
+We can see that we now have access to this `(joinButtonPressed)` output! Looks like `<button>`'s `(click)`, right? You would probably want to put the component's `joinOrganization(org: Organization)` in here now, which is the correct idea!
+
+```html
+<organization-card
+  [organization]="organization"
+  (joinButtonPressed)="joinOrganization(org: /* What goes here??? */)"
+  *ngFor="let organization of organizations"
+  />
+```
+
+But, what would our organization input be?
 
 Again, go back to the widget's HTML. Like we said before, *we want to set this up so that when the join button is pressed. this event emitter will emit some data to the component.*
 
 We can actually connect the button's `(click)` handler to emit this data.
 
+**organization-card.widget.html**
 ```html
 <mat-card>
   <!-- Implmentation not shown -->
@@ -292,10 +309,11 @@ We can actually connect the button's `(click)` handler to emit this data.
 </mat-card>
 ```
 
-Now, the button is pressed, the organization clicked on will be *emitted* out to the component!
+Now, the *button is pressed*, the organization clicked on will be *emitted* out to the component!
 
 In our main component, we can now access this emitted variable using `$event`, like so:
 
+**organization-page.component.html**
 ```html
 <organization-card
   [organization]="organization"
@@ -322,4 +340,5 @@ The one thing that is important to take away from these notes is the difference 
 
 ## Further Reading
 - Official Angular Documentation - [Using `@Input` and `@Output`](https://angular.io/guide/inputs-outputs)
-- Official Angular Docuemntation - [Angular Modules](https://angular.io/guide/architecture-modules)
+- Official Angular Documentation - [Event Bindings](https://angular.io/guide/event-binding)
+- Official Angular Documentation - [Angular Modules](https://angular.io/guide/architecture-modules)
