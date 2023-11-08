@@ -14,7 +14,7 @@ from .api import (
     user,
     equipment,
 )
-from .api.coworking import status, reservation, ambassador
+from .api.coworking import status, reservation, ambassador, operating_hours
 from .api.admin import users as admin_users
 from .api.admin import roles as admin_roles
 from .services.exceptions import UserPermissionException, ResourceNotFoundException
@@ -38,8 +38,11 @@ app = FastAPI(
         organizations.openapi_tags,
         events.openapi_tags,
         reservation.openapi_tags,
+<<<<<<< HEAD
         reservation.openapi_tags,
         equipment.openapi_tags,
+=======
+>>>>>>> upstream/main
         health.openapi_tags,
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
@@ -50,6 +53,7 @@ app = FastAPI(
 feature_apis = [
     status,
     reservation,
+    operating_hours,
     events,
     user,
     profile,
@@ -66,7 +70,7 @@ for feature_api in feature_apis:
     app.include_router(feature_api.api)
 
 # Static file mount used for serving Angular front-end in production, as well as static assets
-app.mount("/", static_files.StaticFileMiddleware(directory="./static"))
+app.mount("/", static_files.StaticFileMiddleware(directory=Path("./static")))
 
 
 # Add application-wide exception handling middleware for commonly encountered API Exceptions
@@ -76,7 +80,9 @@ def permission_exception_handler(request: Request, e: UserPermissionException):
 
 
 @app.exception_handler(ResourceNotFoundException)
-def permission_exception_handler(request: Request, e: ResourceNotFoundException):
+def resource_not_found_exception_handler(
+    request: Request, e: ResourceNotFoundException
+):
     return JSONResponse(status_code=404, content={"message": str(e)})
 
 
