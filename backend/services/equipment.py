@@ -1,5 +1,7 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
+
+from backend.services.permission import PermissionService
 from ..database import db_session
 from ..models.equipment.type_details import EquipmentType, TypeDetails
 from ..models.equipment.item_details import EquipmentItem, ItemDetails
@@ -26,6 +28,7 @@ class EquipmentService:
     def __init__(
         self,
         session: Session = Depends(db_session),
+        permission: PermissionService = Depends(),
     ):
         """Initialize the User Service."""
         self._session = session
@@ -49,3 +52,5 @@ class EquipmentService:
 
     # def get_items_by_type(self, availability: bool) -> list[EquipmentItem]:
     #     """Return all unique items filtered by their type and availability."""
+
+    # TODO: Add methods for admin - add, modify, delete using permission service
