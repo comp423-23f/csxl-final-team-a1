@@ -35,14 +35,10 @@ app = FastAPI(
     openapi_tags=[
         profile.openapi_tags,
         user.openapi_tags,
+        equipment.openapi_tags,
         organizations.openapi_tags,
         events.openapi_tags,
         reservation.openapi_tags,
-<<<<<<< HEAD
-        reservation.openapi_tags,
-        equipment.openapi_tags,
-=======
->>>>>>> upstream/main
         health.openapi_tags,
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
