@@ -20,6 +20,9 @@ import { AdminUsersListComponent } from './users/list/admin-users-list.component
 import { AdminRolesListComponent } from './roles/list/admin-roles-list.component';
 import { AdminRoleDetailsComponent } from './roles/details/admin-role-details.component';
 import { AdminOrganizationListComponent } from './organization/list/admin-organization-list.component';
+import { AdminEquipmentBaseComponent } from './equipment/admin-equipment-base/admin-equipment-base.component';
+import { AdminEquipmentEditComponent } from './equipment/admin-equipment-edit/admin-equipment-edit.component';
+import { AdminEquipmentCreateComponent } from './equipment/admin-equipment-create/admin-equipment-create.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,10 @@ import { AdminOrganizationListComponent } from './organization/list/admin-organi
     AdminUsersListComponent,
     AdminRolesListComponent,
     AdminRoleDetailsComponent,
-    AdminOrganizationListComponent
+    AdminOrganizationListComponent,
+    AdminEquipmentBaseComponent,
+    AdminEquipmentCreateComponent,
+    AdminEquipmentEditComponent
   ],
   imports: [
     CommonModule,
