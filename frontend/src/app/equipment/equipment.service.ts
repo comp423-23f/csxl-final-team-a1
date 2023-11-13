@@ -30,13 +30,11 @@ export default class EquipmentService {
 
   getAgreementStatus(): Observable<boolean> {
     let pid: number = 0;
-    let onyen: string = '';
     if (this.profile !== undefined) {
       pid = this.profile.pid;
-      onyen = this.profile.onyen;
     }
     return this.http.get<boolean>(
-      '/api/equipment/get-user-agreement-status/' + pid + '/' + onyen
+      '/api/equipment/get-user-agreement-status/' + pid
     );
   }
 
