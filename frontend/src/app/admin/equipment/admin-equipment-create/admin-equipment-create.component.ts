@@ -46,13 +46,13 @@ export class AdminEquipmentCreateComponent {
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
   }
 
+  //Note:  id has a placeholder for null right now
   onSubmit(): void {
     if (this.equipmentTypeForm.valid) {
-      const newType: EquipmentType = { title: (this.registerForm.value.name as string), num_available: (this.registerForm.value.count as Number), img_url: (this.registerForm.value.img_url as string), description: (this.registerForm.value.description as string), max_reservation_time: (this.registerForm.value.max_reservation_time as Number)  }
+      const newType: EquipmentType = { id: null, title: (this.equipmentTypeForm.value.name as string), num_available: (this.equipmentTypeForm.value.count as Number), img_url: (this.equipmentTypeForm.value.img_url as string), description: (this.equipmentTypeForm.value.description as string), max_reservation_time: parseInt(this.equipmentTypeForm.value.max_reservation_time?.toString())  }
+      //TODO - POST new type to the server and handle returned object
+      this.adminEquipment.createEquipmentType(newType);
     }
-
-
-
   }
 
 }

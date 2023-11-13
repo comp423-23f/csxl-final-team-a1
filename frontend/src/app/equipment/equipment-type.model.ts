@@ -1,5 +1,5 @@
 export default interface EquipmentType {
-    id: number;
+    id: number | null;
     title: string;
     num_available: Number;
     img_url: string;

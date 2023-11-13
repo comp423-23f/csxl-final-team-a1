@@ -16,7 +16,7 @@ export class AdminEquipmentService {
   }
 
   //TODO:  POST new type to backend - Will return Observable<EquipmentType[]
-  createEquipmentType(new_type): void {
+  createEquipmentType(new_type: EquipmentType): void {
     console.log("TODO");
   }
 }
