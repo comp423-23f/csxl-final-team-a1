@@ -56,11 +56,12 @@ class EquipmentTypeEntity(EntityBase):
         Returns:
             EquipmentType: Object created from entity
         """
+        available_items = [item.to_model() for item in self.items if item.display_status]
         return EquipmentType(
             id=self.id,
             title=self.title,
             img_url=self.img_url,
-            num_available=len(self.items),
+            num_available=len(available_items),
             description=self.desc,
             max_reservation_time=self.max_time
         )
@@ -72,13 +73,14 @@ class EquipmentTypeEntity(EntityBase):
         Returns:
             TypeDetails: Model version of Entity
         """
+        available_items = [item.to_model() for item in self.items if item.display_status]
         return TypeDetails(
             id=self.id,
             title=self.title,
             img_url=self.img_url,
-            num_available=len(self.items),
+            num_available=len(available_items),
             description=self.desc,
             max_reservation_time=self.max_time,
-            items=[item.to_model() for item in self.items]
+            items=available_items
         )
 
