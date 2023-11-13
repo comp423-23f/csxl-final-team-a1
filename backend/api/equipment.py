@@ -33,6 +33,12 @@ def get_user_agreement_status(
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
     user_service: UserService = Depends(),
 ) -> bool:
+    """
+    Returns the boolean value on if the User signed in has signed the equipment agreement
+
+    Returns:
+        Boolean: the agreement status of the User
+    """
     pid, _ = pid_onyen
     user = user_service.get(pid)
     if user is None:
@@ -54,7 +60,7 @@ def update_user_agreement_status(
     Updates a User's agreement_status field to be true
 
     Returns:
-        UserDetails - the updated UserDetails object
+        Boolean: the agreement_status field of the user
     """
     pid, _ = pid_onyen
     user = user_service.get(pid)
@@ -63,7 +69,6 @@ def update_user_agreement_status(
 
     user.agreement_status = True
     user = user_service.update(user, user)
-    print("Agreement here", user.agreement_status)
 
     user_details = user_service.get(user.pid)
     if user_details:

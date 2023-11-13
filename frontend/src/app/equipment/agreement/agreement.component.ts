@@ -14,8 +14,7 @@ export class AgreementComponent {
   ) {}
 
   updateAgreementStatus() {
-    this.equipment.updateAgreementStatus();
-    this.equipment.getAgreementStatus().subscribe((res) => {
+    this.equipment.updateAgreementStatus().subscribe((res) => {
       if (res === true) {
         this.router.navigate(['/equipment-reservations']);
       }
