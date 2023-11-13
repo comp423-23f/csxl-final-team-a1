@@ -4,6 +4,9 @@
 from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+
+from .api.equipment import equipment_reservation
+from .api.equipment import equipment_admin
 from .api import (
     events,
     health,
@@ -12,7 +15,6 @@ from .api import (
     profile,
     authentication,
     user,
-    equipment,
 )
 from .api.coworking import status, reservation, ambassador, operating_hours
 from .api.admin import users as admin_users
@@ -35,7 +37,8 @@ app = FastAPI(
     openapi_tags=[
         profile.openapi_tags,
         user.openapi_tags,
-        equipment.openapi_tags,
+        equipment_reservation.openapi_tags,
+        equipment_admin.openapi_tags,
         organizations.openapi_tags,
         events.openapi_tags,
         reservation.openapi_tags,
@@ -59,7 +62,7 @@ feature_apis = [
     authentication,
     admin_users,
     admin_roles,
-    equipment,
+    equipment_reservation,
 ]
 
 for feature_api in feature_apis:

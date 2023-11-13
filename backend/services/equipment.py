@@ -6,6 +6,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from backend.services.permission import PermissionService
 from ..database import db_session
 from ..models.equipment.type_details import EquipmentType, TypeDetails
 from ..models.equipment.item_details import EquipmentItem, ItemDetails
@@ -17,6 +18,7 @@ class EquipmentService:
     def __init__(
         self,
         session: Session = Depends(db_session),
+        permission: PermissionService = Depends(),
     ):
         """Initialize the User Service."""
         self._session = session

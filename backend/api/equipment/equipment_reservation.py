@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
-from .authentication import authenticated_pid
-from ..services.equipment import EquipmentService, EquipmentType, EquipmentItem
-from ..services import UserService
-from ..models import UserDetails, User
+from ..authentication import authenticated_pid
+from ...services.equipment import EquipmentService, EquipmentType, EquipmentItem
+from ...services import UserService
+from ...models import UserDetails, User
 
 api = APIRouter(prefix="/api/equipment")
 openapi_tags = {
