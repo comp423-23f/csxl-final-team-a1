@@ -52,5 +52,3 @@ class EquipmentService:
 
     # def get_items_by_type(self, availability: bool) -> list[EquipmentItem]:
     #     """Return all unique items filtered by their type and availability."""
-
-    # TODO: Add methods for admin - add, modify, delete using permission service

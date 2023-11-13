@@ -15,9 +15,30 @@ openapi_tags = {
 @api.post("/add-equipment-type", tags=["Equipment Reservation System Admin"])
 def add_equipment_type(equipment_type: EquipmentType, pid_onyen: tuple[int, str] = Depends(authenticated_pid)) -> TypeDetails:
     """
-    Adds a new EquipmentType to the system with an empty TypeDetails.items list.
+    Adds a new EquipmentType to the system
 
     Returns:
-        TypeDetails - the Equipment Type that was just added with the items list empty
+        EquipmentType - the Equipment Type that was just added
+    """
+    ...
+
+
+@api.put("/modify-equipment-type", tags=["Equipment Reservation System Admin"])
+def modify_equipment_type(equipment_type: EquipmentType, pid_onyen: tuple[int, str] = Depends(authenticated_pid)) -> EquipmentType:
+    """
+    Modifies an existing EquipmentType object
+
+    Returns:
+        EquipmentType - the Equipment Type that was just added
+    """
+    ...
+
+@api.delete("/delete-equipment-type", tags=["Equipment Reservation System Admin"])
+def delete_equipment_type(equipment_type: EquipmentType, pid_onyen: tuple[int, str] = Depends(authenticated_pid)) -> EquipmentType:
+    """
+    Deletes an EquipmentType object from the system
+
+    Returns:
+        EquipmentType - the Equipment Type that was deleted
     """
     ...
