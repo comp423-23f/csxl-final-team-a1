@@ -41,8 +41,8 @@ def get_user_agreement_status(pid: int, user_service: UserService = Depends()) -
     user_details = user_service.get(user.pid)
     if user_details:
         return user_details.agreement_status
-    else:
-        raise Exception("Unexpected internal server error.")
+
+    return False
 
 
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
@@ -67,5 +67,5 @@ def update_user_agreement_status(
     user_details = user_service.get(user.pid)
     if user_details:
         return user_details.agreement_status
-    else:
-        raise Exception("Unexpected internal server error.")
+
+    return False
