@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,6 +49,7 @@ import { AdminEquipmentCreateComponent } from './equipment/admin-equipment-creat
     MatPaginatorModule,
     MatListModule,
     MatAutocompleteModule,
+    MatCardModule,
     FormsModule,
     ReactiveFormsModule
   ]

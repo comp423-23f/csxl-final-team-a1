@@ -26,20 +26,14 @@ def list_all_equipments(
     return equipment_service.get_all_types()
 
 
-@api.get(
-    "/get-user-agreement-status/{pid}/{onyen}", tags=["Equipment Reservation System"]
-)
-def get_user_agreement_status(
-    pid_onyen: tuple[int, str] = Depends(authenticated_pid),
-    user_service: UserService = Depends(),
-) -> bool:
+@api.get("/get-user-agreement-status/{pid}", tags=["Equipment Reservation System"])
+def get_user_agreement_status(pid: int, user_service: UserService = Depends()) -> bool:
     """
     Returns the boolean value on if the User signed in has signed the equipment agreement
 
     Returns:
         Boolean: the agreement status of the User
     """
-    pid, _ = pid_onyen
     user = user_service.get(pid)
     if user is None:
         raise Exception("User not found!")
