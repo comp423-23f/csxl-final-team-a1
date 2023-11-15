@@ -46,15 +46,18 @@ class EquipmentService:
         """
         Add an equipment type to the database
 
+        Args:
+            subject (User): The User attempting the action
         Returns:
             EquipmentType: The EquipmentType that was just added
         """
         self._permission_svc.enforce(
-            subject, "equipment/admin/add-equipment-type", "equipment"
+            subject, "equipment.add-equipment-type", "equipment"
         )
-        self._session.add(EquipmentTypeEntity.from_model(equipment_type))
+        entity = EquipmentTypeEntity.from_model(equipment_type)
+        self._session.add(entity)
         self._session.commit()
-        return equipment_type
+        return entity.to_model()
 
     def modify_equipment_type(
         self, subject: User, id: int, equipment_type: EquipmentType
@@ -67,7 +70,7 @@ class EquipmentService:
         """
         # TODO : Add a get route for use in the frontend to let frontend be able to have the id
         self._permission_svc.enforce(
-            subject, "equipment/admin/add-equipment-type", "equipment"
+            subject, "equipment.add-equipment-type", "equipment"
         )
         entity = self._session.get(EquipmentTypeEntity, id)
         if entity is None:
@@ -89,7 +92,7 @@ class EquipmentService:
             EquipmentType: The EquipmentType that was just deleted
         """
         self._permission_svc.enforce(
-            subject, "equipment/admin/add-equipment-type", "equipment"
+            subject, "equipment.add-equipment-type", "equipment"
         )
         entity = self._session.get(EquipmentTypeEntity, id)
         if entity is None:
