@@ -29,7 +29,8 @@ export class AdminEquipmentBaseComponent {
     this.router.navigate(['admin', 'equipment', 'new']);
   }
 
-  editEquipmentType(): void {
+  editEquipmentType(type: EquipmentType): void {
+    this.equipment.setCurrent(type);
     this.router.navigate(['admin', 'equipment', 'edit']);
   }
 }

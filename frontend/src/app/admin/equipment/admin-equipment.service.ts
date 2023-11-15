@@ -8,7 +8,18 @@ import EquipmentType from '../../equipment/equipment-type.model'
 })
 export class AdminEquipmentService {
 
-  constructor(private http: HttpClient) { }
+  current_type: EquipmentType | null = null;
+
+  constructor(private http: HttpClient) {
+  }
+
+  setCurrent(type: EquipmentType): void {
+    this.current_type = type;
+  }
+  
+  getCurrent(): EquipmentType | null {
+    return this.current_type;
+  }
 
   //need to update this with a new route that returns total number of equipment for num_avail
   getEquipmentTypes(): Observable<EquipmentType[]> {

@@ -40,19 +40,24 @@ export class AdminEquipmentEditComponent {
     max_reservation_time: this.max_reservation_time
   });
 
-  //Dummy data, we probably need a resolver here like was used in the organization editor
-  public edited: EquipmentType = {id:5, title:"iPad", num_available:3, img_url:"google.com", description:"Hello", max_reservation_time:3}
-
   constructor(protected formBuilder: FormBuilder, private adminEquipment: AdminEquipmentService, private permission: PermissionService) {
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
-    /** Set equipment edit form data */
-    this.equipmentTypeForm.setValue({
-      title: this.edited.title,
-      count: String(this.edited.num_available),
-      img_url: this.edited.img_url,
-      description: this.edited.description,
-      max_reservation_time: String(this.edited.max_reservation_time),
-    });
+
+    const current = this.adminEquipment.getCurrent();
+    if (current) {
+      // Set equipment edit form data
+      this.equipmentTypeForm.setValue({
+        title: current.title,
+        count: String(current.num_available),
+        img_url: current.img_url,
+        description: current.description,
+        max_reservation_time: String(current.max_reservation_time)
+      });
+    }
+    else 
+    {
+      console.log("No data");
+    }
   }
 
 
