@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import EquipmentType from '../../../equipment/equipment-type.model';
+import EquipmentItem from '../../../equipment/equipment-item.model';
 import { AdminEquipmentService } from '../admin-equipment.service';
 import { permissionGuard } from 'src/app/permission.guard';
 import { Observable } from 'rxjs';
@@ -24,7 +25,6 @@ export class AdminEquipmentEditComponent {
   /** Add validators to the form */
   title = new FormControl('', [Validators.required]);
   img_url = new FormControl('', [Validators.required]);
-  count = new FormControl('', [Validators.required, Validators.min(1), Validators.pattern("^[0-9]*$"),]);
   description = new FormControl('', [
     Validators.required,
     Validators.maxLength(150),
@@ -34,30 +34,29 @@ export class AdminEquipmentEditComponent {
   /** Equipment Type edit Form */
   public equipmentTypeForm = this.formBuilder.group({
     title: this.title,
-    count: this.count,
     img_url: this.img_url,
     description: this.description,
     max_reservation_time: this.max_reservation_time
   });
 
+  public displayedColumns: string[] = ['id', 'display_status', 'actions'];
+
+  //replace type with Observable<EquipmentType[]>
+  items$: EquipmentItem[]; 
+
   constructor(protected formBuilder: FormBuilder, private adminEquipment: AdminEquipmentService, private permission: PermissionService) {
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
 
     const current = this.adminEquipment.getCurrent();
-    if (current) {
-      // Set equipment edit form data
-      this.equipmentTypeForm.setValue({
-        title: current.title,
-        count: String(current.num_available),
-        img_url: current.img_url,
-        description: current.description,
-        max_reservation_time: String(current.max_reservation_time)
-      });
-    }
-    else 
-    {
-      console.log("No data");
-    }
+    // Set equipment edit form data
+    this.equipmentTypeForm.setValue({
+      title: current.title,
+      img_url: current.img_url,
+      description: current.description,
+      max_reservation_time: String(current.max_reservation_time)
+    });
+    this.items$ = this.adminEquipment.getItems(current.id);
+    console.log(this.items$);
   }
 
 
@@ -68,6 +67,16 @@ export class AdminEquipmentEditComponent {
 
   onDelete(): void {
     //TODO - DELETE type from server
+    console.log("deleted");
+  }
+
+  deleteEquipmentItem(): void {
+    //TODO - DELETE equipment item from server
+    console.log("deleted");
+  }
+
+  addEquipmentItem(): void {
+    //TODO - POST equipment item to server, generate id automatically
     console.log("deleted");
   }
 

@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import EquipmentType from '../../equipment/equipment-type.model'
+import EquipmentType from '../../equipment/equipment-type.model';
+import EquipmentItem from '../../equipment/equipment-item.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminEquipmentService {
 
-  current_type: EquipmentType | null = null;
+  current_type: EquipmentType = {'id':-1, 'description':'default', 'img_url':'none', 'max_reservation_time': 3, 'num_available': 3, 'title':'placeholder'};
 
   constructor(private http: HttpClient) {
   }
@@ -17,7 +18,7 @@ export class AdminEquipmentService {
     this.current_type = type;
   }
   
-  getCurrent(): EquipmentType | null {
+  getCurrent(): EquipmentType {
     return this.current_type;
   }
 
@@ -37,7 +38,12 @@ export class AdminEquipmentService {
   }
 
   //TODO: DELETE type from backend
-  deleteEquipmentType(new_type: EquipmentType): void {
+  deleteEquipmentType(type_id: EquipmentType): void {
     console.log("TODO");
+  }
+
+  //TODO: Unsure about method but request all items for a type from the backend
+  getItems(type_id: Number): EquipmentItem[] {
+    return [{'id':1, 'display_status':false},{'id':2, 'display_status':true}]
   }
 }
