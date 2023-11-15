@@ -63,6 +63,7 @@ feature_apis = [
     admin_users,
     admin_roles,
     equipment_reservation,
+    equipment_admin,
 ]
 
 for feature_api in feature_apis:

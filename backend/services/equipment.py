@@ -5,6 +5,8 @@ The EquipmentService allows the API to manipulate equipment related data in the 
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from backend.models.user import User
+from backend.services.exceptions import ResourceNotFoundException
 
 from backend.services.permission import PermissionService
 from ..database import db_session
@@ -14,14 +16,14 @@ from ..entities import EquipmentItemEntity, EquipmentTypeEntity
 
 
 class EquipmentService:
-
     def __init__(
         self,
         session: Session = Depends(db_session),
-        permission: PermissionService = Depends(),
+        permission_svc: PermissionService = Depends(),
     ):
         """Initialize the User Service."""
         self._session = session
+        self._permission_svc = permission_svc
 
     def get_all_types(self) -> list[EquipmentType]:
         """
@@ -37,6 +39,65 @@ class EquipmentService:
         # Convert entries to a model and return
 
         return [entity.to_model() for entity in entities]
+
+    def add_equipment_type(
+        self, subject: User, equipment_type: EquipmentType
+    ) -> EquipmentType:
+        """
+        Add an equipment type to the database
+
+        Returns:
+            EquipmentType: The EquipmentType that was just added
+        """
+        self._permission_svc.enforce(
+            subject, "equipment/admin/add-equipment-type", "equipment"
+        )
+        self._session.add(EquipmentTypeEntity.from_model(equipment_type))
+        self._session.commit()
+        return equipment_type
+
+    def modify_equipment_type(
+        self, subject: User, id: int, equipment_type: EquipmentType
+    ) -> EquipmentType:
+        """
+        Modify an existing equipment type in the database
+
+        Returns:
+            EquipmentType: The EquipmentType that was just modified
+        """
+        # TODO : Add a get route for use in the frontend to let frontend be able to have the id
+        self._permission_svc.enforce(
+            subject, "equipment/admin/add-equipment-type", "equipment"
+        )
+        entity = self._session.get(EquipmentTypeEntity, id)
+        if entity is None:
+            raise ResourceNotFoundException(f"Equipment(id={id}) does not exist")
+        entity.title = equipment_type.title
+        entity.img_url = equipment_type.img_url
+        entity.desc = equipment_type.description
+        entity.max_time = equipment_type.max_reservation_time
+
+        self._session.flush()
+        self._session.commit()
+        return entity.to_model()
+
+    def delete_equipment_type(self, subject: User, id: int) -> TypeDetails:
+        """
+        Delete an equipment type from the database
+
+        Returns:
+            EquipmentType: The EquipmentType that was just deleted
+        """
+        self._permission_svc.enforce(
+            subject, "equipment/admin/add-equipment-type", "equipment"
+        )
+        entity = self._session.get(EquipmentTypeEntity, id)
+        if entity is None:
+            raise ResourceNotFoundException(f"Equipment(id={id}) does not exist")
+        self._session.delete(entity)
+        self._session.flush()
+        self._session.commit()
+        return entity.to_details_model()
 
     # TODO: Add tests for these methods
 
