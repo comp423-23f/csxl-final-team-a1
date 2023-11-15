@@ -2,8 +2,7 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..entity_base import EntityBase
 from typing import Self
-from ...models.equipment.equipment_type import EquipmentType
-from ...models.equipment.type_details import TypeDetails
+from ...models.equipment import EquipmentType, TypeDetails
 
 class EquipmentTypeEntity(EntityBase):
     """Database model for EquipmentTypes used throughout the Equipment Features"""
@@ -73,7 +72,7 @@ class EquipmentTypeEntity(EntityBase):
         Returns:
             TypeDetails: Model version of Entity
         """
-        available_items = [item.to_model() for item in self.items if item.display_status]
+        available_items = [item.to_model() for item in self.items]
         return TypeDetails(
             id=self.id,
             title=self.title,

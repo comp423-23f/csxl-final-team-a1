@@ -3,6 +3,7 @@ from ..authentication import authenticated_pid
 from ...services.equipment import EquipmentService, EquipmentType, EquipmentItem
 from ...services import UserService
 from ...models import UserDetails, User
+from ...models.equipment import TypeDetails
 
 api = APIRouter(prefix="/api/equipment")
 openapi_tags = {
@@ -21,9 +22,20 @@ def list_all_equipments(
     Gets all Types and their associated availability
 
     Returns:
-        dict[EquipmentType: int] - Type Model maps to the amount of items available
+        list[EquipmentType]: List of EquipmentTypes, which includes the current availability computing at the model level
     """
     return equipment_service.get_all_types()
+
+@api.get("/get-all", tags=["Equipment Reservation System"])
+def get_all(equipment_service: EquipmentService = Depends()) -> list[TypeDetails]:
+    """
+    Gets all types and their associated items
+
+    Returns:
+        list[TypeDetails]: List of TypeDetails, which includes an EquipmentType and a list of EquipmentItems of that type
+    """
+    return equipment_service.get_all()
+
 
 
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
