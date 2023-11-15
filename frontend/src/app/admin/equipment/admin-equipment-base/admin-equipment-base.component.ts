@@ -30,6 +30,6 @@ export class AdminEquipmentBaseComponent {
   }
 
   editEquipmentType(): void {
-    console.log("placeholder");
+    this.router.navigate(['admin', 'equipment', 'edit']);
   }
 }

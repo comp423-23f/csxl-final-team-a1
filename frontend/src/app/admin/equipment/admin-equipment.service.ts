@@ -15,8 +15,18 @@ export class AdminEquipmentService {
     return this.http.get<EquipmentType[]>("/api/equipment/list-all-equipments");
   }
 
-  //TODO:  POST new type to backend - Will return Observable<EquipmentType[]
+  //TODO: POST new type to backend
   createEquipmentType(new_type: EquipmentType): void {
+    console.log("TODO");
+  }
+
+  //TODO: PUT type to backend
+  updateEquipmentType(updated_type: EquipmentType): void {
+    console.log("TODO");
+  }
+
+  //TODO: DELETE type from backend
+  deleteEquipmentType(new_type: EquipmentType): void {
     console.log("TODO");
   }
 }

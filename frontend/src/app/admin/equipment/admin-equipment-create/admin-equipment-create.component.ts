@@ -26,12 +26,12 @@ export class AdminEquipmentCreateComponent {
   /** Add validators to the form */
   title = new FormControl('', [Validators.required]);
   img_url = new FormControl('', [Validators.required]);
-  count = new FormControl('', [Validators.required, Validators.min(1)]);
+  count = new FormControl('', [Validators.required, Validators.min(1), Validators.pattern("^[0-9]*$"),]);
   description = new FormControl('', [
     Validators.required,
-    Validators.maxLength(150)
+    Validators.maxLength(150),
   ]);
-  max_reservation_time = new FormControl('', [Validators.min(1)]);
+  max_reservation_time = new FormControl('', [Validators.required,Validators.min(1), Validators.pattern("^[0-9]*$"),]);
 
   /** Equipment Type Creation Form */
   public equipmentTypeForm = this.formBuilder.group({
@@ -46,12 +46,9 @@ export class AdminEquipmentCreateComponent {
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
   }
 
-  //Note:  id has a placeholder for null right now
   onSubmit(): void {
     if (this.equipmentTypeForm.valid) {
-      const newType: EquipmentType = { id: null, title: (this.equipmentTypeForm.value.name as string), num_available: (this.equipmentTypeForm.value.count as Number), img_url: (this.equipmentTypeForm.value.img_url as string), description: (this.equipmentTypeForm.value.description as string), max_reservation_time: parseInt(this.equipmentTypeForm.value.max_reservation_time?.toString())  }
       //TODO - POST new type to the server and handle returned object
-      this.adminEquipment.createEquipmentType(newType);
     }
   }
 

@@ -7,6 +7,7 @@ import { AdminUsersListComponent } from './users/list/admin-users-list.component
 import { AdminOrganizationListComponent } from './organization/list/admin-organization-list.component';
 import { AdminEquipmentBaseComponent } from './equipment/admin-equipment-base/admin-equipment-base.component';
 import { AdminEquipmentCreateComponent } from './equipment/admin-equipment-create/admin-equipment-create.component';
+import { AdminEquipmentEditComponent } from './equipment/admin-equipment-edit/admin-equipment-edit.component';
 
 const routes: Routes = [
   {
@@ -18,7 +19,8 @@ const routes: Routes = [
       AdminRoleDetailsComponent.Route,
       AdminOrganizationListComponent.Route,
       AdminEquipmentBaseComponent.Route,
-      AdminEquipmentCreateComponent.Route
+      AdminEquipmentCreateComponent.Route,
+      AdminEquipmentEditComponent.Route
     ]
   }
 ];
