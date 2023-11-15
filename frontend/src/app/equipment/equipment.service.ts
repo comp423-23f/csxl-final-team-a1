@@ -7,12 +7,11 @@ import EquipmentType from './equipment-type.model';
   providedIn: 'root'
 })
 export default class EquipmentService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   //Return equipment types requested from backend.
   getEquipmentTypes(): Observable<EquipmentType[]> {
-    return this.http.get<EquipmentType[]>("/api/equipment/list-all-equipments");
+    return this.http.get<EquipmentType[]>('/api/equipment/get-all-types');
   }
 }
 

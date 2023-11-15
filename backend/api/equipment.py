@@ -13,8 +13,8 @@ openapi_tags = {
 # NOTE: Make sure to add tags to all subsequent api calls for them to show in /docs
 
 
-@api.get("/list-all-equipments", tags=["Equipment Reservation System"])
-def list_all_equipments(
+@api.get("/get-all-types", tags=["Equipment Reservation System"])
+def get_all_types(
     equipment_service: EquipmentService = Depends(),
 ) -> list[EquipmentType]:
     """
@@ -29,7 +29,8 @@ def list_all_equipments(
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
 def update_user_agreement_status(
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
-    user_service: UserService = Depends()):
+    user_service: UserService = Depends(),
+):
     """
     Updates a User's agreement_status field to be true
 
@@ -49,4 +50,3 @@ def update_user_agreement_status(
         return user_details
     else:
         raise Exception("Unexpected internal server error.")
-
