@@ -1,0 +1,23 @@
+
+
+div {
+    margin: 1rem;
+}
+
+button {
+    font-size: 16px;
+    padding: 1em;
+    color: rgb(90, 130, 210);
+    margin: 1rem;
+    align-self: center;
+    float: right;
+    border-radius: 0.4em;
+    border: none;
+    background-color: #525252  
+
+}
+button:hover {
+    border-radius: 0.4em;
+    color: #525252;
+    background-color: rgb(90, 130, 210);;  
+}

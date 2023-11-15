@@ -26,15 +26,35 @@ def list_all_equipments(
     return equipment_service.get_all_types()
 
 
+@api.get("/get-user-agreement-status/{pid}", tags=["Equipment Reservation System"])
+def get_user_agreement_status(pid: int, user_service: UserService = Depends()) -> bool:
+    """
+    Returns the boolean value on if the User signed in has signed the equipment agreement
+
+    Returns:
+        Boolean: the agreement status of the User
+    """
+    user = user_service.get(pid)
+    if user is None:
+        raise Exception("User not found!")
+
+    user_details = user_service.get(user.pid)
+    if user_details:
+        return user_details.agreement_status
+    else:
+        raise Exception("Unexpected internal server error.")
+
+
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
 def update_user_agreement_status(
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
-    user_service: UserService = Depends()):
+    user_service: UserService = Depends(),
+) -> bool:
     """
     Updates a User's agreement_status field to be true
 
     Returns:
-        UserDetails - the updated UserDetails object
+        Boolean: the agreement_status field of the user
     """
     pid, _ = pid_onyen
     user = user_service.get(pid)
@@ -46,7 +66,6 @@ def update_user_agreement_status(
 
     user_details = user_service.get(user.pid)
     if user_details:
-        return user_details
+        return user_details.agreement_status
     else:
         raise Exception("Unexpected internal server error.")
-
