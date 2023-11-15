@@ -48,6 +48,7 @@ class EquipmentService:
 
         Args:
             subject (User): The User attempting the action
+            equipment_type (EquipmentType): The equipment type that will be added
         Returns:
             EquipmentType: The EquipmentType that was just added
         """
@@ -65,6 +66,10 @@ class EquipmentService:
         """
         Modify an existing equipment type in the database
 
+        Args:
+            subject (User): The User attempting the action
+            id (int): The id of the EquipmentType to be modified
+            equipment_type (EquipmentType): The equipment type that the old one will be updated to
         Returns:
             EquipmentType: The EquipmentType that was just modified
         """
@@ -88,6 +93,9 @@ class EquipmentService:
         """
         Delete an equipment type from the database
 
+        Args:
+            subject (User): The User attempting the action
+            id (int): The id of the EquipmentType to be deleted
         Returns:
             EquipmentType: The EquipmentType that was just deleted
         """
