@@ -17,8 +17,8 @@ openapi_tags = {
 # NOTE: Make sure to add tags to all subsequent api calls for them to show in /docs
 
 
-@api.post("/add-equipment-type", tags=["Admin Equipment Reservation System"])
-def add_equipment_type(
+@api.post("/create-type", tags=["Admin Equipment Reservation System"])
+def create_type(
     equipment_type: EquipmentType,
     subject: User = Depends(registered_user),
     equipment_service: EquipmentService = Depends(),
@@ -33,11 +33,11 @@ def add_equipment_type(
     Returns:
         EquipmentType: The Equipment Type that was just added
     """
-    return equipment_service.add_equipment_type(subject, equipment_type)
+    return equipment_service.create_type(subject, equipment_type)
 
 
-@api.put("/modify-equipment-type", tags=["Admin Equipment Reservation System"])
-def modify_equipment_type(
+@api.put("/modify-type", tags=["Admin Equipment Reservation System"])
+def modify_type(
     equipment_type: EquipmentType,
     id: int,
     subject: User = Depends(registered_user),
@@ -54,11 +54,11 @@ def modify_equipment_type(
     Returns:
         EquipmentType: The Equipment Type that was just added
     """
-    return equipment_service.modify_equipment_type(subject, id, equipment_type)
+    return equipment_service.modify_type(subject, id, equipment_type)
 
 
-@api.delete("/delete-equipment-type", tags=["Admin Equipment Reservation System"])
-def delete_equipment_type(
+@api.delete("/delete-type", tags=["Admin Equipment Reservation System"])
+def delete_type(
     id: int,
     subject: User = Depends(registered_user),
     equipment_service: EquipmentService = Depends(),
@@ -73,4 +73,4 @@ def delete_equipment_type(
     Returns:
         EquipmentType: The Equipment Type that was deleted
     """
-    return equipment_service.delete_equipment_type(subject, id)
+    return equipment_service.delete_type(subject, id)

@@ -13,6 +13,7 @@ from ..database import db_session
 from ..models.equipment.type_details import EquipmentType, TypeDetails
 from ..models.equipment.item_details import EquipmentItem, ItemDetails
 from ..entities import EquipmentItemEntity, EquipmentTypeEntity
+from ..models import User
 
 
 class EquipmentService:
@@ -40,7 +41,7 @@ class EquipmentService:
 
         return [entity.to_model() for entity in entities]
 
-    def add_equipment_type(
+    def create_type(
         self, subject: User, equipment_type: EquipmentType
     ) -> EquipmentType:
         """
@@ -53,14 +54,14 @@ class EquipmentService:
             EquipmentType: The EquipmentType that was just added
         """
         self._permission_svc.enforce(
-            subject, "equipment.add-equipment-type", "equipment"
+            subject, "equipment.create", "equipment"
         )
         entity = EquipmentTypeEntity.from_model(equipment_type)
         self._session.add(entity)
         self._session.commit()
         return entity.to_model()
 
-    def modify_equipment_type(
+    def modify_type(
         self, subject: User, id: int, equipment_type: EquipmentType
     ) -> EquipmentType:
         """
@@ -75,7 +76,7 @@ class EquipmentService:
         """
         # TODO : Add a get route for use in the frontend to let frontend be able to have the id
         self._permission_svc.enforce(
-            subject, "equipment.add-equipment-type", "equipment"
+            subject, "equipment.create", "equipment"
         )
         entity = self._session.get(EquipmentTypeEntity, id)
         if entity is None:
@@ -89,7 +90,7 @@ class EquipmentService:
         self._session.commit()
         return entity.to_model()
 
-    def delete_equipment_type(self, subject: User, id: int) -> TypeDetails:
+    def delete_type(self, subject: User, id: int) -> TypeDetails:
         """
         Delete an equipment type from the database
 
@@ -100,7 +101,7 @@ class EquipmentService:
             EquipmentType: The EquipmentType that was just deleted
         """
         self._permission_svc.enforce(
-            subject, "equipment.add-equipment-type", "equipment"
+            subject, "equipment.create", "equipment"
         )
         entity = self._session.get(EquipmentTypeEntity, id)
         if entity is None:
@@ -112,5 +113,38 @@ class EquipmentService:
 
     # TODO: Add tests for these methods
 
-    # def get_items_by_type(self, availability: bool) -> list[EquipmentItem]:
-    #     """Return all unique items filtered by their type and availability."""
+    def get_all(self) -> list[TypeDetails]:
+        """
+        Retrieves all TypeDetails views from the database
+
+        Returns:
+            list[TypeDetails]: List of all EquipmentTypes and associated EquipmentItems
+        """
+
+        # Select all entries in the 'equipment-type' table
+        query = select(EquipmentTypeEntity)
+        entities = self._session.scalars(query).all()
+
+        # Convert entries to a model and return
+
+        return [entity.to_details_model() for entity in entities]
+    
+    def get_items_from_type(self, type_id: int | None) -> list[EquipmentItem]:
+        """
+        Retrievies all items of a specific type
+
+        Parameters:
+            eq_type: EquipmentType - Type of items to retreive
+        
+        Returns:
+            list[EquipmentItems] - items of the specified type
+        
+        Raises:
+            ValueError - thrown if the id is not valid
+        """
+        if type_id < 0 or type_id > self._session.query(EquipmentTypeEntity).count():
+            raise ValueError("type_id field was not valid")
+        
+        entity = self._session.get(EquipmentTypeEntity, type_id)
+        return entity.to_details_model().items
+    

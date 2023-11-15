@@ -37,12 +37,13 @@ def insert_fake_data(session: Session):
         entity = EquipmentItemEntity.from_model(item)
         session.add(entity)
     
+    # TODO: Fix this!!
     """ reset_table_id_seq(
-        session, EquipmentTypeEntity, EquipmentTypeEntity.id, len(types) + 1
+        session, EquipmentItemEntity, EquipmentItemEntity.id, len(items) + 1
     )
 
     reset_table_id_seq(
-        session, EquipmentItemEntity, EquipmentItemEntity.id, len(items) + 1
+        session, EquipmentTypeEntity, EquipmentTypeEntity.id, len(types) + 1
     ) """
 
     session.commit()
