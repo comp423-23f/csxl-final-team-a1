@@ -36,13 +36,13 @@ def get_user_agreement_status(pid: int, user_service: UserService = Depends()) -
     """
     user = user_service.get(pid)
     if user is None:
-        raise Exception("User not found!")
+        return False
 
     user_details = user_service.get(user.pid)
     if user_details:
         return user_details.agreement_status
-    else:
-        raise Exception("Unexpected internal server error.")
+
+    return False
 
 
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
@@ -59,7 +59,7 @@ def update_user_agreement_status(
     pid, _ = pid_onyen
     user = user_service.get(pid)
     if user is None:
-        raise Exception("User not found!")
+        return False
 
     user.agreement_status = True
     user = user_service.update(user, user)
@@ -67,5 +67,5 @@ def update_user_agreement_status(
     user_details = user_service.get(user.pid)
     if user_details:
         return user_details.agreement_status
-    else:
-        raise Exception("Unexpected internal server error.")
+
+    return False
