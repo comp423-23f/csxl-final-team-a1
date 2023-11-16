@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import authenticated_pid
 from ...services.equipment import EquipmentService, EquipmentType, EquipmentItem
 from ...services import UserService
@@ -36,6 +36,27 @@ def get_all(equipment_service: EquipmentService = Depends()) -> list[TypeDetails
     """
     return equipment_service.get_all()
 
+@api.get("/get-items-from-type", tags=["Equipment Reservation System"])
+def get_items_from_type(
+    type_id: int,
+    equipment_service: EquipmentService = Depends()
+) -> list[EquipmentItem]:
+    """
+    Gets all items of a specific type
+
+    Parameters:
+        type_id: id of the type to retrieve items of
+
+    Returns:
+        list[EquipmentItem]: list of items of the type supplied
+
+    Raises:
+        404: Type not found
+    """
+    try:
+        return equipment_service.get_items_from_type(type_id)
+    except Exception:
+        raise HTTPException(404, "Type not found!")
 
 
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])

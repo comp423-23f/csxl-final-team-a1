@@ -129,7 +129,7 @@ class EquipmentService:
 
         return [entity.to_details_model() for entity in entities]
     
-    def get_items_from_type(self, type_id: int | None) -> list[EquipmentItem]:
+    def get_items_from_type(self, type_id: int) -> list[EquipmentItem]:
         """
         Retrievies all items of a specific type
 
