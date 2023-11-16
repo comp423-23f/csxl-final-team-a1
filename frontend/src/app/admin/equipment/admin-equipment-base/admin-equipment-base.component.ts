@@ -23,6 +23,8 @@ export class AdminEquipmentBaseComponent {
   constructor(private equipment: AdminEquipmentService, private router: Router) {}
 
   public displayedColumns: string[] = ['name', 'count', 'actions'];
+
+  //These objects could have count attribute added to them
   types$: Observable<EquipmentType[]> = this.equipment.getEquipmentTypes();
 
   createEquipmentType(): void {
