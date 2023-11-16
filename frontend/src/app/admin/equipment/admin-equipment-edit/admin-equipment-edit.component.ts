@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import EquipmentType from '../../../equipment/equipment-type.model';
+import { UpdatedEquipmentType } from '../updated-equipment-type.model';
 import EquipmentItem from '../../../equipment/equipment-item.model';
 import { AdminEquipmentService } from '../admin-equipment.service';
 import { permissionGuard } from 'src/app/permission.guard';
 import { Observable } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-equipment-edit',
@@ -43,41 +45,50 @@ export class AdminEquipmentEditComponent {
 
   //replace type with Observable<EquipmentType[]>
   items$: EquipmentItem[]; 
+  current: EquipmentType;
 
-  constructor(protected formBuilder: FormBuilder, private adminEquipment: AdminEquipmentService, private permission: PermissionService) {
+  constructor(protected formBuilder: FormBuilder, private adminEquipment: AdminEquipmentService, private permission: PermissionService, private router: Router) {
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
 
-    const current = this.adminEquipment.getCurrent();
+    this.current = this.adminEquipment.getCurrent();
+    if (this.current.id == -1) {
+      this.router.navigate(['admin', 'equipment']);
+    }
+
     // Set equipment edit form data
     this.equipmentTypeForm.setValue({
-      title: current.title,
-      img_url: current.img_url,
-      description: current.description,
-      max_reservation_time: String(current.max_reservation_time)
+      title: this.current.title,
+      img_url: this.current.img_url,
+      description: this.current.description,
+      max_reservation_time: String(this.current.max_reservation_time)
     });
-    this.items$ = this.adminEquipment.getItems(current.id);
+    this.items$ = this.adminEquipment.getItems(this.current.id);
     console.log(this.items$);
   }
 
-
   onSave(): void {
-    //TODO - PUT edited type to the server and handle returned object
-    console.log("saved");
+    if (this.equipmentTypeForm.valid) {
+      let type = {'title':'', 'description':'', 'img_url':'', 'max_reservation_time':-1};
+      Object.assign(type, this.equipmentTypeForm.value);
+
+      this.adminEquipment.updateEquipmentType(type);
+      this.router.navigate(['admin', 'equipment']);
+    }
   }
 
   onDelete(): void {
-    //TODO - DELETE type from server
-    console.log("deleted");
+    this.adminEquipment.deleteEquipmentType(this.current.id);
+    this.router.navigate(['admin', 'equipment','edit']);  
   }
 
-  deleteEquipmentItem(): void {
-    //TODO - DELETE equipment item from server
-    console.log("deleted");
+  deleteEquipmentItem(item_id: Number): void {
+    this.adminEquipment.deleteEquipmentItem(item_id);
+    this.router.navigate(['admin', 'equipment','edit']);  
   }
 
-  addEquipmentItem(): void {
-    //TODO - POST equipment item to server, generate id automatically
-    console.log("deleted");
+  createEquipmentItem(type_id: Number): void {
+    this.adminEquipment.deleteEquipmentType(type_id);
+    this.router.navigate(['admin', 'equipment','edit']);  
   }
 
 }
