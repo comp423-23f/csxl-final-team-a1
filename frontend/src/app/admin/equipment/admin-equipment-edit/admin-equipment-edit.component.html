@@ -68,7 +68,7 @@
     </ng-container>
     <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>
-          <button mat-stroked-button (click)="createEquipmentItem(current.id)">
+          <button mat-stroked-button *ngIf="current.id" (click)="createEquipmentItem(current.id)">
               Add New Item
           </button>
         </th>

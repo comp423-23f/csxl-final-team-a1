@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
-import { NewEquipmentType } from '../new-equipment-type.model';
 import EquipmentType from '../../../equipment/equipment-type.model';
 import { AdminEquipmentService } from '../admin-equipment.service';
 import { permissionGuard } from 'src/app/permission.guard';
@@ -50,10 +49,17 @@ export class AdminEquipmentCreateComponent {
 
   onSubmit(): void {
     if (this.equipmentTypeForm.valid) {
-      let new_type = {'title':'', 'description':'', 'count':-1, 'img_url':'', 'max_reservation_time':-1};
-      Object.assign(new_type, this.equipmentTypeForm.value);
+      let type: EquipmentType = {
+        id: null,
+        title: String(this.equipmentTypeForm.value.title),
+        description: String(this.equipmentTypeForm.value.description),
+        img_url: String(this.equipmentTypeForm.value.img_url),
+        max_reservation_time: Number(this.equipmentTypeForm.value.max_reservation_time),
+        num_available: -1,
+        count: Number(this.equipmentTypeForm.value.count)
+      };
       
-      this.adminEquipment.createEquipmentType(new_type);
+      this.adminEquipment.createEquipmentType(type);
       this.router.navigate(['admin', 'equipment']);
     }
   }

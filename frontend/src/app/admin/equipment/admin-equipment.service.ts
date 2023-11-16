@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import EquipmentType from '../../equipment/equipment-type.model';
-import { NewEquipmentType } from './new-equipment-type.model';
 import EquipmentItem from '../../equipment/equipment-item.model';
 
 @Injectable({
@@ -10,17 +9,14 @@ import EquipmentItem from '../../equipment/equipment-item.model';
 })
 export class AdminEquipmentService {
 
-  current_type: EquipmentType = {'id':-1, 'description':'default', 'img_url':'none', 'max_reservation_time': -1, 'num_available': -1, 'title':'placeholder'};
 
   constructor(private http: HttpClient) {
   }
 
-  setCurrent(type: EquipmentType): void {
-    this.current_type = type;
-  }
-  
-  getCurrent(): EquipmentType {
-    return this.current_type;
+  //TODO - replace
+  getEquipmentType(id: Number): EquipmentType {
+    console.log("HELLO")
+    return {'id':1, 'description':'default', 'img_url':'none', 'max_reservation_time': -1, 'num_available': -1, 'title':'placeholder', 'count':5};
   }
 
   //need to update this with a new route that returns total number of equipment for num_avail
@@ -29,7 +25,7 @@ export class AdminEquipmentService {
   }
 
   //TODO: POST new type to backend
-  createEquipmentType(new_type: NewEquipmentType): void {
+  createEquipmentType(new_type: EquipmentType): void {
     console.log(new_type);
   }
 

@@ -6,7 +6,8 @@ import { permissionGuard } from 'src/app/permission.guard';
 import { Observable } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { equipmentTypeResolver } from '../equipment-type.resolver';
 
 @Component({
   selector: 'app-admin-equipment-edit',
@@ -15,10 +16,13 @@ import { Router } from '@angular/router';
 })
 export class AdminEquipmentEditComponent {
   public static Route = {
-    path: 'equipment/edit',
+    path: 'equipment/edit/:id',
     component: AdminEquipmentEditComponent,
     title: 'Equipment Administration',
-    canActivate: [permissionGuard('equipment', 'equipment/')]
+    canActivate: [permissionGuard('equipment', 'equipment/')],
+    resolve: {
+      type: equipmentTypeResolver
+    }
   };
 
   public adminPermission$: Observable<boolean>;
@@ -28,9 +32,13 @@ export class AdminEquipmentEditComponent {
   img_url = new FormControl('', [Validators.required]);
   description = new FormControl('', [
     Validators.required,
-    Validators.maxLength(150),
+    Validators.maxLength(150)
   ]);
-  max_reservation_time = new FormControl('', [Validators.required,Validators.min(1), Validators.pattern("^[0-9]*$"),]);
+  max_reservation_time = new FormControl('', [
+    Validators.required,
+    Validators.min(1),
+    Validators.pattern('^[0-9]*$')
+  ]);
 
   /** Equipment Type edit Form */
   public equipmentTypeForm = this.formBuilder.group({
@@ -43,14 +51,23 @@ export class AdminEquipmentEditComponent {
   public displayedColumns: string[] = ['id', 'display_status', 'actions'];
 
   //replace type with Observable<EquipmentType[]>
-  items$: EquipmentItem[]; 
+  items$: EquipmentItem[];
   current: EquipmentType;
 
-  constructor(protected formBuilder: FormBuilder, private adminEquipment: AdminEquipmentService, private permission: PermissionService, private router: Router) {
+  constructor(
+    private route: ActivatedRoute,
+    protected formBuilder: FormBuilder,
+    private adminEquipment: AdminEquipmentService,
+    private permission: PermissionService,
+    private router: Router
+  ) {
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
 
-    this.current = this.adminEquipment.getCurrent();
-    if (this.current.id == -1) {
+    const data = this.route.snapshot.data as {
+      type: EquipmentType;
+    };
+    this.current = data.type;
+    if (this.current.id == null) {
       this.router.navigate(['admin', 'equipment']);
     }
 
@@ -61,13 +78,25 @@ export class AdminEquipmentEditComponent {
       description: this.current.description,
       max_reservation_time: String(this.current.max_reservation_time)
     });
-    this.items$ = this.adminEquipment.getItems(this.current.id);
-    console.log(this.items$);
+    if (this.current.id) {
+      this.items$ = this.adminEquipment.getItems(this.current.id);
+    }
+    else {
+      this.items$ = [];
+    }
   }
 
   onSave(): void {
     if (this.equipmentTypeForm.valid) {
-      let type: EquipmentType = {'id': this.current.id, 'title': String(this.equipmentTypeForm.value.title), 'description': String(this.equipmentTypeForm.value.description), 'img_url': String(this.equipmentTypeForm.value.img_url), 'max_reservation_time': Number(this.current.max_reservation_time), 'num_available': Number(this.current.num_available)};
+      let type: EquipmentType = {
+        id: this.current.id,
+        title: String(this.equipmentTypeForm.value.title),
+        description: String(this.equipmentTypeForm.value.description),
+        img_url: String(this.equipmentTypeForm.value.img_url),
+        max_reservation_time: Number(this.current.max_reservation_time),
+        num_available: Number(this.current.num_available),
+        count: -1,
+      };
 
       this.adminEquipment.updateEquipmentType(type);
       this.router.navigate(['admin', 'equipment']);
@@ -75,18 +104,19 @@ export class AdminEquipmentEditComponent {
   }
 
   onDelete(): void {
-    this.adminEquipment.deleteEquipmentType(this.current.id);
-    this.router.navigate(['admin', 'equipment','edit']);  
+    if (this.current.id) {
+      this.adminEquipment.deleteEquipmentType(this.current.id);
+    }
+    this.router.navigate(['admin', 'equipment', 'edit']);
   }
 
   deleteEquipmentItem(item_id: Number): void {
     this.adminEquipment.deleteEquipmentItem(item_id);
-    this.router.navigate(['admin', 'equipment','edit']);  
+    this.router.navigate(['admin', 'equipment', 'edit']);
   }
 
   createEquipmentItem(type_id: Number): void {
     this.adminEquipment.deleteEquipmentType(type_id);
-    this.router.navigate(['admin', 'equipment','edit']);  
+    this.router.navigate(['admin', 'equipment', 'edit']);
   }
-
 }
