@@ -250,7 +250,7 @@ d. Reservations Model: additional model to track all reservations and returns
 
     - `equipment_reservation.py`
     - `equipment_ambassador.py`
-    - `equipment_root.py`
+    - `equipment_admin.py`
 
     `equipment_reservation.py` will contain the routes:
 
@@ -271,7 +271,7 @@ d. Reservations Model: additional model to track all reservations and returns
     well as a specific item's reservations (`get_equipment_reservation`) will
     be possible for different menus (such as the equipment reservations page
     and the calendar page for a certain item). Additionally, in the same area
-    as the reservations we need to have a way to update the user agreement 
+    as the reservations we need to have a way to update the user agreement
     status (`get_user_agreement`) and get item details (`get_item_details`).
 
     `equipment_ambassador.py` will contain the routes:
@@ -288,7 +288,7 @@ d. Reservations Model: additional model to track all reservations and returns
     (`checkin_equipment`) as well, which can simultaneously send information
     about any possible damage to the equipment.
 
-    `equipment_root.py` will contain the routes:
+    `equipment_admin.py` will contain the routes:
 
     - `add_equipment_type` - `POST`
     - `modify_equipment_type` - `PUT`

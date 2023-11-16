@@ -69,3 +69,4 @@ def update_user_agreement_status(
         return user_details.agreement_status
 
     return False
+
