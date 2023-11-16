@@ -23,6 +23,7 @@ export interface Profile {
   registered: boolean;
   role: number;
   permissions: Permission[];
+  agreement_status: boolean;
 }
 
 @Injectable({

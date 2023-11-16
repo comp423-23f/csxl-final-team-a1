@@ -42,6 +42,7 @@ app = FastAPI(
         organizations.openapi_tags,
         events.openapi_tags,
         reservation.openapi_tags,
+        equipment.openapi_tags,
         health.openapi_tags,
         admin_users.openapi_tags,
         admin_roles.openapi_tags,
