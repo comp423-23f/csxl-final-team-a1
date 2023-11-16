@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import EquipmentType from '../../equipment/equipment-type.model';
 import { NewEquipmentType } from './new-equipment-type.model';
 import EquipmentItem from '../../equipment/equipment-item.model';
-import { UpdatedEquipmentType } from './updated-equipment-type.model';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +34,7 @@ export class AdminEquipmentService {
   }
 
   //TODO: PUT type to backend
-  updateEquipmentType(updated_type: UpdatedEquipmentType): void {
+  updateEquipmentType(updated_type: EquipmentType): void {
     console.log(updated_type);
   }
 

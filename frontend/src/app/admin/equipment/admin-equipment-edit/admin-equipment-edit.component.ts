@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import EquipmentType from '../../../equipment/equipment-type.model';
-import { UpdatedEquipmentType } from '../updated-equipment-type.model';
 import EquipmentItem from '../../../equipment/equipment-item.model';
 import { AdminEquipmentService } from '../admin-equipment.service';
 import { permissionGuard } from 'src/app/permission.guard';
@@ -68,8 +67,7 @@ export class AdminEquipmentEditComponent {
 
   onSave(): void {
     if (this.equipmentTypeForm.valid) {
-      let type = {'title':'', 'description':'', 'img_url':'', 'max_reservation_time':-1};
-      Object.assign(type, this.equipmentTypeForm.value);
+      let type: EquipmentType = {'id': this.current.id, 'title': String(this.equipmentTypeForm.value.title), 'description': String(this.equipmentTypeForm.value.description), 'img_url': String(this.equipmentTypeForm.value.img_url), 'max_reservation_time': Number(this.current.max_reservation_time), 'num_available': Number(this.current.num_available)};
 
       this.adminEquipment.updateEquipmentType(type);
       this.router.navigate(['admin', 'equipment']);
