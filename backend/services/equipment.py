@@ -56,6 +56,10 @@ class EquipmentService:
         self._permission_svc.enforce(
             subject, "equipment.create", "equipment"
         )
+
+        if equipment_type.id != None:
+            equipment_type.id = None
+
         entity = EquipmentTypeEntity.from_model(equipment_type)
         self._session.add(entity)
         self._session.commit()
