@@ -22,9 +22,10 @@ def list_all_equipments(
     Gets all Types and their associated availability
 
     Returns:
-        list[EquipmentType]: List of EquipmentTypes, which includes the current availability computing at the model level
+        dict[EquipmentType: int] - Type Model maps to the amount of items available
     """
     return equipment_service.get_all_types()
+
 
 @api.get("/get-all", tags=["Equipment Reservation System"])
 def get_all(equipment_service: EquipmentService = Depends()) -> list[TypeDetails]:
@@ -36,10 +37,10 @@ def get_all(equipment_service: EquipmentService = Depends()) -> list[TypeDetails
     """
     return equipment_service.get_all()
 
+
 @api.get("/get-items-from-type", tags=["Equipment Reservation System"])
 def get_items_from_type(
-    type_id: int,
-    equipment_service: EquipmentService = Depends()
+    type_id: int, equipment_service: EquipmentService = Depends()
 ) -> list[EquipmentItem]:
     """
     Gets all items of a specific type
@@ -62,24 +63,43 @@ def get_items_from_type(
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
 def update_user_agreement_status(
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
-    user_service: UserService = Depends()):
+    user_service: UserService = Depends(),
+) -> bool:
     """
     Updates a User's agreement_status field to be true
 
     Returns:
-        UserDetails - the updated UserDetails object
+        Boolean: the agreement_status field of the user
     """
     pid, _ = pid_onyen
     user = user_service.get(pid)
     if user is None:
-        raise Exception("User not found!")
+        return False
 
     user.agreement_status = True
     user = user_service.update(user, user)
 
     user_details = user_service.get(user.pid)
     if user_details:
-        return user_details
-    else:
-        raise Exception("Unexpected internal server error.")
+        return user_details.agreement_status
 
+    return False
+
+
+@api.get("/get-user-agreement-status/{pid}", tags=["Equipment Reservation System"])
+def get_user_agreement_status(pid: int, user_service: UserService = Depends()) -> bool:
+    """
+    Returns the boolean value on if the User signed in has signed the equipment agreement
+
+    Returns:
+        Boolean: the agreement status of the User
+    """
+    user = user_service.get(pid)
+    if user is None:
+        return False
+
+    user_details = user_service.get(user.pid)
+    if user_details:
+        return user_details.agreement_status
+
+    return False
