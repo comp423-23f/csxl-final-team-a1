@@ -22,7 +22,7 @@ def list_all_equipments(
     Gets all Types and their associated availability
 
     Returns:
-        dict[EquipmentType: int] - Type Model maps to the amount of items available
+        list[EquipmentType]: List of EquipmentTypes, which includes the current availability computing at the model level
     """
     return equipment_service.get_all_types()
 
