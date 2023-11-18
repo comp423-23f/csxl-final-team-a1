@@ -1,3 +1,5 @@
+import EquipmentItem from './equipment-item.model';
+
 export default interface EquipmentType {
   id: Number | null;
   title: string;
@@ -5,5 +7,5 @@ export default interface EquipmentType {
   img_url: string;
   description: string;
   max_reservation_time: Number;
-  count: Number;
+  items: EquipmentItem[];
 }

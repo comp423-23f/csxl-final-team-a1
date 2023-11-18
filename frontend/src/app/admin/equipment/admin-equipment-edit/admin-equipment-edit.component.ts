@@ -26,6 +26,7 @@ export class AdminEquipmentEditComponent {
   };
 
   public adminPermission$: Observable<boolean>;
+  public items: EquipmentItem[];
 
   /** Add validators to the form */
   title = new FormControl('', [Validators.required]);
@@ -51,7 +52,6 @@ export class AdminEquipmentEditComponent {
   public displayedColumns: string[] = ['id', 'display_status', 'actions'];
 
   //replace type with Observable<EquipmentType[]>
-  items$: EquipmentItem[];
   current: EquipmentType;
 
   constructor(
@@ -78,11 +78,12 @@ export class AdminEquipmentEditComponent {
       description: this.current.description,
       max_reservation_time: String(this.current.max_reservation_time)
     });
+    console.log('formset');
     if (this.current.id) {
-      this.items$ = this.adminEquipment.getItems(this.current.id);
+      this.items = this.current.items;
     }
     else {
-      this.items$ = [];
+      this.items = [];
     }
   }
 
@@ -93,9 +94,9 @@ export class AdminEquipmentEditComponent {
         title: String(this.equipmentTypeForm.value.title),
         description: String(this.equipmentTypeForm.value.description),
         img_url: String(this.equipmentTypeForm.value.img_url),
-        max_reservation_time: Number(this.current.max_reservation_time),
+        max_reservation_time: Number(this.equipmentTypeForm.value.max_reservation_time),
         num_available: Number(this.current.num_available),
-        count: -1,
+        items: this.current.items
       };
 
       this.adminEquipment.updateEquipmentType(type);

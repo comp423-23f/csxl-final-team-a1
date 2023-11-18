@@ -27,7 +27,6 @@ export class AdminEquipmentCreateComponent {
   /** Add validators to the form */
   title = new FormControl('', [Validators.required]);
   img_url = new FormControl('', [Validators.required]);
-  count = new FormControl('', [Validators.required, Validators.min(1), Validators.pattern("^[0-9]*$"),]);
   description = new FormControl('', [
     Validators.required,
     Validators.maxLength(150),
@@ -37,7 +36,6 @@ export class AdminEquipmentCreateComponent {
   /** Equipment Type Creation Form */
   public equipmentTypeForm = this.formBuilder.group({
     title: this.title,
-    count: this.count,
     img_url: this.img_url,
     description: this.description,
     max_reservation_time: this.max_reservation_time
@@ -56,7 +54,7 @@ export class AdminEquipmentCreateComponent {
         img_url: String(this.equipmentTypeForm.value.img_url),
         max_reservation_time: Number(this.equipmentTypeForm.value.max_reservation_time),
         num_available: -1,
-        count: Number(this.equipmentTypeForm.value.count)
+        items: []
       };
       
       this.adminEquipment.createEquipmentType(type);

@@ -40,8 +40,8 @@
   </mat-card>
 </form>
 <!-- Need to change this to accept observable with | async as items -->
-<div class="content" *ngIf="items$">
-  <table mat-table [dataSource]="items$">
+<div class="content" *ngIf="items">
+  <table mat-table [dataSource]="items">
     <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>
             <div class="header">
