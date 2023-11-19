@@ -217,6 +217,43 @@ def test_create_item_invalid(equipment_svc_integration: EquipmentService):
         equipment_svc_integration.create_item(root, 700000)
         pytest.fail()
 
+# Test update_item_availability()
+def test_update_item_availability_enforces_perms(equipment_svc_integration: EquipmentService):
+    """Tests that the update_item_availability requires the equipment.hide permission"""
+    equipment_svc_integration._permission_svc = create_autospec(
+        equipment_svc_integration._permission_svc
+    )
+
+    # Test permissions with root user
+    equipment_svc_integration.update_item_availability(root, 1, False)
+    equipment_svc_integration._permission_svc.enforce.assert_called_with(
+        root, "equipment.hide", "equipment"
+    )
+
+def test_update_item_availability_as_root(equipment_svc_integration: EquipmentService):
+    """Tests that update_item_availability works as expected for root user"""
+    item = equipment_svc_integration.get_items_from_type(quest.id)[0]
+    updated_item = equipment_svc_integration.update_item_availability(root, item.id, not item.display_status)
+    assert updated_item is not None
+    assert updated_item.display_status != item.display_status
+
+def test_update_item_availability_as_user(equipment_svc_integration: EquipmentService):
+    """Tests that update_item_availability does NOT run as a user"""
+    item = equipment_svc_integration.get_items_from_type(quest.id)[0]
+    with pytest.raises(UserPermissionException):
+        equipment_svc_integration.update_item_availability(user, item.id, True)
+        pytest.fail()
+
+def test_update_item_availbility_invalid(equipment_svc_integration: EquipmentService):
+    """Tests update_item_availability with invalid parameters"""
+    with pytest.raises(ResourceNotFoundException):
+        equipment_svc_integration.update_item_availability(root, None, True)
+        pytest.fail()
+    
+    with pytest.raises(ResourceNotFoundException):
+        equipment_svc_integration.update_item_availability(root, 700000, False)
+        pytest.fail()
+
 # Test delete_item()
 def test_delete_item_as_root(equipment_svc_integration: EquipmentService):
     """Tests that delete item works as expected when run as root"""

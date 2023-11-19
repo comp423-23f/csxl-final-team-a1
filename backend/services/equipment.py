@@ -195,6 +195,40 @@ class EquipmentService:
         self._session.commit()
         return item_entity.to_model()
     
+    def update_item_availability(self, subject: User, item_id: int | None, available: bool) -> EquipmentItem:
+        """
+        Sets the item specified by item_id's display status to `available`
+        NOTE: Requires equipment.hide permission
+
+        Parameters:
+            Subject (User): The user attempting the action
+            item_id (int): The id of the item to change display status of
+            available (bool): T/F whether to set the item to display or not
+
+        Returns:
+            EquipmentItem: Updated EquipmentItem
+
+        Throws:
+            ResourceNotFoundException: If the item_id was not found
+        """
+        self._permission_svc.enforce(
+            subject, "equipment.hide", "equipment"
+        )
+
+        if item_id is None:
+            raise ResourceNotFoundException("Cannot find a null item!")
+        
+        entity = self._session.get(EquipmentItemEntity, item_id)
+
+        if entity is None:
+            raise ResourceNotFoundException(f"Cannot find item with id = {item_id}")
+        
+        entity.display_status = available
+
+        self._session.commit()
+        return entity.to_model()
+
+    
     def delete_item(self, subject: User, item_id: int | None) -> EquipmentItem:
         """
         Deletes an equipment item in the database
@@ -217,7 +251,7 @@ class EquipmentService:
         
         entity = self._session.get(EquipmentItemEntity, item_id)
         if entity is None:
-            raise ResourceNotFoundException("Item of id={item_id} does not exist")
+            raise ResourceNotFoundException(f"Item of id={item_id} does not exist")
         
         self._session.delete(entity)
         self._session.commit()

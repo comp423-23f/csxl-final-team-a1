@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from ..authentication import authenticated_pid
+from ..authentication import authenticated_pid, registered_user
 from ...services.equipment import EquipmentService, EquipmentType, EquipmentItem
 from ...services import UserService, ResourceNotFoundException
 from ...models import UserDetails, User
@@ -69,11 +69,14 @@ def update_user_agreement_status(
 
     Returns:
         UserDetails - the updated UserDetails object
+    Raises:
+        HTTP Exception 404 if the user cannot be found
+        HTTP Excetiopn 500 indicates error in UserService
     """
     pid, _ = pid_onyen
     user = user_service.get(pid)
     if user is None:
-        raise Exception("User not found!")
+        raise HTTPException(status_code=404, detail="User not found!")
 
     user.agreement_status = True
     user = user_service.update(user, user)
@@ -82,5 +85,34 @@ def update_user_agreement_status(
     if user_details:
         return user_details
     else:
-        raise Exception("Unexpected internal server error.")
+        raise HTTPException(status_code=500, detail="Unexpected internal server error.")
 
+@api.put("/update-item", tags=["Equipment Reservation System"])
+def update_item_availability(
+    item_id: int,
+    available: bool = True,
+    subject: User = Depends(registered_user),
+    equipment_service: EquipmentService = Depends()
+) -> EquipmentItem:
+    """
+    Updates the display status of `item_id` to match `available`
+
+    Parameters:
+        item_id (int): the item's diplay status to change
+        available (bool): Set the display status to
+        subject (User): the user attempting the action
+        equipment_service (EquipmentService): The backend service class
+
+    Returns:
+        EquipmentItem: The modified item
+    
+    Raises:
+        HTTP Exception 404 if the item cannot be found
+    """
+    try:
+        return equipment_service.update_item_availability(subject, item_id, available)
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+    
