@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import authenticated_pid
 from ...services.equipment import EquipmentService, EquipmentType, EquipmentItem
-from ...services import UserService
+from ...services import UserService, ResourceNotFoundException
 from ...models import UserDetails, User
 from ...models.equipment import TypeDetails
 
@@ -55,14 +55,15 @@ def get_items_from_type(
     """
     try:
         return equipment_service.get_items_from_type(type_id)
-    except Exception:
-        raise HTTPException(404, "Type not found!")
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
 def update_user_agreement_status(
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
-    user_service: UserService = Depends()):
+    user_service: UserService = Depends()
+) -> UserDetails:
     """
     Updates a User's agreement_status field to be true
 

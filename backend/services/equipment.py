@@ -53,7 +53,7 @@ class EquipmentService:
             list[EquipmentItems] - items of the specified type
         
         Raises:
-            ValueError - thrown if the id is not valid
+            ResourceNotFoundException - thrown if the id is not valid
         """
         if type_id == None or type_id < 0 or type_id > self._session.query(EquipmentTypeEntity).count():
             raise ResourceNotFoundException("type_id field was not valid")
@@ -112,8 +112,9 @@ class EquipmentService:
             equipment_type (EquipmentType): The equipment type that the old one will be updated to
         Returns:
             EquipmentType: The EquipmentType that was just modified
+        Throws:
+            ResourceNotFoundException: Thrown if the id cannot be found in the database
         """
-        # TODO : Add a get route for use in the frontend to let frontend be able to have the id
         self._permission_svc.enforce(
             subject, "equipment.create", "equipment"
         )
@@ -139,6 +140,8 @@ class EquipmentService:
             id (int): The id of the EquipmentType to be deleted
         Returns:
             EquipmentDetails: The EquipmentType details view that was just deleted
+        Throws:
+            ResourceNotFoundException: Thrown if the id cannot be found in the database
         """
         self._permission_svc.enforce(
             subject, "equipment.create", "equipment"
@@ -168,6 +171,8 @@ class EquipmentService:
 
         Returns:
             EquipmentItem: The Item just created
+        Throws:
+            ResourceNotFoundException: If the id cannot be found in the database
         """
         self._permission_svc.enforce(
             subject, "equipment.create", "equipment"
@@ -200,6 +205,8 @@ class EquipmentService:
 
         Returns:
             EquipmentItem: The item removed
+        Throws:
+            ResourceNotFoundException: If the id cannot be found in the database
         """
         self._permission_svc.enforce(
             subject, "equipment.create", "equipment"

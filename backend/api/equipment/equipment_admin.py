@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from backend.models.user import User
 from ..authentication import authenticated_pid, registered_user
 from ...services.equipment import EquipmentService, EquipmentType, EquipmentItem
+from ...services.exceptions import ResourceNotFoundException
 from ...models.equipment.equipment_type import EquipmentType
 from ...models.equipment.equipment_item import EquipmentItem
 from ...models.equipment.item_details import ItemDetails
@@ -32,8 +33,13 @@ def create_type(
         equipment_service (EquipmentService): The Equipment backend service layer
     Returns:
         EquipmentType: The Equipment Type that was just added
+    Raises:
+        HTTP Exception 422 if an exception was thrown in the service layer
     """
-    return equipment_service.create_type(subject, equipment_type)
+    try:
+        return equipment_service.create_type(subject, equipment_type)
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
 
 @api.put("/modify-type", tags=["Admin Equipment Reservation System"])
@@ -53,9 +59,16 @@ def modify_type(
         equipment_service (EquipmentService): The Equipment backend service layer
     Returns:
         EquipmentType: The Equipment Type that was just added
+    Raises:
+        HTTP Exception 404 if the id was not found in the databse
+        HTTP Exception 422 if the equipment_type was not well formed
     """
-    return equipment_service.modify_type(subject, id, equipment_type)
-
+    try:
+        return equipment_service.modify_type(subject, id, equipment_type)
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
 @api.delete("/delete-type", tags=["Admin Equipment Reservation System"])
 def delete_type(
@@ -64,7 +77,8 @@ def delete_type(
     equipment_service: EquipmentService = Depends(),
 ) -> EquipmentType:
     """
-    Deletes an EquipmentType object from the system
+    Deletes an EquipmentType object from the system 
+    and all of it's associated EquipmentItems
 
     Parameters:
         id (int): The id of the EquipmentType to delete
@@ -72,5 +86,57 @@ def delete_type(
         equipment_service (EquipmentService): The Equipment backend service layer
     Returns:
         EquipmentType: The Equipment Type that was deleted
+    Raises:
+        HTTP Exception 404 if the id was not found in the database
     """
-    return equipment_service.delete_type(subject, id)
+    try:
+        return equipment_service.delete_type(subject, id)
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    
+@api.post("/create-item", tags=["Admin Equipment Reservation System"])
+def create_item(
+    type_id: int,
+    subject: User = Depends(registered_user),
+    equipment_service: EquipmentService = Depends()
+) -> EquipmentItem:
+    """
+    Creates a new EquipmentItem instance of type "type_id"
+
+    Parameters:
+        type_id (int): The id of the EquipmentType of the EquipmentItem
+        subject (User): The user attempting the action
+        equipment_service (EquipmentService): The equipment backend service layer
+    Returns:
+        EquipmentItem: The item that was created
+    Raises:
+        HTTP Exception 404 if the type_id was not found in the database
+    """
+    try:
+        return equipment_service.create_item(subject, type_id)
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    
+@api.delete("/delete-item", tags=["Admin Equipment Reservation System"])
+def delete_item(
+    item_id: int,
+    subject: User = Depends(registered_user),
+    equipment_service: EquipmentService = Depends()
+) -> EquipmentItem:
+    """
+    Deletes an item in the databse
+
+    Parameters:
+        item_id (int): The id of the item to be deleted
+        subject (User): The user attempting the action
+        equipment_service (EquipmentService): The equipment service layer
+
+    Returns:
+        EquipmentItem: The item that was deleted
+    Raises:
+        HTTP Exception 404: if the id was not found in the databse
+    """
+    try:
+        return equipment_service.delete_item(subject, item_id)
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
