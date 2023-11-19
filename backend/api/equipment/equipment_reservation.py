@@ -63,12 +63,12 @@ def get_items_from_type(
 def update_user_agreement_status(
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
     user_service: UserService = Depends()
-) -> UserDetails:
+) -> bool:
     """
     Updates a User's agreement_status field to be true
 
     Returns:
-        UserDetails - the updated UserDetails object
+        Boolean - the updated user agreement status
     Raises:
         HTTP Exception 404 if the user cannot be found
         HTTP Excetiopn 500 indicates error in UserService
@@ -76,16 +76,16 @@ def update_user_agreement_status(
     pid, _ = pid_onyen
     user = user_service.get(pid)
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found!")
+        return False
 
     user.agreement_status = True
     user = user_service.update(user, user)
 
     user_details = user_service.get(user.pid)
     if user_details:
-        return user_details
+        return user_details.agreement_status
     else:
-        raise HTTPException(status_code=500, detail="Unexpected internal server error.")
+        return False
     
 @api.get("/get-user-agreement-status/{pid}", tags=["Equipment Reservation System"])
 def get_user_agreement_status(pid: int, user_service: UserService = Depends()) -> bool:
