@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import EquipmentType from '../../equipment/equipment-type.model';
 import EquipmentItem from '../../equipment/equipment-item.model';
 
@@ -10,35 +10,37 @@ import EquipmentItem from '../../equipment/equipment-item.model';
 export class AdminEquipmentService {
   constructor(private http: HttpClient) {}
 
-  getEquipmentType(id: Number): EquipmentType {
-    let type: EquipmentType = {
-      id: 1,
-      description: 'default',
-      img_url: 'none',
-      max_reservation_time: -1,
-      num_available: -1,
-      title: 'placeholder',
-      items: [
-        { id: 1, display_status: false },
-        { id: 2, display_status: true }
-      ]
-    };
+  getEquipmentType(id: number): Observable<EquipmentType> {
+    return this.getEquipmentTypes().pipe(
+      map((types: EquipmentType[]) => {
+        let foundType: EquipmentType = {
+          id: 1,
+          description: 'default',
+          img_url: 'none',
+          max_reservation_time: -1,
+          num_available: -1,
+          title: 'placeholder',
+          items: [
+            { id: 1, display_status: false },
+            { id: 2, display_status: true }
+          ]
+        };
 
-    let types$ = this.getEquipmentTypes();
-    types$.subscribe((types) => {
-      for (let i = 0; i < types.length; i++) {
-        if (types[i].id == id) {
-          type = types[i];
+        for (let i = 0; i < types.length; i++) {
+          if (types[i].id === id) {
+            foundType = types[i];
+            break;
+          }
         }
-      }
-    });
 
-    return type;
+        return foundType;
+      })
+    );
   }
 
   getEquipmentTypes(): Observable<EquipmentType[]> {
     //TODO - replace this with a route returning type details, hopefully this fixes base page and edit
-    return this.http.get<EquipmentType[]>('/api/equipment/list-all-equipments');
+    return this.http.get<EquipmentType[]>('/api/equipment/get-all');
   }
 
   //TODO: POST new type to backend - change return type to Observable<EquipmentType[]>?
