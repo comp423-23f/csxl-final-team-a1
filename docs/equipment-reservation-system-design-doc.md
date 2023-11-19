@@ -42,35 +42,35 @@ Roots will be responsible for the one-time operations such as adding and removin
 
 ### Story A
 
-As any persona, I want to be able to access the equipments reservation page through the main menu.
-
-Subtasks:
-
-1. Students should be taken to the URL path of `/equipment-reservations/student`. Users who are not logged in should not be allowed on this path.
-2. Ambassadors should be taken to the URL path of `/equipment-reservations/ambassador`. Students and users who are not logged in should not be allowed in this URL path.
-
-### Story B
-
-As Sally Student, I will be prompted with a proposal to sign the liability agreement at my first access on the equipment reservation page or if the agreement changes, so that I don't have to sign it every time I want to lend an item.
-
-Subtasks:
-
-1. Add a database column on the Student model called `agreement_status` and set it to false.
-2. Show the liability agreement when the student enters the URL path `/equipment-reservations/student` if the current version is not yet signed.
-3. Save the status to a database after signed.
-
-### Story C
-
-As Rhonda Root, I want to have an add button that allows me to add a new item to the library of available equipment to be reserved through a form, so that they appear to students through the website. I also want an edit button that allows changing information about the item and a delete button that removes the item from the database.
+As Rhonda Root, I want to have a management page with a list of items and an add button that allows me to add a new item to the library of available equipment to be reserved through a form, so that they appear to students through the website. I also want an edit button that allows changing information about the item and a delete button that removes the item from the database.
 
 Subtasks:
 
 1. There should be a field to add a picture of the item, a title, and a description. (Also possibly a field for max reservation span).
 2. Equipment information should be saved to the database.
 
+### Story B
+
+As Sally Student, I will be prompted with a proposal to sign the liability agreement on my first access on the equipment reservation page or if the agreement changes, so that I don't have to sign it every time I want to lend an item.
+
+Subtasks:
+
+1. Add a database column on the Student model called `agreement_status` and set it to false.
+2. Show the liability agreement when the student enters the URL path `/equipment-reservations` if the current version is not yet signed.
+3. Save the status to a database after signed.
+4. Make sure the student cannot access the library page until they sign the agreement.
+
+### Story C
+
+As any persona, I want to be able to access the equipments reservation page through the main menu.
+
+Subtasks:
+
+1. All personas hould be taken to the URL path of `/equipment-reservations`.
+
 ### Story D
 
-As any Persona - that is, on both URL paths `/ambassador` and `/student` - I want to view the library of equipments and their availability status (available at that moment or not), so that I can pick what I want to reserve.
+As any Persona I want to view the library of equipments and their availability status (available at that moment or not), so that I can pick what I want to reserve.
 
 Subtasks:
 
@@ -79,7 +79,7 @@ Subtasks:
 
 ### Story E
 
-As any Persona, I want to click on an item and be taken to the items page on path `/equipment-reservations/<user type>/<item name>`, so that I can expand the item details and see information about reserving the item.
+As any Persona, I want to click on an item and be taken to the items page on path `/equipment-reservations`, so that I can expand the item details and see information about reserving the item.
 
 Subtasks:
 
@@ -97,7 +97,7 @@ Subtasks:
 
 ### Story G
 
-As Amy Ambassador, I should be able to check the equipment in through its unique ID and log details or any abnormalities noted by the student about the equipment on return.
+As Amy Ambassador, I should be able to see a management page where I can see a list of equipments and check an equipment in through its unique ID and log details or any abnormalities noted by the student about the equipment on return.
 
 - Logging details will serve as an incentive to review the equipment with more attention, besides tracking when products were damaged.
 
@@ -112,7 +112,7 @@ As Sally Student, I should be able to see my checkout history, because I want to
 
 ### Story I
 
-As Amy Ambassador, I should be able to see previous reservations of an unique item, so that I can look at previous description.
+As Amy Ambassador, I should be able to see previous reservations of a unique item, so that I can look at previous description.
 
 ### Opportunities for Extra Stories
 

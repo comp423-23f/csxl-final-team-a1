@@ -86,6 +86,24 @@ def update_user_agreement_status(
         return user_details
     else:
         raise HTTPException(status_code=500, detail="Unexpected internal server error.")
+    
+@api.get("/get-user-agreement-status/{pid}", tags=["Equipment Reservation System"])
+def get_user_agreement_status(pid: int, user_service: UserService = Depends()) -> bool:
+    """
+    Returns the boolean value on if the User signed in has signed the equipment agreement
+
+    Returns:
+        Boolean: the agreement status of the User
+    """
+    user = user_service.get(pid)
+    if user is None:
+        return False
+
+    user_details = user_service.get(user.pid)
+    if user_details:
+        return user_details.agreement_status
+
+    return False
 
 @api.put("/update-item", tags=["Equipment Reservation System"])
 def update_item_availability(
