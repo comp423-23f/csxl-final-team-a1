@@ -168,3 +168,36 @@ def test_delete_type_as_user(equipment_svc_integration: EquipmentService):
     with pytest.raises(UserPermissionException):
         equipment_svc_integration.delete_type(user, quest.id)
         pytest.fail()
+
+# Test create_item()
+def test_create_item_as_root(equipment_svc_integration: EquipmentService):
+    """Tests that create item works as expected when run as a root user"""
+    items_before = equipment_svc_integration.get_items_from_type(quest.id)
+    created = equipment_svc_integration.create_item(root, quest.id)
+    items_after = equipment_svc_integration.get_items_from_type(quest.id)
+    assert created is not None
+    assert len(items_before) < len(items_after)
+    assert created in items_after
+
+def test_create_item_as_user(equipment_svc_integration: EquipmentService):
+    """Tests that create item does not work when run as a user"""
+    with pytest.raises(UserPermissionException):
+        equipment_svc_integration.create_item(user, quest.id)
+        pytest.fail()
+
+# Test delete_item()
+def test_delete_item_as_root(equipment_svc_integration: EquipmentService):
+    """Tests that delete item works as expected when run as root"""
+    item_before = equipment_svc_integration.get_items_from_type(quest.id)
+    deleted = equipment_svc_integration.delete_item(root, item_before[0].id)
+    items_after = equipment_svc_integration.get_items_from_type(quest.id)
+    assert deleted is not None
+    assert len(item_before) > len(items_after)
+    assert deleted not in items_after
+
+def test_delete_item_as_user(equipment_svc_integration: EquipmentService):
+    """Tests that delete item does not execute when run as a user"""
+    items = equipment_svc_integration.get_items_from_type(quest.id)
+    with pytest.raises(UserPermissionException):
+        equipment_svc_integration.delete_item(user, items[0].id)
+        pytest.fail()

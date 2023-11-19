@@ -25,6 +25,41 @@ class EquipmentService:
         """Initialize the User Service."""
         self._session = session
         self._permission_svc = permission_svc
+        
+    def get_all(self) -> list[TypeDetails]:
+        """
+        Retrieves all TypeDetails views from the database
+
+        Returns:
+            list[TypeDetails]: List of all EquipmentTypes and associated EquipmentItems
+        """
+
+        # Select all entries in the 'equipment-type' table
+        query = select(EquipmentTypeEntity)
+        entities = self._session.scalars(query).all()
+
+        # Convert entries to a model and return
+
+        return [entity.to_details_model() for entity in entities]
+
+    def get_items_from_type(self, type_id: None | int) -> list[EquipmentItem]:
+        """
+        Retrievies all items of a specific type
+
+        Parameters:
+            eq_type: EquipmentType - Type of items to retreive
+        
+        Returns:
+            list[EquipmentItems] - items of the specified type
+        
+        Raises:
+            ValueError - thrown if the id is not valid
+        """
+        if type_id == None or type_id < 0 or type_id > self._session.query(EquipmentTypeEntity).count():
+            raise ValueError("type_id field was not valid")
+        
+        entity = self._session.get(EquipmentTypeEntity, type_id)
+        return entity.to_details_model().items
 
     def get_all_types(self) -> list[EquipmentType]:
         """
@@ -66,7 +101,7 @@ class EquipmentService:
         return entity.to_model()
 
     def modify_type(
-        self, subject: User, id: int, equipment_type: EquipmentType
+        self, subject: User, id: int | None, equipment_type: EquipmentType
     ) -> EquipmentType:
         """
         Modify an existing equipment type in the database
@@ -82,6 +117,8 @@ class EquipmentService:
         self._permission_svc.enforce(
             subject, "equipment.create", "equipment"
         )
+        if id is None:
+            raise ResourceNotFoundException("Cannot find Null type id")
         entity = self._session.get(EquipmentTypeEntity, id)
         if entity is None:
             raise ResourceNotFoundException(f"Equipment(id={id}) does not exist")
@@ -90,65 +127,91 @@ class EquipmentService:
         entity.desc = equipment_type.description
         entity.max_time = equipment_type.max_reservation_time
 
-        self._session.flush()
         self._session.commit()
         return entity.to_model()
-
-    def delete_type(self, subject: User, id: int) -> TypeDetails:
+    
+    def delete_type(self, subject: User, id: int | None) -> TypeDetails:
         """
-        Delete an equipment type from the database
+        Delete an equipment type and all it's associated items from the database
 
         Args:
             subject (User): The User attempting the action
             id (int): The id of the EquipmentType to be deleted
         Returns:
-            EquipmentType: The EquipmentType that was just deleted
+            EquipmentDetails: The EquipmentType details view that was just deleted
         """
         self._permission_svc.enforce(
             subject, "equipment.create", "equipment"
         )
+        if id is None:
+            raise ResourceNotFoundException("Cannot delete type of Null id")
         entity = self._session.get(EquipmentTypeEntity, id)
+
+        # Delete all items of type
+        for item in entity.items:
+            self.delete_item(subject, item.id)
+
         if entity is None:
             raise ResourceNotFoundException(f"Equipment(id={id}) does not exist")
         self._session.delete(entity)
-        self._session.flush()
         self._session.commit()
         return entity.to_details_model()
-
-    # TODO: Add tests for these methods
-
-    def get_all(self) -> list[TypeDetails]:
+    
+    def create_item(self, subject: User, type_id: int | None) -> EquipmentItem:
         """
-        Retrieves all TypeDetails views from the database
+        Creates an EquipmentItem of equipment type `type_id`
+
+        Args:
+            subject (User): The User attempting the action
+            type_id (int): The id of the equipmentType of the new item
 
         Returns:
-            list[TypeDetails]: List of all EquipmentTypes and associated EquipmentItems
+            EquipmentItem: The Item just created
         """
+        self._permission_svc.enforce(
+            subject, "equipment.create", "equipment"
+        )
 
-        # Select all entries in the 'equipment-type' table
-        query = select(EquipmentTypeEntity)
-        entities = self._session.scalars(query).all()
-
-        # Convert entries to a model and return
-
-        return [entity.to_details_model() for entity in entities]
-    
-    def get_items_from_type(self, type_id: int) -> list[EquipmentItem]:
-        """
-        Retrievies all items of a specific type
-
-        Parameters:
-            eq_type: EquipmentType - Type of items to retreive
+        if type_id is None:
+            raise ResourceNotFoundException("Cannot find type of Null id")
         
+        type_entity = self._session.get(EquipmentTypeEntity, type_id)
+        if type_entity is None:
+            raise ResourceNotFoundException(f"EquipmentType (id = {type_id}) does not exist")
+
+        new_item = EquipmentItem(
+            id=None,
+            display_status=True,
+            type_id=type_entity.id
+        )
+        item_entity = EquipmentItemEntity.from_model(new_item)
+        self._session.add(item_entity)
+        self._session.commit()
+        return item_entity.to_model()
+    
+    def delete_item(self, subject: User, item_id: int | None) -> EquipmentItem:
+        """
+        Deletes an equipment item in the database
+
+        Args:
+            subject (User): The User attempting the action
+            item_id (int): The id of the item to be removed
+
         Returns:
-            list[EquipmentItems] - items of the specified type
-        
-        Raises:
-            ValueError - thrown if the id is not valid
+            EquipmentItem: The item removed
         """
-        if type_id < 0 or type_id > self._session.query(EquipmentTypeEntity).count():
-            raise ValueError("type_id field was not valid")
+        self._permission_svc.enforce(
+            subject, "equipment.create", "equipment"
+        )
+
+        if item_id is None:
+            raise ResourceNotFoundException("Cannot find type of null id")
         
-        entity = self._session.get(EquipmentTypeEntity, type_id)
-        return entity.to_details_model().items
-    
+        entity = self._session.get(EquipmentItemEntity, item_id)
+        if entity is None:
+            raise ResourceNotFoundException("Item of id={item_id} does not exist")
+        
+        self._session.delete(entity)
+        self._session.commit()
+        return entity.to_model()
+
