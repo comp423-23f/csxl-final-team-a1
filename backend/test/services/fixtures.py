@@ -59,4 +59,4 @@ def event_svc_integration(session: Session):
 @pytest.fixture()
 def equipment_svc_integration(session: Session):
     """This fixture is used to test the EquipmentService class"""
-    return EquipmentService(session)
+    return EquipmentService(session, PermissionService(session))

@@ -9,7 +9,7 @@ class EquipmentItemEntity(EntityBase):
     """Serves as the database component for individual items"""
 
     # Name of the table
-    __tablename__ = "equipment-items"
+    __tablename__ = "equipment_items"
 
     # Unique ID for the item
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -18,7 +18,7 @@ class EquipmentItemEntity(EntityBase):
     display_status: Mapped[bool] = mapped_column(Boolean, nullable= False)
 
     # Type of this item
-    type_id: Mapped[int] = mapped_column(ForeignKey("equipment-type.id"))
+    type_id: Mapped[int] = mapped_column(ForeignKey("equipment_type.id"))
     eq_type: Mapped["EquipmentTypeEntity"] = relationship(back_populates="items")
 
     @classmethod

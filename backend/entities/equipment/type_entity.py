@@ -8,7 +8,7 @@ class EquipmentTypeEntity(EntityBase):
     """Database model for EquipmentTypes used throughout the Equipment Features"""
 
     # Name for the EquipmentType table in the PostgresSQL databse
-    __tablename__ = "equipment-type"
+    __tablename__ = "equipment_type"
 
     # Equipment Type Properties
 
@@ -77,7 +77,7 @@ class EquipmentTypeEntity(EntityBase):
             id=self.id,
             title=self.title,
             img_url=self.img_url,
-            num_available=len(available_items),
+            num_available=len([1 for item in available_items if item.display_status]),
             description=self.desc,
             max_reservation_time=self.max_time,
             items=available_items
