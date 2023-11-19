@@ -94,9 +94,17 @@
       <td mat-cell *matCellDef="let item">
         <div class="row">
           <input
+            *ngIf="!item.damaged; else elseBlock"
             (change)="toggleDamaged(item.id)"
             type="checkbox"
             name="checkbox" />
+          <ng-template #elseBlock>
+            <input
+              (change)="toggleDamaged(item.id)"
+              type="checkbox"
+              name="checkbox"
+              checked />
+          </ng-template>
         </div>
       </td>
     </ng-container>
