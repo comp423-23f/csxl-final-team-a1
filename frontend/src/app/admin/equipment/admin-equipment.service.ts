@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import EquipmentType from '../../equipment/equipment-type.model';
+import BaseEquipmentType from './base-equipment-type.model';
 import EquipmentItem from '../../equipment/equipment-item.model';
 
 @Injectable({
@@ -43,12 +44,12 @@ export class AdminEquipmentService {
   }
 
   //TODO: POST new type to backend - change return type to Observable<EquipmentType[]>?
-  createEquipmentType(new_type: EquipmentType): void {
+  createEquipmentType(new_type: BaseEquipmentType): void {
     console.log(new_type);
   }
 
   //TODO: PUT type to backend - change return type to Observable<EquipmentType[]>?
-  updateEquipmentType(updated_type: EquipmentType): void {
+  updateEquipmentType(updated_type: BaseEquipmentType): void {
     console.log(updated_type);
   }
 

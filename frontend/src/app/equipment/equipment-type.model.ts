@@ -1,5 +1,6 @@
 import EquipmentItem from './equipment-item.model';
 
+//This model aligns with the backends Pydantic TypeDetails model
 export default interface EquipmentType {
   id: Number | null;
   title: string;

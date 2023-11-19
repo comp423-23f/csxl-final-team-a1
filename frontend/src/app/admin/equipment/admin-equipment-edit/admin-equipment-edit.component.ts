@@ -8,6 +8,7 @@ import { PermissionService } from 'src/app/permission.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { equipmentTypeResolver } from '../equipment-type.resolver';
+import BaseEquipmentType from '../base-equipment-type.model';
 
 @Component({
   selector: 'app-admin-equipment-edit',
@@ -93,7 +94,7 @@ export class AdminEquipmentEditComponent {
 
   onSave(): void {
     if (this.equipmentTypeForm.valid) {
-      let type: EquipmentType = {
+      let type: BaseEquipmentType = {
         id: this.current.id,
         title: String(this.equipmentTypeForm.value.title),
         description: String(this.equipmentTypeForm.value.description),
@@ -102,7 +103,6 @@ export class AdminEquipmentEditComponent {
           this.equipmentTypeForm.value.max_reservation_time
         ),
         num_available: Number(this.current.num_available),
-        items: this.current.items
       };
 
       this.adminEquipment.updateEquipmentType(type);

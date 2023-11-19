@@ -8,6 +8,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardActions } from '@angular/material/card';
 import { PermissionService } from 'src/app/permission.service';
+import BaseEquipmentType from '../base-equipment-type.model';
 
 @Component({
   selector: 'app-admin-equipment-create',
@@ -47,14 +48,15 @@ export class AdminEquipmentCreateComponent {
 
   onSubmit(): void {
     if (this.equipmentTypeForm.valid) {
-      let type: EquipmentType = {
+      let type: BaseEquipmentType = {
         id: null,
         title: String(this.equipmentTypeForm.value.title),
         description: String(this.equipmentTypeForm.value.description),
         img_url: String(this.equipmentTypeForm.value.img_url),
-        max_reservation_time: Number(this.equipmentTypeForm.value.max_reservation_time),
-        num_available: -1,
-        items: []
+        max_reservation_time: Number(
+          this.equipmentTypeForm.value.max_reservation_time
+        ),
+        num_available: -1
       };
       
       this.adminEquipment.createEquipmentType(type);
