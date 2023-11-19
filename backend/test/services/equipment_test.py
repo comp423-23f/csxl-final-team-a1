@@ -124,14 +124,14 @@ def test_modify_type_enforces_permission(equipment_svc_integration: EquipmentSer
     )
 
     # Test permissions with root user
-    equipment_svc_integration.modify_type(root, quest.id, modified_quest)
+    equipment_svc_integration.modify_type(root, modified_quest)
     equipment_svc_integration._permission_svc.enforce.assert_called_with(
         root, "equipment.create", "equipment"
     )
 
 def test_modify_type_as_root(equipment_svc_integration: EquipmentService):
     """Tests that the root user can modify equipment types"""
-    modified = equipment_svc_integration.modify_type(root, quest.id, modified_quest)
+    modified = equipment_svc_integration.modify_type(root, modified_quest)
     assert modified is not None
     assert modified.title == modified_quest.title
     assert modified.img_url == modified_quest.img_url
@@ -141,17 +141,19 @@ def test_modify_type_as_root(equipment_svc_integration: EquipmentService):
 def test_modify_type_as_user(equipment_svc_integration: EquipmentService):
     """Tests that users cannot modify equipment types"""
     with pytest.raises(UserPermissionException):
-        equipment_svc_integration.modify_type(user, quest.id, modified_quest)
+        equipment_svc_integration.modify_type(user, modified_quest)
         pytest.fail()
 
 def test_modify_type_not_exist(equipment_svc_integration: EquipmentService):
     """Tests that the correct exception is thrown on incorrect params"""
+    modified_quest.id = None
     with pytest.raises(ResourceNotFoundException):
-        equipment_svc_integration.modify_type(root, None, modified_quest)
+        equipment_svc_integration.modify_type(root, modified_quest)
         pytest.fail()
-    
+
+    modified_quest.id = 7000000
     with pytest.raises(ResourceNotFoundException):
-        equipment_svc_integration.modify_type(root, types[-1].id + 1000, modified_quest)
+        equipment_svc_integration.modify_type(root, modified_quest)
         pytest.fail()
 
 # Test delete_type()

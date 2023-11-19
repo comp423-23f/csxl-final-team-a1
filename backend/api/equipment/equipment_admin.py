@@ -45,7 +45,6 @@ def create_type(
 @api.put("/modify-type", tags=["Admin Equipment Reservation System"])
 def modify_type(
     equipment_type: EquipmentType,
-    id: int,
     subject: User = Depends(registered_user),
     equipment_service: EquipmentService = Depends(),
 ) -> EquipmentType:
@@ -54,7 +53,6 @@ def modify_type(
 
     Parameters:
         equipment_type (EquipmentType): The new EquipmentType that will replace the old one
-        id (int): The id of the EquipmentType to modify
         subject (User): The user attempting the action
         equipment_service (EquipmentService): The Equipment backend service layer
     Returns:
@@ -64,7 +62,7 @@ def modify_type(
         HTTP Exception 422 if the equipment_type was not well formed
     """
     try:
-        return equipment_service.modify_type(subject, id, equipment_type)
+        return equipment_service.modify_type(subject, equipment_type)
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:

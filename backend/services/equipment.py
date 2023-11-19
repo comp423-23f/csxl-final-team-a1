@@ -101,7 +101,7 @@ class EquipmentService:
         return entity.to_model()
 
     def modify_type(
-        self, subject: User, id: int | None, equipment_type: EquipmentType
+        self, subject: User, equipment_type: EquipmentType
     ) -> EquipmentType:
         """
         Modify an existing equipment type in the database
@@ -118,11 +118,11 @@ class EquipmentService:
         self._permission_svc.enforce(
             subject, "equipment.create", "equipment"
         )
-        if id is None:
-            raise ResourceNotFoundException("Cannot find Null type id")
-        entity = self._session.get(EquipmentTypeEntity, id)
+        if equipment_type.id == None:
+            raise ResourceNotFoundException("Cannot find null id type")
+        entity = self._session.get(EquipmentTypeEntity, equipment_type.id)
         if entity is None:
-            raise ResourceNotFoundException(f"Equipment(id={id}) does not exist")
+            raise ResourceNotFoundException(f"Equipment(id={equipment_type.id}) does not exist")
         entity.title = equipment_type.title
         entity.img_url = equipment_type.img_url
         entity.desc = equipment_type.description
