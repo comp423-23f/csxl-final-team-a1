@@ -114,17 +114,27 @@ export class AdminEquipmentEditComponent {
     if (this.current.id) {
       this.adminEquipment.deleteEquipmentType(this.current.id);
     }
-    this.router.navigate(['admin', 'equipment', 'edit']);
+    this.router.navigate(['admin', 'equipment']);
   }
 
   deleteEquipmentItem(item_id: Number): void {
     this.adminEquipment.deleteEquipmentItem(item_id);
-    this.router.navigate(['admin', 'equipment', 'edit']);
+    this.router.navigate([
+      'admin',
+      'equipment',
+      'edit',
+      String(this.current.id)
+    ]);
   }
 
   createEquipmentItem(type_id: Number): void {
     this.adminEquipment.deleteEquipmentType(type_id);
-    this.router.navigate(['admin', 'equipment', 'edit']);
+    this.router.navigate([
+      'admin',
+      'equipment',
+      'edit',
+      String(this.current.id)
+    ]);
   }
 
   toggleDamaged(item_id: Number): void {

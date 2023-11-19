@@ -39,7 +39,6 @@ export class AdminEquipmentService {
   }
 
   getEquipmentTypes(): Observable<EquipmentType[]> {
-    //TODO - replace this with a route returning type details, hopefully this fixes base page and edit
     return this.http.get<EquipmentType[]>('/api/equipment/get-all');
   }
 
