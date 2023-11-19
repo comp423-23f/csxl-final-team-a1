@@ -65,4 +65,8 @@ export class AdminEquipmentService {
   deleteEquipmentItem(item_id: Number): void {
     console.log(item_id);
   }
+
+  toggleDamaged(item_id: Number): void {
+    console.log(item_id);
+  }
 }

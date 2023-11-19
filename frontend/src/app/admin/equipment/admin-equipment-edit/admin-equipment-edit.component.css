@@ -12,6 +12,53 @@
     margin-bottom: 8px;
 }
 
-mat-card-content {
+.mat-card-content {
     margin-top: 8px;
 }
+
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+
+    font: inherit;
+    color: currentColor;
+    width: 1.5em;
+    height: 1.5em;
+    border: 0.02em solid currentColor;
+    border-radius: 0.15em;
+    
+    display: grid;
+    place-content: center;
+}
+
+input[type="checkbox"]:hover {
+    
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+
+    font: inherit;
+    color: rgb(177, 177, 177);
+    width: 1.5em;
+    height: 1.5em;
+    border: 0.02em solid currentColor;
+    border-radius: 0.15em;
+    
+    display: grid;
+    place-content: center;
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    width: 0.85em;
+    height: 0.85em;
+    transform: scale(0);
+    box-shadow: inset 1em 1em currentColor;
+}
+
+input[type="checkbox"]:checked::before {
+    transform: scale(1);
+}
+
+

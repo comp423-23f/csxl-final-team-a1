@@ -49,7 +49,12 @@ export class AdminEquipmentEditComponent {
     max_reservation_time: this.max_reservation_time
   });
 
-  public displayedColumns: string[] = ['id', 'display_status', 'actions'];
+  public displayedColumns: string[] = [
+    'id',
+    'display_status',
+    'damaged',
+    'actions'
+  ];
 
   //replace type with Observable<EquipmentType[]>
   current: EquipmentType;
@@ -81,8 +86,7 @@ export class AdminEquipmentEditComponent {
     console.log('formset');
     if (this.current.id) {
       this.items = this.current.items;
-    }
-    else {
+    } else {
       this.items = [];
     }
   }
@@ -94,7 +98,9 @@ export class AdminEquipmentEditComponent {
         title: String(this.equipmentTypeForm.value.title),
         description: String(this.equipmentTypeForm.value.description),
         img_url: String(this.equipmentTypeForm.value.img_url),
-        max_reservation_time: Number(this.equipmentTypeForm.value.max_reservation_time),
+        max_reservation_time: Number(
+          this.equipmentTypeForm.value.max_reservation_time
+        ),
         num_available: Number(this.current.num_available),
         items: this.current.items
       };
@@ -119,5 +125,9 @@ export class AdminEquipmentEditComponent {
   createEquipmentItem(type_id: Number): void {
     this.adminEquipment.deleteEquipmentType(type_id);
     this.router.navigate(['admin', 'equipment', 'edit']);
+  }
+
+  toggleDamaged(item_id: Number): void {
+    this.adminEquipment.toggleDamaged(item_id);
   }
 }
