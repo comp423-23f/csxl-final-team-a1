@@ -24,7 +24,6 @@ export class AdminEquipmentBaseComponent {
 
   public displayedColumns: string[] = ['name', 'count', 'actions'];
 
-  //These objects could have count attribute added to them
   types$: Observable<EquipmentType[]> = this.equipment.getEquipmentTypes();
 
   createEquipmentType(): void {

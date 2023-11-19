@@ -3,13 +3,12 @@
   [formGroup]="equipmentTypeForm"
   (ngSubmit)="onSave()"
   *ngIf="adminPermission$ | async">
-  <!-- Update Organization Card -->
   <mat-card>
     <mat-card-header>
       <mat-card-title>Edit Equipment Type</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <!-- Organization Name Field -->
+      <!-- Equipment Type Name Field -->
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Equipment Type Name</mat-label>
         <input
@@ -19,7 +18,7 @@
           name="title"
           required />
       </mat-form-field>
-      <!-- Logo Field -->
+      <!-- IMG URL Field -->
       <mat-form-field appearance="outline" color="accent">
         <mat-label>Image Link</mat-label>
         <input
