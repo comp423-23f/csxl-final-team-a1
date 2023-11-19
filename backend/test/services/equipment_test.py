@@ -54,13 +54,25 @@ def test_get_all(equipment_svc_integration: EquipmentService):
     assert s == len(items)
     assert isinstance(fetched[0], TypeDetails)
 
+# test get_items_of_type()
 def test_get_items_of_type(equipment_svc_integration: EquipmentService):
+    """Testing normal use case of get_items_from_type"""
     fetched: list[EquipmentItem] = equipment_svc_integration.get_items_from_type(quest.id)
     assert fetched is not None
     assert len(fetched) == len([item for item in items if item.type_id==quest.id])
     assert isinstance(fetched[0], EquipmentItem)
     for item in fetched:
         assert item.type_id == quest.id
+
+def test_get_items_of_type_None(equipment_svc_integration: EquipmentService):
+    """Testing when None or an out of bounds id is supplied"""
+    with pytest.raises(ResourceNotFoundException):
+        equipment_svc_integration.get_items_from_type(None)
+        pytest.fail()
+
+    with pytest.raises(ResourceNotFoundException):
+        equipment_svc_integration.get_items_from_type(700000)
+        pytest.fail()
 
 # Test create_type()
 def test_create_type_enforces_permissions(equipment_svc_integration: EquipmentService):
@@ -169,6 +181,16 @@ def test_delete_type_as_user(equipment_svc_integration: EquipmentService):
         equipment_svc_integration.delete_type(user, quest.id)
         pytest.fail()
 
+def test_delte_type_not_valid(equipment_svc_integration: EquipmentService):
+    """Tests delete_type with invalid id fields"""
+    with pytest.raises(ResourceNotFoundException):
+        equipment_svc_integration.delete_type(root, None)
+        pytest.fail()
+
+    with pytest.raises(ResourceNotFoundException):
+        equipment_svc_integration.delete_type(root, 70000)
+        pytest.fail()
+
 # Test create_item()
 def test_create_item_as_root(equipment_svc_integration: EquipmentService):
     """Tests that create item works as expected when run as a root user"""
@@ -183,6 +205,16 @@ def test_create_item_as_user(equipment_svc_integration: EquipmentService):
     """Tests that create item does not work when run as a user"""
     with pytest.raises(UserPermissionException):
         equipment_svc_integration.create_item(user, quest.id)
+        pytest.fail()
+
+def test_create_item_invalid(equipment_svc_integration: EquipmentService):
+    """Tests create_item using invalid type_id fields"""
+    with pytest.raises(ResourceNotFoundException):
+        equipment_svc_integration.create_item(root, None)
+        pytest.fail()
+    
+    with pytest.raises(ResourceNotFoundException):
+        equipment_svc_integration.create_item(root, 700000)
         pytest.fail()
 
 # Test delete_item()
@@ -200,4 +232,14 @@ def test_delete_item_as_user(equipment_svc_integration: EquipmentService):
     items = equipment_svc_integration.get_items_from_type(quest.id)
     with pytest.raises(UserPermissionException):
         equipment_svc_integration.delete_item(user, items[0].id)
+        pytest.fail()
+
+def test_delete_item_invalid(equipment_svc_integration: EquipmentService):
+    """Tests delete item when invalid id fields are passed"""
+    with pytest.raises(ResourceNotFoundException):
+        equipment_svc_integration.delete_item(root, None)
+        pytest.fail()
+
+    with pytest.raises(ResourceNotFoundException):
+        equipment_svc_integration.delete_item(root, 700000)
         pytest.fail()

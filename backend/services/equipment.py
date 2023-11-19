@@ -56,7 +56,7 @@ class EquipmentService:
             ValueError - thrown if the id is not valid
         """
         if type_id == None or type_id < 0 or type_id > self._session.query(EquipmentTypeEntity).count():
-            raise ValueError("type_id field was not valid")
+            raise ResourceNotFoundException("type_id field was not valid")
         
         entity = self._session.get(EquipmentTypeEntity, type_id)
         return entity.to_details_model().items
@@ -147,12 +147,13 @@ class EquipmentService:
             raise ResourceNotFoundException("Cannot delete type of Null id")
         entity = self._session.get(EquipmentTypeEntity, id)
 
+        if entity is None:
+            raise ResourceNotFoundException(f"Equipment(id={id}) does not exist")
+
         # Delete all items of type
         for item in entity.items:
             self.delete_item(subject, item.id)
 
-        if entity is None:
-            raise ResourceNotFoundException(f"Equipment(id={id}) does not exist")
         self._session.delete(entity)
         self._session.commit()
         return entity.to_details_model()
