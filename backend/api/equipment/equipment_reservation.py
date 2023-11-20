@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
-from ..authentication import authenticated_pid
+from ..authentication import authenticated_pid, registered_user
 from ...services.equipment import EquipmentService, EquipmentType, EquipmentItem
-from ...services import UserService
+from ...services import UserService, ResourceNotFoundException
 from ...models import UserDetails, User
 from ...models.equipment import TypeDetails
 
@@ -26,7 +26,6 @@ def list_all_equipments(
     """
     return equipment_service.get_all_types()
 
-
 @api.get("/get-all", tags=["Equipment Reservation System"])
 def get_all(equipment_service: EquipmentService = Depends()) -> list[TypeDetails]:
     """
@@ -37,10 +36,10 @@ def get_all(equipment_service: EquipmentService = Depends()) -> list[TypeDetails
     """
     return equipment_service.get_all()
 
-
 @api.get("/get-items-from-type", tags=["Equipment Reservation System"])
 def get_items_from_type(
-    type_id: int, equipment_service: EquipmentService = Depends()
+    type_id: int,
+    equipment_service: EquipmentService = Depends()
 ) -> list[EquipmentItem]:
     """
     Gets all items of a specific type
@@ -56,20 +55,23 @@ def get_items_from_type(
     """
     try:
         return equipment_service.get_items_from_type(type_id)
-    except Exception:
-        raise HTTPException(404, "Type not found!")
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
 def update_user_agreement_status(
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
-    user_service: UserService = Depends(),
+    user_service: UserService = Depends()
 ) -> bool:
     """
     Updates a User's agreement_status field to be true
 
     Returns:
-        Boolean: the agreement_status field of the user
+        Boolean - the updated user agreement status
+    Raises:
+        HTTP Exception 404 if the user cannot be found
+        HTTP Excetiopn 500 indicates error in UserService
     """
     pid, _ = pid_onyen
     user = user_service.get(pid)
@@ -82,10 +84,9 @@ def update_user_agreement_status(
     user_details = user_service.get(user.pid)
     if user_details:
         return user_details.agreement_status
-
-    return False
-
-
+    else:
+        return False
+    
 @api.get("/get-user-agreement-status/{pid}", tags=["Equipment Reservation System"])
 def get_user_agreement_status(pid: int, user_service: UserService = Depends()) -> bool:
     """
@@ -103,3 +104,33 @@ def get_user_agreement_status(pid: int, user_service: UserService = Depends()) -
         return user_details.agreement_status
 
     return False
+
+@api.put("/update-item", tags=["Equipment Reservation System"])
+def update_item_availability(
+    item_id: int,
+    available: bool = True,
+    subject: User = Depends(registered_user),
+    equipment_service: EquipmentService = Depends()
+) -> EquipmentItem:
+    """
+    Updates the display status of `item_id` to match `available`
+
+    Parameters:
+        item_id (int): the item's diplay status to change
+        available (bool): Set the display status to
+        subject (User): the user attempting the action
+        equipment_service (EquipmentService): The backend service class
+
+    Returns:
+        EquipmentItem: The modified item
+    
+    Raises:
+        HTTP Exception 404 if the item cannot be found
+    """
+    try:
+        return equipment_service.update_item_availability(subject, item_id, available)
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+    
