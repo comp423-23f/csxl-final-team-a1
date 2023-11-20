@@ -63,7 +63,6 @@
     </mat-card-actions>
   </mat-card>
 </form>
-<!-- Need to change this to accept observable with | async as items -->
 <div class="content" *ngIf="items">
   <table mat-table [dataSource]="items">
     <ng-container matColumnDef="id">
@@ -93,13 +92,13 @@
       <td mat-cell *matCellDef="let item">
         <div class="row">
           <input
-            *ngIf="!item.damaged; else elseBlock"
-            (change)="toggleDamaged(item.id)"
+            *ngIf="item.display_status; else elseBlock"
+            (change)="toggleDamaged(item.id, false)"
             type="checkbox"
             name="checkbox" />
           <ng-template #elseBlock>
             <input
-              (change)="toggleDamaged(item.id)"
+              (change)="toggleDamaged(item.id, true)"
               type="checkbox"
               name="checkbox"
               checked />

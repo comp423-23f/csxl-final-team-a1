@@ -4,14 +4,15 @@ import { Observable, map } from 'rxjs';
 import EquipmentType from '../../equipment/equipment-type.model';
 import BaseEquipmentType from './base-equipment-type.model';
 import EquipmentItem from '../../equipment/equipment-item.model';
+import { AuthenticationService } from 'src/app/authentication.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminEquipmentService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, protected auth: AuthenticationService,) {}
 
-  getEquipmentType(id: number): Observable<EquipmentType> {
+  getEquipmentType(id: Number): Observable<EquipmentType> {
     return this.getEquipmentTypes().pipe(
       map((types: EquipmentType[]) => {
         let foundType: EquipmentType = {
@@ -43,32 +44,27 @@ export class AdminEquipmentService {
     return this.http.get<EquipmentType[]>('/api/equipment/get-all');
   }
 
-  //TODO: POST new type to backend - change return type to Observable<EquipmentType[]>?
   createEquipmentType(new_type: BaseEquipmentType): void {
-    console.log(new_type);
+    this.http.post<BaseEquipmentType>('/api/equipment/create-type', new_type).subscribe();
   }
 
-  //TODO: PUT type to backend - change return type to Observable<EquipmentType[]>?
   updateEquipmentType(updated_type: BaseEquipmentType): void {
-    console.log(updated_type);
+    this.http.put<BaseEquipmentType>('/api/equipment/modify-type', updated_type).subscribe();
   }
 
-  //TODO: DELETE type from backend - change return type to Observable<EquipmentType[]>?
   deleteEquipmentType(type_id: Number): void {
-    console.log(type_id);
+    this.http.delete<EquipmentType[]>(`/api/equipment/delete-type/${type_id}`).subscribe();
   }
 
-  //TODO: POST to server - change return type to Observable<EquipmentType[]>?
   createEquipmentItem(type_id: Number): void {
-    console.log(type_id);
+    this.http.post<EquipmentType[]>(`/api/equipment/create-item/${type_id}`, {}).subscribe();
   }
 
-  //TODO: DELETE on server
   deleteEquipmentItem(item_id: Number): void {
-    console.log(item_id);
+    this.http.delete<EquipmentType[]>(`/api/equipment/delete-item/${item_id}`).subscribe();
   }
 
-  toggleDamaged(item_id: Number): void {
-    console.log(item_id);
+  toggleDamaged(item_id: Number, available: Boolean): void {
+    this.http.put<EquipmentItem>(`/api/equipment/update-item?item_id=${item_id}&available=${available}`, {}).subscribe();
   }
 }

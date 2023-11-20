@@ -2,9 +2,9 @@
 
 export default interface BaseEquipmentType {
   id: Number | null;
-  title: string;
+  title: String;
+  img_url: String;
   num_available: Number;
-  img_url: string;
-  description: string;
+  description: String;
   max_reservation_time: Number;
 }
