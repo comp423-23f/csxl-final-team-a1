@@ -174,4 +174,40 @@ The original plan for the equipment agreement page was to have an API route that
 
 ### Frontend
 
+All frontend components of the Equipment Reservation System can be found in the `frontend\src\app\equipment` or the `frontend\src\app\admin\equipment` directories.
+
+#### Components/Widgets
+
+**`frontend\src\app\equipment`**
+- `agreement` component: This component is what users will see before agreeing to the terms of service when attempting to access the equipment home page.
+- `equipment-display` component: This component is what users will see as the home page for the equipment reservation system. The display is made up of `equipment-card` widgets under headers for available and unavailable equipment.
+- `equipment-card` widget: This widget displays the title, image, and number of available units (out of the total units) of equipment for each `EquipmentType`. This card is repeated for each type on the `equipment-display` component.
+
+**`frontend\src\app\admin\equipment`**
+- `admin-equipment-base` component: This component is the initial screen the admin user will see that displays all `EquipmentType` models in the database and options to create, modify, and delete.
+- `admin-equipment-create` component: This component appears when the admin chooses to create a new equipment type, and the admin can enter values into a form to create a new `EquipmentType` and add it to the database.
+- `admin-equipment-edit` component: This component appears when the admin chooses to modify an existing `EquipmentType` and the fields of the EquipmentType can be edited as well as the individual `EquipmentItem` models associated with the type.
+
+#### Services
+
+- `equipment` service: This service is found in `frontend\src\app\equipment` and calls the API routes located in `backend\api\equipment\equipment_reservation.py` to retrieve/update equipment data and agreement status's of users.
+- `admin-equipment` service: This service is found in `frontend\src\app\admin\equipment` and calls the API routes found in `backend\api\equipment\equipment_admin.py` to allow the admin to create, edit, and delete `EquipmentType` and `EquipmentItem` models.
+
 ### Backend
+
+#### API Routes
+
+All API-related files can be found in `backend\api\equipment`
+- `equipment_admin.py` contains all routes concerning the administrator's ability to edit the equipment database by creating, editing, and deleting `EquipmentType` and `EquipmentItem` models.
+- `equipment_reservation.py` contains all routes concerning the student view of the equipment home page and the agreement page.  
+
+#### Services
+
+The backend equipment service is located in `backend\services\equipment.py` and controls all equipment-related services in the backend, and therefore is what all API routes use to retrieve and modify data.
+
+#### Entities
+
+All entities are located in the `backend\entities\equipment` directory.
+
+- `item_entity.py` contains the entity representing a single equipment item in the database. It has a relationship with the table for equipment types for its `eq_type` column.
+- `type_entity.py` contains the entity representing an equipment type in the database. It has a relationship with the table for equipment items for its `items` column.
