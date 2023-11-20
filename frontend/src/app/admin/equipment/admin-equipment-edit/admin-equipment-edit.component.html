@@ -63,7 +63,7 @@
     </mat-card-actions>
   </mat-card>
 </form>
-<div class="content" *ngIf="items">
+<div class="content" *ngIf="items$ | async as items">
   <table mat-table [dataSource]="items">
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef>
