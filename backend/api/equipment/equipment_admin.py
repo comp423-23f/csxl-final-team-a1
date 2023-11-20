@@ -68,14 +68,15 @@ def modify_type(
     except Exception as e:
         raise HTTPException(status_code=422, detail=str(e))
 
-@api.delete("/delete-type", tags=["Admin Equipment Reservation System"])
+
+@api.delete("/delete-type/{id}", tags=["Admin Equipment Reservation System"])
 def delete_type(
     id: int,
     subject: User = Depends(registered_user),
     equipment_service: EquipmentService = Depends(),
 ) -> EquipmentType:
     """
-    Deletes an EquipmentType object from the system 
+    Deletes an EquipmentType object from the system
     and all of it's associated EquipmentItems
 
     Parameters:
@@ -91,12 +92,13 @@ def delete_type(
         return equipment_service.delete_type(subject, id)
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
-    
-@api.post("/create-item", tags=["Admin Equipment Reservation System"])
+
+
+@api.post("/create-item/{type_id}", tags=["Admin Equipment Reservation System"])
 def create_item(
     type_id: int,
     subject: User = Depends(registered_user),
-    equipment_service: EquipmentService = Depends()
+    equipment_service: EquipmentService = Depends(),
 ) -> EquipmentItem:
     """
     Creates a new EquipmentItem instance of type "type_id"
@@ -114,12 +116,13 @@ def create_item(
         return equipment_service.create_item(subject, type_id)
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
-    
-@api.delete("/delete-item", tags=["Admin Equipment Reservation System"])
+
+
+@api.delete("/delete-item/{item_id}", tags=["Admin Equipment Reservation System"])
 def delete_item(
     item_id: int,
     subject: User = Depends(registered_user),
-    equipment_service: EquipmentService = Depends()
+    equipment_service: EquipmentService = Depends(),
 ) -> EquipmentItem:
     """
     Deletes an item in the databse

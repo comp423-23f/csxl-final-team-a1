@@ -57,7 +57,6 @@ export class AdminEquipmentEditComponent {
     'actions'
   ];
 
-  //replace type with Observable<EquipmentType[]>
   current: EquipmentType;
 
   constructor(
@@ -65,7 +64,7 @@ export class AdminEquipmentEditComponent {
     protected formBuilder: FormBuilder,
     private adminEquipment: AdminEquipmentService,
     private permission: PermissionService,
-    private router: Router
+    private router: Router,
   ) {
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
 
@@ -84,10 +83,12 @@ export class AdminEquipmentEditComponent {
       description: this.current.description,
       max_reservation_time: String(this.current.max_reservation_time)
     });
-    console.log('formset');
-    if (this.current.id) {
+
+    console.log("refreshing items");
+    if (this.current.items) {
       this.items = this.current.items;
-    } else {
+    }
+    else {
       this.items = [];
     }
   }
@@ -119,25 +120,38 @@ export class AdminEquipmentEditComponent {
 
   deleteEquipmentItem(item_id: Number): void {
     this.adminEquipment.deleteEquipmentItem(item_id);
-    this.router.navigate([
-      'admin',
-      'equipment',
-      'edit',
-      String(this.current.id)
-    ]);
+    if (this.current.id) {
+      let type = this.adminEquipment.getEquipmentType(this.current.id);
+      type.subscribe((type) => {
+      if (type.items) {
+        this.items = type.items;
+      }
+    });
+    }
+    this.router.navigate(['admin', 'equipment', 'edit', String(this.current.id)]);
   }
 
   createEquipmentItem(type_id: Number): void {
-    this.adminEquipment.deleteEquipmentType(type_id);
-    this.router.navigate([
-      'admin',
-      'equipment',
-      'edit',
-      String(this.current.id)
-    ]);
+    this.adminEquipment.createEquipmentItem(type_id);
+    let type = this.adminEquipment.getEquipmentType(type_id);
+    type.subscribe((type) => {
+      if (type.items) {
+        this.items = type.items;
+      }
+    });
+    this.router.navigate(['admin', 'equipment', 'edit', String(this.current.id)]);
   }
 
-  toggleDamaged(item_id: Number): void {
-    this.adminEquipment.toggleDamaged(item_id);
+  toggleDamaged(item_id: Number, available: Boolean): void {
+    this.adminEquipment.toggleDamaged(item_id, available);
+    if (this.current.id) {
+      let type = this.adminEquipment.getEquipmentType(this.current.id);
+      type.subscribe((type) => {
+        if (type.items) {
+          this.items = type.items;
+        }
+      });
+    }
+    this.router.navigate(['admin', 'equipment', String(this.current.id)]);
   }
 }
