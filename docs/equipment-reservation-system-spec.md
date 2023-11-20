@@ -141,11 +141,20 @@ The `User` model has been updated with one new field, `agreement_status` that tr
 
 ### Equipment Reservation System
 
-
+- `list-all-equipments`: Gets all `EquipmentType` models in the database
+- `get-all`: Gets all `TypeDetails` models in the database 
+- `get-items-from-type`: Gets all `EquipmentItem` models associated with an id parameter
+- `update-user-agreement-status`: Updates the `agreement_status` of the current `User` to be `True`
+- `get-user-agreement-status`: Gets the current `agreement_status` of the current `User`
+- `update-item`: Updates an `EquipmentItem` model's `display_status` to either `True` or `False`
 
 ### Admin Equipment Reservation System
 
-
+- `create-type`: Creates a new `EquipmentType` in the database
+- `modify-type`: Modifies an existing `EquipmentType` in the database
+- `delete-type`: Deletes an `EquipmentType` from the database
+- `create-item`: Creates an `EquipmentItem` associated with a certain `EquipmentType` using a `type_id`
+- `delete-item`: Deletes an `EquipmentItem` associated with the `item_id` parameter
 
 ## Design Choices
 
@@ -164,3 +173,5 @@ The original plan for the equipment agreement page was to have an API route that
 ## Development Concerns
 
 ### Frontend
+
+### Backend
