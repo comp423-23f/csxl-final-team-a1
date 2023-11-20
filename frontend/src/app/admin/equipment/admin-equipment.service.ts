@@ -70,11 +70,11 @@ export class AdminEquipmentService {
     this.http.delete<EquipmentType>(`/api/equipment/delete-type/${type_id}`).subscribe();
   }
 
-  createEquipmentItem(type_id: Number): Observable<EquipmentItem> {
+  createEquipmentItem(type_id: Number): Observable<void> {
     return this.http.post<EquipmentItem>(`/api/equipment/create-item/${type_id}`, {}).pipe(
-      tap((item) => {
+      map((item) => {
         this.items.pushItem(item);
-
+        this.listItems(type_id);
       })
     );
   }

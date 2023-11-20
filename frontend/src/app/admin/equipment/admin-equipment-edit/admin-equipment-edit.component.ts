@@ -3,7 +3,7 @@ import EquipmentType from '../../../equipment/equipment-type.model';
 import EquipmentItem from '../../../equipment/equipment-item.model';
 import { AdminEquipmentService } from '../admin-equipment.service';
 import { permissionGuard } from 'src/app/permission.guard';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { PermissionService } from 'src/app/permission.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -122,6 +122,7 @@ export class AdminEquipmentEditComponent {
 
   createEquipmentItem(type_id: Number): void {
     this.adminEquipment.createEquipmentItem(type_id).subscribe();
+    //this.items$.subscribe((items) => items.map((item) => console.log(item)));
     this.router.navigate(['admin', 'equipment', 'edit', String(this.current.id)]);
   }
 

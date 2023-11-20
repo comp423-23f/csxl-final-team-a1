@@ -16,7 +16,7 @@ export class RxItem extends RxObject<EquipmentItem[]> {
 
   removeItem(removeItem: EquipmentItem): void {
     this.value = this.value.filter(
-      (item) => item.id != removeItem.id
+      (item) => item.id !== removeItem.id
     );
     this.notify();
   }
