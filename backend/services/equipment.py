@@ -256,4 +256,3 @@ class EquipmentService:
         self._session.delete(entity)
         self._session.commit()
         return entity.to_model()
-

@@ -17,3 +17,6 @@ class EquipmentType(BaseModel):
     description: str = ""
     max_reservation_time: int = 3
 
+    def __hash__(self) -> int:
+        """Required to Store in Dictionary"""
+        return self.id.__hash__()
