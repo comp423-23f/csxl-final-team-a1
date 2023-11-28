@@ -10,7 +10,10 @@ import { AuthenticationService } from 'src/app/authentication.service';
   providedIn: 'root'
 })
 export class AdminEquipmentService {
-  constructor(private http: HttpClient, protected auth: AuthenticationService,) {}
+  constructor(
+    private http: HttpClient,
+    protected auth: AuthenticationService
+  ) {}
 
   getEquipmentType(id: Number): Observable<EquipmentType> {
     return this.getEquipmentTypes().pipe(
@@ -45,26 +48,41 @@ export class AdminEquipmentService {
   }
 
   createEquipmentType(new_type: BaseEquipmentType): void {
-    this.http.post<BaseEquipmentType>('/api/equipment/create-type', new_type).subscribe();
+    this.http
+      .post<BaseEquipmentType>('/api/equipment/create-type', new_type)
+      .subscribe();
   }
 
   updateEquipmentType(updated_type: BaseEquipmentType): void {
-    this.http.put<BaseEquipmentType>('/api/equipment/modify-type', updated_type).subscribe();
+    this.http
+      .put<BaseEquipmentType>('/api/equipment/modify-type', updated_type)
+      .subscribe();
   }
 
   deleteEquipmentType(type_id: Number): void {
-    this.http.delete<EquipmentType[]>(`/api/equipment/delete-type/${type_id}`).subscribe();
+    this.http
+      .delete<EquipmentType[]>(`/api/equipment/delete-type/${type_id}`)
+      .subscribe();
   }
 
   createEquipmentItem(type_id: Number): void {
-    this.http.post<EquipmentType[]>(`/api/equipment/create-item/${type_id}`, {}).subscribe();
+    this.http
+      .post<EquipmentType[]>(`/api/equipment/create-item/${type_id}`, {})
+      .subscribe();
   }
 
   deleteEquipmentItem(item_id: Number): void {
-    this.http.delete<EquipmentType[]>(`/api/equipment/delete-item/${item_id}`).subscribe();
+    this.http
+      .delete<EquipmentType[]>(`/api/equipment/delete-item/${item_id}`)
+      .subscribe();
   }
 
   toggleDamaged(item_id: Number, available: Boolean): void {
-    this.http.put<EquipmentItem>(`/api/equipment/update-item?item_id=${item_id}&available=${available}`, {}).subscribe();
+    this.http
+      .put<EquipmentItem>(
+        `/api/equipment/update-item?item_id=${item_id}&available=${available}`,
+        {}
+      )
+      .subscribe();
   }
 }

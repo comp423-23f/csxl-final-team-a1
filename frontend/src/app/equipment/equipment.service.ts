@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+/* eslint-disable @angular-eslint/contextual-lifecycle */
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, interval } from 'rxjs';
 import EquipmentType from './equipment-type.model';
 import { Profile } from '../models.module';
 import { AuthenticationService } from '../authentication.service';
