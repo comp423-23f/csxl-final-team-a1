@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import authenticated_pid, registered_user
-from ...services.equipment import EquipmentService, EquipmentType, EquipmentItem
+from ...services.equipment import EquipmentService
 from ...services import UserService, ResourceNotFoundException
 from ...models import UserDetails, User
-from ...models.equipment import TypeDetails
+from ...models.equipment import TypeDetails, EquipmentType, EquipmentItem, ItemDetails
 
 api = APIRouter(prefix="/api/equipment")
 openapi_tags = {
@@ -37,10 +37,10 @@ def get_all(equipment_service: EquipmentService = Depends()) -> list[TypeDetails
     return equipment_service.get_all()
 
 @api.get("/get-items-from-type", tags=["Equipment Reservation System"])
-def get_items_from_type(
+def get_item_details_from_type(
     type_id: int,
     equipment_service: EquipmentService = Depends()
-) -> list[EquipmentItem]:
+) -> list[ItemDetails]:
     """
     Gets all items of a specific type
 
@@ -48,13 +48,13 @@ def get_items_from_type(
         type_id: id of the type to retrieve items of
 
     Returns:
-        list[EquipmentItem]: list of items of the type supplied
+        list[ItemDetails]: list of items of the type supplied
 
     Raises:
         404: Type not found
     """
     try:
-        return equipment_service.get_items_from_type(type_id)
+        return equipment_service.get_item_details_from_type(type_id)
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
 

@@ -5,6 +5,8 @@ from typing import Self
 from ...models.equipment.equipment_item import EquipmentItem
 from ...models.equipment.item_details import ItemDetails
 
+from datetime import datetime, timedelta
+
 class EquipmentItemEntity(EntityBase):
     """Serves as the database component for individual items"""
 
@@ -36,6 +38,11 @@ class EquipmentItemEntity(EntityBase):
             display_status=model.display_status,
             type_id=model.type_id
         )
+
+    def get_availability(self):
+        #Need to query reservations for True/False values
+        times = [datetime.now() + timedelta(days=i) for i in range(7)]
+        return {time.strftime('%Y-%m-%d'): False for time in times}
     
     def to_model(self) -> EquipmentItem:
         """
@@ -43,7 +50,8 @@ class EquipmentItemEntity(EntityBase):
 
         Returns:
             EquipmentItem: Model object from entity
-        """
+        """   
+        
         return EquipmentItem(
             id=self.id,
             display_status=self.display_status,
@@ -61,5 +69,6 @@ class EquipmentItemEntity(EntityBase):
             id=self.id,
             display_status=self.display_status,
             type_id=self.type_id,
+            availability=self.get_availability(),
             equipment_type=self.eq_type.to_model()
         )

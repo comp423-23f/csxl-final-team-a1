@@ -256,8 +256,11 @@ d. Reservations Model: additional model to track all reservations and returns
 
     - `draft_equipment_reservation` - `POST`
     - `get_equipment_reservation` - `GET`
-    - `list_all_equipment_availability` - `GET`
-    - `get_item_availability` - `GET`
+    - `list_all_equipments` - `GET`
+    - `get_all` - `GET`
+    - `get_items_availabilities` - `GET`:
+       This route will return a list of item details for a given type_id.
+       Item details now include a list of availabilities.
     - `update_reservation` - `PUT`
     - `cancel_reservation` - `DELETE`
     - `update_user_agreement_status` - `PUT`

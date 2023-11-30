@@ -42,7 +42,7 @@ class EquipmentService:
 
         return [entity.to_details_model() for entity in entities]
 
-    def get_items_from_type(self, type_id: None | int) -> list[EquipmentItem]:
+    def get_item_details_from_type(self, type_id: None | int) -> list[ItemDetails]:
         """
         Retrievies all items of a specific type
 
@@ -55,11 +55,13 @@ class EquipmentService:
         Raises:
             ResourceNotFoundException - thrown if the id is not valid
         """
-        if type_id == None or type_id < 0 or type_id > self._session.query(EquipmentTypeEntity).count():
+        if type_id == None or type_id < 0:
             raise ResourceNotFoundException("type_id field was not valid")
         
-        entity = self._session.get(EquipmentTypeEntity, type_id)
-        return entity.to_details_model().items
+        query = select(EquipmentItemEntity).where(EquipmentItemEntity.type_id == type_id)
+        entities = self._session.scalars(query).all()
+
+        return [entity.to_details_model() for entity in entities]
 
     def get_all_types(self) -> list[EquipmentType]:
         """
