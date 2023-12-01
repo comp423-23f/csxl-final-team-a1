@@ -255,25 +255,25 @@ d. Reservations Model: additional model to track all reservations and returns
     `equipment_reservation.py` will contain the routes:
 
     - `draft-equipment-reservation` - `POST`:
-      Creates reservation
+      Accepts a reservation model. Creates reservation
     - `cancel-reservation` - `DELETE`:
-      This will take a reservation ID and delete a drafted reservation, ambassadors can use this to delete drafts past checkout date.
+      Accepts a reservation ID and deletes a drafted reservation, ambassadors can use this to delete drafts past checkout date.
     - `update-draft` - `PUT`
-      Used for updating draft reservations for students
+      Accepts a reservation model. Used for updating draft reservations for students
     - `get-equipment-reservations` - `GET`:
-      Returns all reservations for ambassadors or admin
+      No parameters, returns all reservations for ambassadors or admin
     - `get-user-equipment-reservations` - `GET`:
-      For students to get their reservations
+      No parameters, depends on user subject. For students to get their reservations
     - `activate-reservation` - `PUT`
-      Used for activating a drafted reservation
+      Accepts Reservation ID, Used for ambassdors to activate a drafted reservation
     - `return-reservation` - `PUT`
-      Used for adding actual return date and notes for ambassadors.
+      Accepts a reservation model, Used for adding actual return date and notes for ambassadors.
     - `list-all-equipments` - `GET`:
-      Returns all EquipmentTypes
+      No parameters, Returns all EquipmentTypes
     - `get-all` - `GET`:
-      Returns all TypeDetails
+      No parameters, Returns all TypeDetails
     - `get-items-from-type` - `GET`:
-       This route will return a list of item details for a given type_id. Item details now include a list of availabilities.
+       Accepts type_id. This route will return a list of item details for a given type_id. Item details now include a list of availabilities.
     - `update-user-agreement_status` - `PUT`
     - `get-item-details` - `GET`
 
