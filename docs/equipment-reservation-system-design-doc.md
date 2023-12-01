@@ -254,14 +254,28 @@ d. Reservations Model: additional model to track all reservations and returns
 
     `equipment_reservation.py` will contain the routes:
 
-    - `draft_equipment_reservation` - `POST`
-    - `get_equipment_reservation` - `GET`
-    - `list_all_equipment_availability` - `GET`
-    - `get_item_availability` - `GET`
-    - `update_reservation` - `PUT`
-    - `cancel_reservation` - `DELETE`
-    - `update_user_agreement_status` - `PUT`
-    - `get_item_details` - `GET`
+    - `draft-equipment-reservation` - `POST`:
+      Creates reservation
+    - `cancel-reservation` - `DELETE`:
+      This will take a reservation ID and delete a drafted reservation, ambassadors can use this to delete drafts past checkout date.
+    - `update-draft` - `PUT`
+      Used for updating draft reservations for students
+    - `get-equipment-reservations` - `GET`:
+      Returns all reservations for ambassadors or admin
+    - `get-user-equipment-reservations` - `GET`:
+      For students to get their reservations
+    - `activate-reservation` - `PUT`
+      Used for activating a drafted reservation
+    - `return-reservation` - `PUT`
+      Used for adding actual return date and notes for ambassadors.
+    - `list-all-equipments` - `GET`:
+      Returns all EquipmentTypes
+    - `get-all` - `GET`:
+      Returns all TypeDetails
+    - `get-items-from-type` - `GET`:
+       This route will return a list of item details for a given type_id. Item details now include a list of availabilities.
+    - `update-user-agreement_status` - `PUT`
+    - `get-item-details` - `GET`
 
     These will function in a similar way to the current coworking reservation
     routes as Sally Student will interact with the UI similarly with the
