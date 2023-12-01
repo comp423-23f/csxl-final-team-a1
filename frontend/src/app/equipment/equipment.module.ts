@@ -8,9 +8,15 @@ import { EquipmentRoutingModule } from './equipment-routing.module';
 import { EquipmentDisplayComponent } from './equipment-display/equipment-display.component';
 import { EquipmentCard } from './widgets/equipment_card/equipment-card.widget';
 import { AgreementComponent } from './agreement/agreement.component';
+import { AmbassadorHomeComponent } from './ambassador-home/ambassador-home.component';
 
 @NgModule({
-  declarations: [EquipmentDisplayComponent, EquipmentCard, AgreementComponent],
+  declarations: [
+    EquipmentDisplayComponent,
+    EquipmentCard,
+    AgreementComponent,
+    AmbassadorHomeComponent
+  ],
   imports: [
     EquipmentRoutingModule,
     CommonModule,
