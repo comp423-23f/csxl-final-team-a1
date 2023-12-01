@@ -64,7 +64,7 @@ export class AdminEquipmentEditComponent {
     protected formBuilder: FormBuilder,
     private adminEquipment: AdminEquipmentService,
     private permission: PermissionService,
-    private router: Router
+    private router: Router,
   ) {
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
 
@@ -122,7 +122,6 @@ export class AdminEquipmentEditComponent {
 
   createEquipmentItem(type_id: Number): void {
     this.adminEquipment.createEquipmentItem(type_id).subscribe();
-    //this.items$.subscribe((items) => items.map((item) => console.log(item)));
     this.router.navigate(['admin', 'equipment', 'edit', String(this.current.id)]);
   }
 
