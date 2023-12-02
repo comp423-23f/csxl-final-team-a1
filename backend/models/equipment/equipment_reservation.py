@@ -4,6 +4,7 @@ from datetime import datetime
 from ...models import User
 from ...models.equipment import EquipmentItem
 
+
 class EquipmentReservation(BaseModel):
     """
     This model is used to track all reservations and returns
@@ -12,6 +13,7 @@ class EquipmentReservation(BaseModel):
     EquipmentReservationEntity to store reservations in the
     database
     """
+
     id: int | None = None
     item_id: int
     user_id: int
@@ -21,9 +23,11 @@ class EquipmentReservation(BaseModel):
     actual_return_date: datetime | None
     return_description: str | None
 
+
 class ReservationDetails(EquipmentReservation):
     """
     This details view includes the models for the item and user
     """
+
     item: EquipmentItem
     user: User
