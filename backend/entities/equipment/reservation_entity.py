@@ -1,6 +1,7 @@
 from sqlalchemy import Integer, String, Boolean, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.entities.equipment.item_entity import EquipmentItemEntity
+from backend.entities.equipment.type_entity import EquipmentTypeEntity
 from backend.entities.user_entity import UserEntity
 
 from backend.models.equipment.equipment_reservation import ReservationDetails
@@ -21,9 +22,13 @@ class EquipmentReservationEntity(EntityBase):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # ID of the item which will be checked out
     # NOTE: This field establishes a one-to-many relationship between the equipment-items and equipment-reservation tables
-    item_id: Mapped[int] = mapped_column(ForeignKey("equipment-items.id"))
+    item_id: Mapped[int] = mapped_column(ForeignKey("equipment_items.id"))
     item: Mapped["EquipmentItemEntity"] = relationship(
-        back_populates="resevations-items"
+        back_populates="reservations-items"
+    )
+    type_id: Mapped[int] = mapped_column(ForeignKey("equipment_type.id"))
+    type: Mapped["EquipmentTypeEntity"] = relationship(
+        back_populates="reservation-types"
     )
     # ID of the user which will be checking out the item
     # NOTE: This establishes a one-to-many relationship between the user table and the equipment-reservation table
@@ -71,6 +76,7 @@ class EquipmentReservationEntity(EntityBase):
         return EquipmentReservation(
             id=self.id,
             item_id=self.item_id,
+            type_id=self.type_id,
             user_id=self.user_id,
             check_out_date=self.check_out_date,
             ambassador_check_out=self.ambassador_check_out,
@@ -92,6 +98,7 @@ class EquipmentReservationEntity(EntityBase):
         return cls(
             id=model.id,
             item_id=model.item_id,
+            type_id=model.type_id,
             user_id=model.user_id,
             check_out_date=model.check_out_date,
             ambassador_check_out=model.ambassador_check_out,
@@ -114,6 +121,7 @@ class EquipmentReservationEntity(EntityBase):
         return ReservationDetails(
             id=self.id,
             item_id=self.item_id,
+            type_id=self.type_id,
             user_id=self.user_id,
             check_out_date=self.check_out_date,
             ambassador_check_out=self.ambassador_check_out,
@@ -121,5 +129,6 @@ class EquipmentReservationEntity(EntityBase):
             actual_return_date=self.actual_return_date,
             return_description=self.return_description,
             item=self.item.to_model(),
+            type=self.type.to_model(),
             user=self.user.to_model(),
         )

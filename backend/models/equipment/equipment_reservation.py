@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 from ...models import User
-from ...models.equipment import EquipmentItem
+from ...models.equipment import EquipmentItem, EquipmentType
 
 
 class EquipmentReservation(BaseModel):
@@ -16,6 +16,7 @@ class EquipmentReservation(BaseModel):
 
     id: int | None = None
     item_id: int
+    type_id: int
     user_id: int
     check_out_date: datetime
     ambassador_check_out: bool = False
@@ -30,4 +31,5 @@ class ReservationDetails(EquipmentReservation):
     """
 
     item: EquipmentItem
+    type: EquipmentType
     user: User
