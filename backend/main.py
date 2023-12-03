@@ -5,8 +5,11 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from .api.equipment import equipment_reservation
-from .api.equipment import equipment_admin
+from .api.equipment import (
+    equipment_reservation,
+    equipment_admin,
+    equipment_reservation_scheduling,
+)
 from .api import (
     events,
     health,
@@ -38,6 +41,7 @@ app = FastAPI(
         profile.openapi_tags,
         user.openapi_tags,
         equipment_reservation.openapi_tags,
+        equipment_reservation_scheduling.openapi_tags,
         equipment_admin.openapi_tags,
         organizations.openapi_tags,
         events.openapi_tags,
@@ -63,6 +67,7 @@ feature_apis = [
     admin_users,
     admin_roles,
     equipment_reservation,
+    equipment_reservation_scheduling,
     equipment_admin,
 ]
 
