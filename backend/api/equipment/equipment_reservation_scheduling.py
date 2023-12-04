@@ -7,7 +7,7 @@ from ..authentication import authenticated_pid, registered_user
 from ...services.equipment.equipment import (
     EquipmentService,
     EquipmentType,
-    EquipmentItem,
+    EquipmentItem
 )
 from ...services import UserService, ResourceNotFoundException
 from ...models import UserDetails, User
@@ -18,7 +18,6 @@ openapi_tags = {
     "name": "Reservation Scheduling System",
     "description": "Scheduling system that allows students to check out equipment while ambassadors keep track.",
 }
-
 
 @api.get("/get-reservations", tags=["Reservation Scheduling System"])
 def get_reservations(

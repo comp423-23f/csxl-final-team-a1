@@ -13,7 +13,10 @@ from ...database import db_session
 from ...models.equipment.type_details import EquipmentType, TypeDetails
 from ...models.equipment.item_details import EquipmentItem, ItemDetails
 from ...entities import EquipmentItemEntity, EquipmentTypeEntity
+from ...entities.equipment.reservation_entity import EquipmentReservationEntity
 from ...models import User
+
+from datetime import datetime, timedelta
 
 
 class EquipmentService:
@@ -64,6 +67,27 @@ class EquipmentService:
 
         entity = self._session.get(EquipmentTypeEntity, type_id)
         return entity.to_details_model().items
+    
+    def get_item_details_from_type(self, type_id: None | int) -> list[ItemDetails]:
+        """
+        Retrievies all item details of a specific type
+
+        Parameters:
+            eq_type: EquipmentType - Type of item details to retreive
+        
+        Returns:
+            list[ItemDetails] - item details of the specified type
+        
+        Raises:
+            ResourceNotFoundException - thrown if the id is not valid
+        """
+        if type_id == None or type_id < 0:
+            raise ResourceNotFoundException("type_id field was not valid")
+        
+        query = select(EquipmentItemEntity).where(EquipmentItemEntity.type_id == type_id)
+        entities = self._session.scalars(query).all()
+
+        return [self.to_details_model(entity) for entity in entities]
 
     def get_all_types(self) -> list[EquipmentType]:
         """
@@ -249,3 +273,32 @@ class EquipmentService:
         self._session.delete(entity)
         self._session.commit()
         return entity.to_model()
+    
+    def get_availability(self):
+        """
+        Returns availability dictionary for current entity
+
+        Returns:
+            Dict[str, bool]: availability for next 7 days
+        """
+        query = select(EquipmentReservationEntity)
+        entities = self._session.scalars(query).all()
+        print(entities)
+
+        times = [datetime.now() + timedelta(days=i) for i in range(7)]
+        return {time.strftime('%Y-%m-%d'): False for time in times}
+    
+    def to_details_model(self, item: EquipmentItemEntity) -> ItemDetails:
+        """
+        Converts an EquipmentItemEntity into a ItemDetails model
+
+        Returns:
+            ItemDetails: Details model of entity
+        """
+        return ItemDetails(
+            id=item.id,
+            display_status=item.display_status,
+            type_id=item.type_id,
+            availability=self.get_availability(),
+            equipment_type=item.eq_type.to_model()
+        )

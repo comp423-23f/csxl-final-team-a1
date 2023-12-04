@@ -3,7 +3,7 @@ from ..authentication import authenticated_pid, registered_user
 from ...services.equipment.equipment import EquipmentService, EquipmentType, EquipmentItem
 from ...services import UserService, ResourceNotFoundException
 from ...models import UserDetails, User
-from ...models.equipment import TypeDetails
+from ...models.equipment import TypeDetails, ItemDetails
 
 api = APIRouter(prefix="/api/equipment")
 openapi_tags = {
@@ -26,6 +26,28 @@ def list_all_equipments(
     """
     return equipment_service.get_all_types()
 
+@api.get("/get-item-details-from-type", tags=["Equipment Reservation System"])
+def get_item_details_from_type(
+    type_id: int,
+    equipment_service: EquipmentService = Depends()
+) -> list[ItemDetails]:
+    """
+    Gets all items of a specific type
+
+    Parameters:
+        type_id: id of the type to retrieve item details of
+
+    Returns:
+        list[ItemDetails]: list of item details of the type supplied
+
+    Raises:
+        404: Type not found
+    """
+    try:
+        return equipment_service.get_item_details_from_type(type_id)
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
 
 @api.get("/get-all", tags=["Equipment Reservation System"])
 def get_all(equipment_service: EquipmentService = Depends()) -> list[TypeDetails]:
@@ -36,29 +58,6 @@ def get_all(equipment_service: EquipmentService = Depends()) -> list[TypeDetails
         list[TypeDetails]: List of TypeDetails, which includes an EquipmentType and a list of EquipmentItems of that type
     """
     return equipment_service.get_all()
-
-
-@api.get("/get-items-from-type", tags=["Equipment Reservation System"])
-def get_items_from_type(
-    type_id: int, equipment_service: EquipmentService = Depends()
-) -> list[EquipmentItem]:
-    """
-    Gets all items of a specific type
-
-    Parameters:
-        type_id: id of the type to retrieve items of
-
-    Returns:
-        list[EquipmentItem]: list of items of the type supplied
-
-    Raises:
-        404: Type not found
-    """
-    try:
-        return equipment_service.get_items_from_type(type_id)
-    except ResourceNotFoundException as e:
-        raise HTTPException(status_code=404, detail=str(e))
-
 
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
 def update_user_agreement_status(
