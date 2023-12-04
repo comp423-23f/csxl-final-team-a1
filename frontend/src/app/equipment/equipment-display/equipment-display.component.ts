@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import EquipmentType from '../equipment-type.model';
+import TypeDetails from '../equipment-type.model';
 import EquipmentService from '../equipment.service';
 import { AuthenticationService } from 'src/app/authentication.service';
 import { Router } from '@angular/router';
@@ -28,5 +28,5 @@ export class EquipmentDisplayComponent {
     });
   }
 
-  types$: Observable<EquipmentType[]> = this.equipment.getEquipmentTypes();
+  types$: Observable<TypeDetails[]> = this.equipment.getEquipmentTypes();
 }

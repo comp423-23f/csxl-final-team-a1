@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import EquipmentType from '../../../equipment/equipment-type.model';
+import TypeDetails from '../../../equipment/equipment-type.model';
 import EquipmentItem from '../../../equipment/equipment-item.model';
 import { AdminEquipmentService } from '../admin-equipment.service';
 import { permissionGuard } from 'src/app/permission.guard';
@@ -57,19 +57,19 @@ export class AdminEquipmentEditComponent {
     'actions'
   ];
 
-  current: EquipmentType;
+  current: TypeDetails;
 
   constructor(
     private route: ActivatedRoute,
     protected formBuilder: FormBuilder,
     private adminEquipment: AdminEquipmentService,
     private permission: PermissionService,
-    private router: Router,
+    private router: Router
   ) {
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
 
     const data = this.route.snapshot.data as {
-      type: EquipmentType;
+      type: TypeDetails;
     };
     this.current = data.type;
     if (this.current.id == null) {
@@ -84,11 +84,10 @@ export class AdminEquipmentEditComponent {
       max_reservation_time: String(this.current.max_reservation_time)
     });
 
-    console.log("refreshing items");
+    console.log('refreshing items');
     if (this.current.items) {
       this.items = this.current.items;
-    }
-    else {
+    } else {
       this.items = [];
     }
   }
@@ -103,7 +102,7 @@ export class AdminEquipmentEditComponent {
         max_reservation_time: Number(
           this.equipmentTypeForm.value.max_reservation_time
         ),
-        num_available: Number(this.current.num_available),
+        num_available: Number(this.current.num_available)
       };
 
       this.adminEquipment.updateEquipmentType(type);
@@ -123,12 +122,17 @@ export class AdminEquipmentEditComponent {
     if (this.current.id) {
       let type = this.adminEquipment.getEquipmentType(this.current.id);
       type.subscribe((type) => {
-      if (type.items) {
-        this.items = type.items;
-      }
-    });
+        if (type.items) {
+          this.items = type.items;
+        }
+      });
     }
-    this.router.navigate(['admin', 'equipment', 'edit', String(this.current.id)]);
+    this.router.navigate([
+      'admin',
+      'equipment',
+      'edit',
+      String(this.current.id)
+    ]);
   }
 
   createEquipmentItem(type_id: Number): void {
@@ -139,7 +143,12 @@ export class AdminEquipmentEditComponent {
         this.items = type.items;
       }
     });
-    this.router.navigate(['admin', 'equipment', 'edit', String(this.current.id)]);
+    this.router.navigate([
+      'admin',
+      'equipment',
+      'edit',
+      String(this.current.id)
+    ]);
   }
 
   toggleDamaged(item_id: Number, available: Boolean): void {

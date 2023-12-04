@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
-import EquipmentType from '../../../equipment/equipment-type.model';
+import TypeDetails from '../../../equipment/equipment-type.model';
 import { AdminEquipmentService } from '../admin-equipment.service';
 import { permissionGuard } from 'src/app/permission.guard';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
@@ -30,9 +30,13 @@ export class AdminEquipmentCreateComponent {
   img_url = new FormControl('', [Validators.required]);
   description = new FormControl('', [
     Validators.required,
-    Validators.maxLength(150),
+    Validators.maxLength(150)
   ]);
-  max_reservation_time = new FormControl('', [Validators.required,Validators.min(1), Validators.pattern("^[0-9]*$"),]);
+  max_reservation_time = new FormControl('', [
+    Validators.required,
+    Validators.min(1),
+    Validators.pattern('^[0-9]*$')
+  ]);
 
   /** Equipment Type Creation Form */
   public equipmentTypeForm = this.formBuilder.group({
@@ -42,7 +46,12 @@ export class AdminEquipmentCreateComponent {
     max_reservation_time: this.max_reservation_time
   });
 
-  constructor(protected formBuilder: FormBuilder, private adminEquipment: AdminEquipmentService, private permission: PermissionService, private router: Router) {
+  constructor(
+    protected formBuilder: FormBuilder,
+    private adminEquipment: AdminEquipmentService,
+    private permission: PermissionService,
+    private router: Router
+  ) {
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
   }
 
@@ -58,7 +67,7 @@ export class AdminEquipmentCreateComponent {
         ),
         num_available: -1
       };
-      
+
       this.adminEquipment.createEquipmentType(type);
       this.router.navigate(['admin', 'equipment']);
     }
