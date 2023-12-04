@@ -8,6 +8,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./agreement.component.css']
 })
 export class AgreementComponent {
+  public static route = {
+    path: 'agreement',
+    component: AgreementComponent,
+    children: []
+  };
+
   constructor(
     private equipment: EquipmentService,
     private router: Router

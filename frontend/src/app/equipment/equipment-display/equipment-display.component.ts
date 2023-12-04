@@ -11,6 +11,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./equipment-display.component.css']
 })
 export class EquipmentDisplayComponent {
+  public static route = {
+    path: '',
+    component: EquipmentDisplayComponent,
+    children: []
+  };
+
   constructor(
     private equipment: EquipmentService,
     private router: Router
