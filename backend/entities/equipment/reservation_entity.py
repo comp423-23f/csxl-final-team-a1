@@ -1,5 +1,5 @@
-from sqlalchemy import Integer, String, Boolean, ForeignKey, DateTime, select
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Integer, String, Boolean, ForeignKey, DateTime
+from sqlalchemy.orm import Mapped, mapped_column
 
 # from backend.entities.equipment.item_entity import EquipmentItemEntity
 # from backend.models.equipment.equipment_reservation import ReservationDetails

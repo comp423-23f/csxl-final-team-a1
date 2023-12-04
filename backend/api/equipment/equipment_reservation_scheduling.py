@@ -36,7 +36,7 @@ def get_reservations(
         list[EquipmentReservation]: list of reservations of the supplied type
     """
     try:
-        return reservation_service.get_reservations_by_type(type_id, subject)
+        return reservation_service.get_reservations_by_type(subject, type_id)
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -54,7 +54,7 @@ def create_reservation(
         reservation: some data in the form of EquipmentReservation.
     """
 
-    return reservation_service.create_reservation(reservation, subject)
+    return reservation_service.create_reservation(subject, reservation)
 
 
 @api.get("/ambassador-get-all-reservations", tags=["Reservation Scheduling System"])
@@ -103,7 +103,7 @@ def cancel_reservation(
     """
 
     try:
-        return reservation_service.cancel_reservation(reservation_id, subject)
+        return reservation_service.cancel_reservation(subject, reservation_id)
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
 
