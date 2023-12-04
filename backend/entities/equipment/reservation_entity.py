@@ -21,13 +21,11 @@ class EquipmentReservationEntity(EntityBase):
     # ID of the item which will be checked out
     # NOTE: This field establishes a one-to-many relationship between the equipment-items and equipment-reservation tables
     item_id: Mapped[int] = mapped_column(ForeignKey("equipment_items.id"))
-    # item: Mapped["EquipmentItemEntity"] = relationship()
+    # ID of the type of equipment reserved
     type_id: Mapped[int] = mapped_column(ForeignKey("equipment_type.id"))
-    # type: Mapped["EquipmentTypeEntity"] = relationship()
     # ID of the user which will be checking out the item
     # NOTE: This establishes a one-to-many relationship between the user table and the equipment-reservation table
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    # user: Mapped["UserEntity"] = relationship()
     # Date that the reservation will be checked out at
     check_out_date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     # Indicates if the ambassador has handed the student the tech and checked it out
@@ -50,7 +48,6 @@ class EquipmentReservationEntity(EntityBase):
             EquipmentReservationEntity: Entity that was created
         """
         return cls(
-            # id=model.id,
             item_id=model.item_id,
             type_id=model.type_id,
             user_id=model.user_id,
@@ -59,13 +56,6 @@ class EquipmentReservationEntity(EntityBase):
             expected_return_date=model.expected_return_date,
             actual_return_date=model.actual_return_date,
             return_description=model.return_description,
-            # item=select(EquipmentItemEntity).where(
-            #     EquipmentItemEntity.id == model.item_id
-            # ),
-            # type=select(EquipmentTypeEntity).where(
-            #     EquipmentTypeEntity.id == model.type_id
-            # ),
-            # user=select(UserEntity).where(UserEntity.id == model.user_id),
         )
 
     def to_model(self) -> EquipmentReservation:

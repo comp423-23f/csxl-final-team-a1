@@ -32,7 +32,7 @@ class ReservationService:
 
     def get_reservations_by_type(
         self,
-        # subject: User,
+        subject: User,
         type_id: int,
     ) -> list[EquipmentReservation]:
         """
@@ -44,7 +44,7 @@ class ReservationService:
         Returns:
             list[EquipmentReservation]: list of reservations of the supplied type
         """
-        # self._permission_svc.enforce(subject, "reservation.get", "reservation")
+        self._permission_svc.enforce(subject, "reservation.get", "reservation")
         query = select(EquipmentReservationEntity).where(
             EquipmentReservationEntity.type_id == type_id
         )
@@ -54,7 +54,7 @@ class ReservationService:
 
     def get_all_reservations(
         self,
-        # subject: User,
+        subject: User,
     ) -> list[EquipmentReservation]:
         """
         Get all reservations.
@@ -62,7 +62,7 @@ class ReservationService:
         Returns:
             list[EquipmentReservation]: list of reservations
         """
-        # self._permission_svc.enforce(subject, "reservation.get", "reservation")
+        self._permission_svc.enforce(subject, "reservation.get", "reservation")
 
         query = select(EquipmentReservationEntity)
 
@@ -72,7 +72,7 @@ class ReservationService:
 
     def create_reservation(
         self,
-        # subject: User
+        subject: User,
         reservation: EquipmentReservation,
     ) -> EquipmentReservation:
         """
@@ -81,7 +81,7 @@ class ReservationService:
         Parameters:
             reservation: some data in the form of EquipmentReservation.
         """
-        # self._permission_svc.enforce(subject, "reservation.create", "reservation")
+        self._permission_svc.enforce(subject, "reservation.create", "reservation")
 
         # TODO: check for overlapping reservations
 
@@ -104,10 +104,7 @@ class ReservationService:
 
         return entity.to_model()
 
-    def get_active_reservations(
-        self,
-        # subject: User
-    ):
+    def get_active_reservations(self, subject: User):
         """
         Get all active reservations.
 
@@ -117,7 +114,7 @@ class ReservationService:
         Returns:
             list[EquipmentReservation]: list of reservations where ambassador_check_out is True and actual_return_date is None
         """
-        # self._permission_svc.enforce(subject, "reservation.ambassador", "reservation")
+        self._permission_svc.enforce(subject, "reservation.ambassador", "reservation")
         query = select(EquipmentReservationEntity).where(
             EquipmentReservationEntity.ambassador_check_out == True
         )
@@ -127,7 +124,7 @@ class ReservationService:
 
     def cancel_reservation(
         self,
-        # subject: User,
+        subject: User,
         id: int,
     ) -> bool:
         """
@@ -155,11 +152,7 @@ class ReservationService:
         return False
 
     def check_in_equipment(
-        self,
-        id: int,
-        return_date: datetime,
-        description: str,
-        # subject: User
+        self, id: int, return_date: datetime, description: str, subject: User
     ) -> EquipmentReservation:
         """
         Update a reservation deactivate ambassador_check_out, add actual_return_date, and add a return_description.
@@ -172,7 +165,7 @@ class ReservationService:
         Returns:
             EquipmentReservation: the model of the modified entity object
         """
-        # self._permission_svc.enforce(subject, "reservation.ambassador", "reservation")
+        self._permission_svc.enforce(subject, "reservation.ambassador", "reservation")
 
         query = select(EquipmentReservationEntity).where(
             EquipmentReservationEntity.id == id
@@ -218,7 +211,7 @@ class ReservationService:
 
         # Query reservation entity
         query = select(EquipmentReservationEntity).where(
-            EquipmentReservationEntity.id == id
+            EquipmentReservationEntity.id == reservation_id
         )
         entity = self._session.scalars(query).first()
 
