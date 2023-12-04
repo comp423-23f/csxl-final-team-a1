@@ -274,19 +274,29 @@ class EquipmentService:
         self._session.commit()
         return entity.to_model()
     
-    def get_availability(self):
+    def get_availability(self, item_id: int):
         """
         Returns availability dictionary for current entity
 
         Returns:
             Dict[str, bool]: availability for next 7 days
         """
-        query = select(EquipmentReservationEntity)
-        entities = self._session.scalars(query).all()
-        print(entities)
-
         times = [datetime.now() + timedelta(days=i) for i in range(7)]
-        return {time.strftime('%Y-%m-%d'): False for time in times}
+
+        # Query all active reservations for the item
+        query = select(EquipmentReservationEntity).where(EquipmentReservationEntity.item_id == item_id).where(EquipmentReservationEntity.actual_return_date == None)
+        entities = self._session.scalars(query).all()
+
+        # Check to see if each time is included in the range of any queried reservation
+        availability = {}
+        for time in times:
+            availability[time.strftime('%Y-%m-%d')] = True
+            for entity in entities:
+                if entity.check_out_date <= time <= entity.expected_return_date:
+                    availability[time.strftime('%Y-%m-%d')] = False
+                    break
+
+        return availability
     
     def to_details_model(self, item: EquipmentItemEntity) -> ItemDetails:
         """
@@ -299,6 +309,6 @@ class EquipmentService:
             id=item.id,
             display_status=item.display_status,
             type_id=item.type_id,
-            availability=self.get_availability(),
+            availability=self.get_availability(item.id),
             equipment_type=item.eq_type.to_model()
         )

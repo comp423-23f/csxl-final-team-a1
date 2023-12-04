@@ -50,3 +50,33 @@ def create_reservation(
     Parameters:
         reservation: some data in the form of EquipmentReservation.
     """
+
+@api.put("/activate-reservation", tags=["Reservation Scheduling System"])
+def activate_reservation(
+    reservation_id: int,
+    reservation_service: ReservationService = Depends(),
+    subject: User = Depends(registered_user),
+):
+    """
+    Activates drafted reservation
+
+    Parameters:
+        reservation_id: Integer id of the reservation
+    """
+    reservation_service.activate_reservation(subject, reservation_id)
+
+@api.get("/get-user-equipment-reservations", tags=["Reservation Scheduling System"])
+def get_user_equipment_reservations(
+    reservation_service: ReservationService = Depends(),
+    subject: User = Depends(registered_user),
+):
+    """
+    Gets all reservation details for a user
+
+    Parameters:
+        None (User subject automatically sent)
+    """
+    reservation_service.get_user_equipment_reservations(subject)
+
+
+
