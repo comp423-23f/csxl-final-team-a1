@@ -42,12 +42,14 @@ def get_reservations(
 @api.post("/create-reservation", tags=["Reservation Scheduling System"])
 def create_reservation(
     reservation: EquipmentReservation,
-    pid_onyen: tuple[int, str] = Depends(authenticated_pid),
+    # subject: User = Depends(registered_user),
     reservation_service: ReservationService = Depends(),
-):
+) -> EquipmentReservation:
     """
     Create a reservation and save it to the database.
 
     Parameters:
         reservation: some data in the form of EquipmentReservation.
     """
+
+    return reservation_service.create_reservation(reservation)

@@ -44,4 +44,21 @@ class ReservationService:
         )
         entities = self._session.scalars(query).all()
 
-        return [entity.to_details_model() for entity in entities]
+        return [entity.to_model() for entity in entities]
+
+    def create_reservation(
+        self, reservation: EquipmentReservation
+    ) -> EquipmentReservation:
+        """
+        Create a reservation and save it to the database.
+
+        Parameters:
+            reservation: some data in the form of EquipmentReservation.
+        """
+        # self._permission_svc.enforce(subject, "reservation.create", "reservation")
+
+        entity = EquipmentReservationEntity.from_model(reservation)
+        self._session.add(entity)
+        self._session.commit()
+
+        return entity.to_model()

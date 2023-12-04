@@ -19,7 +19,7 @@ class EquipmentReservation(BaseModel):
     type_id: int
     user_id: int
     check_out_date: datetime
-    ambassador_check_out: bool = False
+    ambassador_check_out: bool
     expected_return_date: datetime
     actual_return_date: datetime | None
     return_description: str | None
