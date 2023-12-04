@@ -2,7 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from backend.models.user import User
 from ..authentication import authenticated_pid, registered_user
-from ...services.equipment import EquipmentService, EquipmentType, EquipmentItem
+from ...services.equipment.equipment import (
+    EquipmentService,
+    EquipmentType,
+    EquipmentItem,
+)
 from ...services.exceptions import ResourceNotFoundException
 from ...models.equipment.equipment_type import EquipmentType
 from ...models.equipment.equipment_item import EquipmentItem

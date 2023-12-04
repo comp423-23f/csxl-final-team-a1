@@ -5,13 +5,9 @@ from unittest.mock import create_autospec
 
 from ...models.equipment import EquipmentItem, EquipmentType, TypeDetails
 from .fixtures import equipment_svc_integration
-from ...services.equipment import EquipmentService
+from ...services.equipment.equipment import EquipmentService
 from ...services.exceptions import UserPermissionException, ResourceNotFoundException
-from .equipment_demo_data import (
-    types,
-    items,
-    quest
-)
+from .equipment_demo_data import types, items, quest
 
 from .user_data import root, ambassador, user
 
@@ -24,7 +20,7 @@ new_type = EquipmentType(
     img_url="",
     num_available=0,
     description="Need a mom?",
-    max_reservation_time=3
+    max_reservation_time=3,
 )
 
 modified_quest = EquipmentType(
@@ -33,8 +29,9 @@ modified_quest = EquipmentType(
     img_url="https://m.media-amazon.com/images/I/61EF6zFfLLL._AC_UF894,1000_QL80_.jpg",
     num_available=0,
     description="Quest 2 is actually really bad",
-    max_reservation_time=quest.max_reservation_time
+    max_reservation_time=quest.max_reservation_time,
 )
+
 
 def test_get_all_types(equipment_svc_integration: EquipmentService):
     """Test that all types can be retrieved"""
@@ -42,6 +39,7 @@ def test_get_all_types(equipment_svc_integration: EquipmentService):
     assert fetched_types is not None
     assert len(fetched_types) == len(types)
     assert isinstance(fetched_types[0], EquipmentType)
+
 
 def test_get_all(equipment_svc_integration: EquipmentService):
     """Test that get all can retreive all items in the types and items tables"""
@@ -54,15 +52,19 @@ def test_get_all(equipment_svc_integration: EquipmentService):
     assert s == len(items)
     assert isinstance(fetched[0], TypeDetails)
 
+
 # test get_items_of_type()
 def test_get_items_of_type(equipment_svc_integration: EquipmentService):
     """Testing normal use case of get_items_from_type"""
-    fetched: list[EquipmentItem] = equipment_svc_integration.get_items_from_type(quest.id)
+    fetched: list[EquipmentItem] = equipment_svc_integration.get_items_from_type(
+        quest.id
+    )
     assert fetched is not None
-    assert len(fetched) == len([item for item in items if item.type_id==quest.id])
+    assert len(fetched) == len([item for item in items if item.type_id == quest.id])
     assert isinstance(fetched[0], EquipmentItem)
     for item in fetched:
         assert item.type_id == quest.id
+
 
 def test_get_items_of_type_None(equipment_svc_integration: EquipmentService):
     """Testing when None or an out of bounds id is supplied"""
@@ -73,6 +75,7 @@ def test_get_items_of_type_None(equipment_svc_integration: EquipmentService):
     with pytest.raises(ResourceNotFoundException):
         equipment_svc_integration.get_items_from_type(700000)
         pytest.fail()
+
 
 # Test create_type()
 def test_create_type_enforces_permissions(equipment_svc_integration: EquipmentService):
@@ -88,6 +91,7 @@ def test_create_type_enforces_permissions(equipment_svc_integration: EquipmentSe
         root, "equipment.create", "equipment"
     )
 
+
 def test_create_type_as_root(equipment_svc_integration: EquipmentService):
     """Tests that root user is able to create new equipment types"""
     created = equipment_svc_integration.create_type(root, new_type)
@@ -95,25 +99,28 @@ def test_create_type_as_root(equipment_svc_integration: EquipmentService):
     assert created.id is not None
     assert created.id == types[-1].id + 1
 
+
 def test_create_type_as_user(equipment_svc_integration: EquipmentService):
     """Tests that any user can NOT create new equipment types"""
     with pytest.raises(UserPermissionException):
         equipment_svc_integration.create_type(user, new_type)
-        pytest.fail() # Fail if no error was thrown
+        pytest.fail()  # Fail if no error was thrown
+
 
 def test_create_type_non_null_id(equipment_svc_integration: EquipmentService):
     """Tests that a non-null id can be created and will be ignored"""
-    new_type =  EquipmentType(
+    new_type = EquipmentType(
         id=12,
         title="iMom",
         img_url="",
         num_available=0,
         description="Need a mom?",
-        max_reservation_time=3
+        max_reservation_time=3,
     )
     created = equipment_svc_integration.create_type(root, new_type)
     assert created is not None
     assert created.id == types[-1].id + 1
+
 
 # Test modify_type()
 def test_modify_type_enforces_permission(equipment_svc_integration: EquipmentService):
@@ -129,6 +136,7 @@ def test_modify_type_enforces_permission(equipment_svc_integration: EquipmentSer
         root, "equipment.create", "equipment"
     )
 
+
 def test_modify_type_as_root(equipment_svc_integration: EquipmentService):
     """Tests that the root user can modify equipment types"""
     modified = equipment_svc_integration.modify_type(root, modified_quest)
@@ -138,11 +146,13 @@ def test_modify_type_as_root(equipment_svc_integration: EquipmentService):
     assert modified.description == modified_quest.description
     assert modified.max_reservation_time == modified_quest.max_reservation_time
 
+
 def test_modify_type_as_user(equipment_svc_integration: EquipmentService):
     """Tests that users cannot modify equipment types"""
     with pytest.raises(UserPermissionException):
         equipment_svc_integration.modify_type(user, modified_quest)
         pytest.fail()
+
 
 def test_modify_type_not_exist(equipment_svc_integration: EquipmentService):
     """Tests that the correct exception is thrown on incorrect params"""
@@ -155,6 +165,7 @@ def test_modify_type_not_exist(equipment_svc_integration: EquipmentService):
     with pytest.raises(ResourceNotFoundException):
         equipment_svc_integration.modify_type(root, modified_quest)
         pytest.fail()
+
 
 # Test delete_type()
 def test_delete_type_enforces_perms(equipment_svc_integration: EquipmentService):
@@ -169,6 +180,7 @@ def test_delete_type_enforces_perms(equipment_svc_integration: EquipmentService)
         root, "equipment.create", "equipment"
     )
 
+
 def test_delete_type_as_root(equipment_svc_integration: EquipmentService):
     """Tests that delete type works as expected as a root user"""
     deleted = equipment_svc_integration.delete_type(root, quest.id)
@@ -177,11 +189,13 @@ def test_delete_type_as_root(equipment_svc_integration: EquipmentService):
     for t in rest:
         assert t.title != deleted.title
 
+
 def test_delete_type_as_user(equipment_svc_integration: EquipmentService):
     """Tests that delete type does not run when exectued as a User"""
     with pytest.raises(UserPermissionException):
         equipment_svc_integration.delete_type(user, quest.id)
         pytest.fail()
+
 
 def test_delte_type_not_valid(equipment_svc_integration: EquipmentService):
     """Tests delete_type with invalid id fields"""
@@ -193,6 +207,7 @@ def test_delte_type_not_valid(equipment_svc_integration: EquipmentService):
         equipment_svc_integration.delete_type(root, 70000)
         pytest.fail()
 
+
 # Test create_item()
 def test_create_item_as_root(equipment_svc_integration: EquipmentService):
     """Tests that create item works as expected when run as a root user"""
@@ -203,24 +218,29 @@ def test_create_item_as_root(equipment_svc_integration: EquipmentService):
     assert len(items_before) < len(items_after)
     assert created in items_after
 
+
 def test_create_item_as_user(equipment_svc_integration: EquipmentService):
     """Tests that create item does not work when run as a user"""
     with pytest.raises(UserPermissionException):
         equipment_svc_integration.create_item(user, quest.id)
         pytest.fail()
 
+
 def test_create_item_invalid(equipment_svc_integration: EquipmentService):
     """Tests create_item using invalid type_id fields"""
     with pytest.raises(ResourceNotFoundException):
         equipment_svc_integration.create_item(root, None)
         pytest.fail()
-    
+
     with pytest.raises(ResourceNotFoundException):
         equipment_svc_integration.create_item(root, 700000)
         pytest.fail()
 
+
 # Test update_item_availability()
-def test_update_item_availability_enforces_perms(equipment_svc_integration: EquipmentService):
+def test_update_item_availability_enforces_perms(
+    equipment_svc_integration: EquipmentService,
+):
     """Tests that the update_item_availability requires the equipment.hide permission"""
     equipment_svc_integration._permission_svc = create_autospec(
         equipment_svc_integration._permission_svc
@@ -232,12 +252,16 @@ def test_update_item_availability_enforces_perms(equipment_svc_integration: Equi
         root, "equipment.hide", "equipment"
     )
 
+
 def test_update_item_availability_as_root(equipment_svc_integration: EquipmentService):
     """Tests that update_item_availability works as expected for root user"""
     item = equipment_svc_integration.get_items_from_type(quest.id)[0]
-    updated_item = equipment_svc_integration.update_item_availability(root, item.id, not item.display_status)
+    updated_item = equipment_svc_integration.update_item_availability(
+        root, item.id, not item.display_status
+    )
     assert updated_item is not None
     assert updated_item.display_status != item.display_status
+
 
 def test_update_item_availability_as_user(equipment_svc_integration: EquipmentService):
     """Tests that update_item_availability does NOT run as a user"""
@@ -246,15 +270,17 @@ def test_update_item_availability_as_user(equipment_svc_integration: EquipmentSe
         equipment_svc_integration.update_item_availability(user, item.id, True)
         pytest.fail()
 
+
 def test_update_item_availbility_invalid(equipment_svc_integration: EquipmentService):
     """Tests update_item_availability with invalid parameters"""
     with pytest.raises(ResourceNotFoundException):
         equipment_svc_integration.update_item_availability(root, None, True)
         pytest.fail()
-    
+
     with pytest.raises(ResourceNotFoundException):
         equipment_svc_integration.update_item_availability(root, 700000, False)
         pytest.fail()
+
 
 # Test delete_item()
 def test_delete_item_as_root(equipment_svc_integration: EquipmentService):
@@ -266,12 +292,14 @@ def test_delete_item_as_root(equipment_svc_integration: EquipmentService):
     assert len(item_before) > len(items_after)
     assert deleted not in items_after
 
+
 def test_delete_item_as_user(equipment_svc_integration: EquipmentService):
     """Tests that delete item does not execute when run as a user"""
     items = equipment_svc_integration.get_items_from_type(quest.id)
     with pytest.raises(UserPermissionException):
         equipment_svc_integration.delete_item(user, items[0].id)
         pytest.fail()
+
 
 def test_delete_item_invalid(equipment_svc_integration: EquipmentService):
     """Tests delete item when invalid id fields are passed"""
