@@ -4,14 +4,8 @@ from datetime import datetime
 from backend.models.equipment.equipment_reservation import EquipmentReservation
 from backend.services.equipment.reservation import ReservationService
 from ..authentication import authenticated_pid, registered_user
-from ...services.equipment.equipment import (
-    EquipmentService,
-    EquipmentType,
-    EquipmentItem,
-)
 from ...services import UserService, ResourceNotFoundException
-from ...models import UserDetails, User
-from ...models.equipment import TypeDetails
+from ...models import User
 
 api = APIRouter(prefix="/api/equipment")
 openapi_tags = {
