@@ -2,12 +2,14 @@
   <div class="centered-container">
     <h2>{{ type.title }}</h2>
 
-    <img src='{{ type.img_url }}' class='img'/>
+    <img src="{{ type.img_url }}" class="img" />
     <p>{{ type.num_available }} Available</p>
-    
 
-    <a class="details-link" [routerLink]="['/equipment-reservations']">
-      <button mat-stroked-button>Check Out</button>
-    </a>
-  </div>  
+    <button
+      mat-stroked-button
+      [disabled]="type.num_available === 0"
+      (click)="onClick()">
+      Check Out
+    </button>
+  </div>
 </mat-card>
