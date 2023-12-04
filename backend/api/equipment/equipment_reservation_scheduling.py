@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-import datetime as dt
+from datetime import datetime
 
 from backend.models.equipment.equipment_reservation import EquipmentReservation
 from backend.services.equipment.reservation import ReservationService
@@ -22,7 +22,9 @@ openapi_tags = {
 
 @api.get("/get-reservations", tags=["Reservation Scheduling System"])
 def get_reservations(
-    type_id: int, reservation_service: ReservationService = Depends()
+    type_id: int,
+    # subject: User = Depends(registered_user),
+    reservation_service: ReservationService = Depends(),
 ) -> list[EquipmentReservation]:
     """
     Get all reservations for all items of a specific type.
@@ -34,7 +36,7 @@ def get_reservations(
         list[EquipmentReservation]: list of reservations of the supplied type
     """
     try:
-        return reservation_service.get_reservations(type_id)
+        return reservation_service.get_reservations_by_type(type_id)
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -53,3 +55,91 @@ def create_reservation(
     """
 
     return reservation_service.create_reservation(reservation)
+
+
+@api.get("/ambassador-get-all-reservations", tags=["Reservation Scheduling System"])
+def ambassador_get_all_reservations(
+    # subject: User = Depends(registered_user),
+    reservation_service: ReservationService = Depends(),
+) -> list[EquipmentReservation]:
+    """
+    Get all reservations as an ambassador.
+
+    Returns:
+        list[EquipmentReservation]: list of reservations
+    """
+    return reservation_service.get_all_reservations(
+        # subject
+    )
+
+
+@api.get("/ambassador-get-active-reservations", tags=["Reservation Scheduling System"])
+def ambassador_get_active_reservations(
+    # subject: User = Depends(registered_user),
+    reservation_service: ReservationService = Depends(),
+) -> list[EquipmentReservation]:
+    """
+    Get all active reservations as an ambassador.
+
+    Returns:
+        list[EquipmentReservation]: list of reservations where ambassador_check_out is True and actual_return_date is None.
+    """
+
+    return reservation_service.get_active_reservations(
+        # subject
+    )
+
+
+@api.delete("/cancel-reservation", tags=["Reservation Scheduling System"])
+def cancel_reservation(
+    reservation_id: int,
+    # subject: User = Depends(registered_user),
+    reservation_service: ReservationService = Depends(),
+) -> bool:
+    """
+    Cancel a reservation that is inactive - as a student.
+
+    Parameters:
+        reservation_id: the id number of the reservation to cancel
+
+    Returns:
+        bool: depending on the success of cancellation
+    """
+
+    try:
+        return reservation_service.cancel_reservation(
+            # subject,
+            reservation_id
+        )
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.put("/check-in-equipment", tags=["Reservation Scheduling System"])
+def check_in_equipment(
+    reservation_id: int,
+    return_date: datetime,
+    description: str,
+    # subject: User = Depends(registered_user),
+    reservation_service: ReservationService = Depends(),
+) -> EquipmentReservation:
+    """
+    Update a reservation deactivate ambassador_check_out, add actual_return_date, and add a return_description.
+
+    Paramaters:
+        reservation_id: id number of the reservation to modify
+        return_date: DateTime format of the actual return date
+        description: string containing all information about the returned item's state
+
+    Returns:
+        EquipmentReservation: the model of the modified entity object
+    """
+    try:
+        return reservation_service.check_in_equipment(
+            reservation_id,
+            return_date,
+            description,
+            # subject: User = Depends(registered_user)
+        )
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
