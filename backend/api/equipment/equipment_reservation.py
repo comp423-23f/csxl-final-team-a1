@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import authenticated_pid, registered_user
-from ...services.equipment import EquipmentService, EquipmentType, EquipmentItem
+from ...services.equipment.equipment import EquipmentService, EquipmentType, EquipmentItem
 from ...services import UserService, ResourceNotFoundException
 from ...models import UserDetails, User
 from ...models.equipment import TypeDetails
@@ -26,6 +26,7 @@ def list_all_equipments(
     """
     return equipment_service.get_all_types()
 
+
 @api.get("/get-all", tags=["Equipment Reservation System"])
 def get_all(equipment_service: EquipmentService = Depends()) -> list[TypeDetails]:
     """
@@ -36,10 +37,10 @@ def get_all(equipment_service: EquipmentService = Depends()) -> list[TypeDetails
     """
     return equipment_service.get_all()
 
+
 @api.get("/get-items-from-type", tags=["Equipment Reservation System"])
 def get_items_from_type(
-    type_id: int,
-    equipment_service: EquipmentService = Depends()
+    type_id: int, equipment_service: EquipmentService = Depends()
 ) -> list[EquipmentItem]:
     """
     Gets all items of a specific type
@@ -62,7 +63,7 @@ def get_items_from_type(
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
 def update_user_agreement_status(
     pid_onyen: tuple[int, str] = Depends(authenticated_pid),
-    user_service: UserService = Depends()
+    user_service: UserService = Depends(),
 ) -> bool:
     """
     Updates a User's agreement_status field to be true
@@ -86,7 +87,8 @@ def update_user_agreement_status(
         return user_details.agreement_status
     else:
         return False
-    
+
+
 @api.get("/get-user-agreement-status/{pid}", tags=["Equipment Reservation System"])
 def get_user_agreement_status(pid: int, user_service: UserService = Depends()) -> bool:
     """
@@ -105,12 +107,13 @@ def get_user_agreement_status(pid: int, user_service: UserService = Depends()) -
 
     return False
 
+
 @api.put("/update-item", tags=["Equipment Reservation System"])
 def update_item_availability(
     item_id: int,
     available: bool = True,
     subject: User = Depends(registered_user),
-    equipment_service: EquipmentService = Depends()
+    equipment_service: EquipmentService = Depends(),
 ) -> EquipmentItem:
     """
     Updates the display status of `item_id` to match `available`
@@ -123,7 +126,7 @@ def update_item_availability(
 
     Returns:
         EquipmentItem: The modified item
-    
+
     Raises:
         HTTP Exception 404 if the item cannot be found
     """
@@ -131,6 +134,3 @@ def update_item_availability(
         return equipment_service.update_item_availability(subject, item_id, available)
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
-
-
-    
