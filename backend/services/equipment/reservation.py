@@ -187,3 +187,42 @@ class ReservationService:
         self._session.commit()
 
         return entity.to_model()
+
+    def get_user_equipment_reservations(
+        self, subject: User
+    ) -> list[EquipmentReservation]:
+        """
+        Returns all reservation details for a user
+
+        Parameters:
+            subject: User
+        """
+        # Query reservation entity based on user ID
+        query = select(EquipmentReservationEntity).where(
+            EquipmentReservationEntity.user_id == subject.id
+        )
+        entities = self._session.scalars(query).all()
+
+        return [entity.to_model() for entity in entities]
+
+    def activate_reservation(
+        self, subject: User, reservation_id: int
+    ) -> EquipmentReservation:
+        """
+        Activates drafted reservation
+
+        Parameters:
+            reservation_id: Integer id of the reservation
+        """
+        self._permission_svc.enforce(subject, "equipment.reserve", "equipment")
+
+        # Query reservation entity
+        query = select(EquipmentReservationEntity).where(
+            EquipmentReservationEntity.id == id
+        )
+        entity = self._session.scalars(query).first()
+
+        entity.ambassador_check_out = True
+
+        self._session.commit()
+        return entity.to_model()

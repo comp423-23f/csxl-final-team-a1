@@ -1,9 +1,11 @@
-from sqlalchemy import Integer, Boolean, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from fastapi import Depends
+from sqlalchemy import Integer, Boolean, ForeignKey, select
+from sqlalchemy.orm import Mapped, Session, mapped_column, relationship
 from ..entity_base import EntityBase
 from typing import Self
 from ...models.equipment.equipment_item import EquipmentItem
 from ...models.equipment.item_details import ItemDetails
+
 
 class EquipmentItemEntity(EntityBase):
     """Serves as the database component for individual items"""
@@ -50,16 +52,3 @@ class EquipmentItemEntity(EntityBase):
             type_id=self.type_id
         )
     
-    def to_details_model(self) -> ItemDetails:
-        """
-        Converts an EquipmentItemEntity into a ItemDetails model
-
-        Returns:
-            ItemDetails: Details model of entity
-        """
-        return ItemDetails(
-            id=self.id,
-            display_status=self.display_status,
-            type_id=self.type_id,
-            equipment_type=self.eq_type.to_model()
-        )

@@ -143,3 +143,32 @@ def check_in_equipment(
         )
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@api.get("/get-user-equipment-reservations", tags=["Reservation Scheduling System"])
+def get_user_equipment_reservations(
+    reservation_service: ReservationService = Depends(),
+    subject: User = Depends(registered_user),
+) -> list[EquipmentReservation]:
+    """
+    Gets all reservation details for a user
+
+    Parameters:
+        None (User subject automatically sent)
+    """
+    return reservation_service.get_user_equipment_reservations(subject)
+
+
+@api.put("/activate-reservation", tags=["Reservation Scheduling System"])
+def activate_reservation(
+    reservation_id: int,
+    reservation_service: ReservationService = Depends(),
+    subject: User = Depends(registered_user),
+) -> EquipmentReservation:
+    """
+    Activates drafted reservation
+
+    Parameters:
+        reservation_id: Integer id of the reservation
+    """
+    return reservation_service.activate_reservation(subject, reservation_id)
