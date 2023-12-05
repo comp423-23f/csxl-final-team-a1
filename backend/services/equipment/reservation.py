@@ -96,6 +96,7 @@ class ReservationService:
         reservation.item_id = self.find_available_item(reservation)
         if reservation.item_id == -1:
             raise NameError("No available items.")
+
         entity = EquipmentReservationEntity.from_model(reservation)
         self._session.add(entity)
         self._session.commit()
@@ -126,14 +127,6 @@ class ReservationService:
             for res in reservations:
                 res_check_out = int(res.check_out_date.strftime("%j"))
                 res_expected_return = int(res.expected_return_date.strftime("%j"))
-                print(
-                    "COMO",
-                    check_out,
-                    res_check_out,
-                    expected_return,
-                    res_expected_return,
-                )
-
                 if (
                     (res_check_out <= check_out and check_out <= res_expected_return)
                     or (
@@ -148,7 +141,6 @@ class ReservationService:
                     available = False
 
             if available:
-                print
                 return item.id
 
         return -1
