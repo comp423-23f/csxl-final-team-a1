@@ -76,6 +76,27 @@ export default class EquipmentService {
           '12-9-2023': true,
           '12-10-2023': true
         }
+      },
+      {
+        id: 2,
+        display_status: true,
+        equipment_type: {
+          id: 1,
+          title: 'Quest 2',
+          num_available: 1,
+          img_url: 'Bla',
+          description: 'Quest 2 go crazy fr',
+          max_reservation_time: 3
+        },
+        availability: {
+          '12-4-2023': false,
+          '12-5-2023': false,
+          '12-6-2023': false,
+          '12-7-2023': true,
+          '12-8-2023': true,
+          '12-9-2023': true,
+          '12-10-2023': true
+        }
       }
     ];
   }

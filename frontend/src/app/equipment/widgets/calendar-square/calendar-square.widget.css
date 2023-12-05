@@ -1,7 +1,7 @@
 .reserved, .open, .selected {
     aspect-ratio: 1/1;
     border: 1px solid black;
-    width: 5%;
+    width: 100%;
 }
 
 button {

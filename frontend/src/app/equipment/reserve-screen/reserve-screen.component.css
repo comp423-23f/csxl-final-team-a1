@@ -1,0 +1,70 @@
+.calendar {
+    max-width: 98%;
+    padding-bottom: 1%;
+}
+
+.calendar mat-card-title {
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.calendar table {
+    width: 98%;
+    margin-top: 3%;
+}
+
+.calendar th, .calendar td {
+    width: 12.5%;
+}
+
+.calendar th {
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.calendar td {
+    aspect-ratio: 1/1;
+    vertical-align: middle;
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+}
+
+.calendar button {
+    position: relative;
+    margin: auto;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.key, .how-to {
+    display: inline-block;
+    width: 46%;
+    padding: 0 1em 1em 1em;
+}
+
+.key h3, .how-to h3 {
+    text-align: center;
+}
+
+.open, .reserved, .selected {
+    aspect-ratio: 1/1;
+    width: 40px;
+    margin: 0 2px;
+    border: 1px solid black;
+}
+
+.reserved {
+    background-color: rgb(233, 11, 11);
+}
+
+.open {
+    background-color: rgb(2, 159, 2);
+}
+
+.selected {
+    background-color: orange;
+}

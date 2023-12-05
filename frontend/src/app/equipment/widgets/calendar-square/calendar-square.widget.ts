@@ -7,10 +7,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class CalendarSquare {
   /** Inputs and Outputs */
-  @Input() date!: Date;
   @Input() reserved!: boolean;
 
-  @Output() selectButtonPressed = new EventEmitter<Date>();
+  @Output() selectButtonPressed = new EventEmitter<boolean>();
 
   selected: boolean = false;
 
@@ -19,6 +18,6 @@ export class CalendarSquare {
 
   click_tile() {
     this.selected = !this.selected;
-    this.selectButtonPressed.emit(this.date);
+    this.selectButtonPressed.emit(this.selected);
   }
 }
