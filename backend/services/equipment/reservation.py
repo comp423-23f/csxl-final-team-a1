@@ -13,6 +13,7 @@ from backend.models.equipment.equipment_reservation import (
     ReservationDetails,
 )
 from backend.models.user import User
+from backend.services.equipment.equipment import EquipmentService
 
 from backend.services.permission import PermissionService
 from ...database import db_session
@@ -33,9 +34,8 @@ class ReservationService:
 
     def get_reservations_by_type(
         self,
-        subject: User,
         type_id: int,
-    ) -> list[EquipmentReservation]:
+    ) -> list[ReservationDetails]:
         """
         Retrieves all reservations of specified type.
 
@@ -55,7 +55,7 @@ class ReservationService:
     def get_all_reservations(
         self,
         subject: User,
-    ) -> list[EquipmentReservation]:
+    ) -> list[ReservationDetails]:
         """
         Get all reservations.
 
@@ -72,22 +72,18 @@ class ReservationService:
 
     def create_reservation(
         self,
-        subject: User,
         reservation: EquipmentReservation,
-    ) -> EquipmentReservation:
+    ) -> ReservationDetails:
         """
         Create a reservation and save it to the database.
 
         Parameters:
             reservation: some data in the form of EquipmentReservation.
         """
-
-        # TODO: check for overlapping reservations
-
         query = select(EquipmentItemEntity).where(
             EquipmentItemEntity.id == reservation.item_id
         )
-        print(self._session.scalars(query).all())
+
         if self._session.scalars(query).all() == []:
             raise KeyError("Item id does not exist.")
 
@@ -97,11 +93,65 @@ class ReservationService:
         if self._session.scalars(query).all() == []:
             raise KeyError("Type id does not exist.")
 
+        reservation.item_id = self.find_available_item(reservation)
+        if reservation.item_id == -1:
+            raise NameError("No available items.")
         entity = EquipmentReservationEntity.from_model(reservation)
         self._session.add(entity)
         self._session.commit()
 
         return entity.to_details_model()
+
+    def find_available_item(
+        self,
+        reservation: EquipmentReservation,
+    ) -> int:
+        check_out = int(reservation.check_out_date.strftime("%j"))
+        expected_return = int(reservation.expected_return_date.strftime("%j"))
+        q = (
+            self._session.query(EquipmentItemEntity)
+            .filter(EquipmentItemEntity.type_id == reservation.type_id)
+            .all()
+        )
+
+        available: bool
+        for item in q:
+            reservations = (
+                self._session.query(EquipmentReservationEntity)
+                .filter(EquipmentReservationEntity.item_id == item.id)
+                .all()
+            )
+            available = True
+
+            for res in reservations:
+                res_check_out = int(res.check_out_date.strftime("%j"))
+                res_expected_return = int(res.expected_return_date.strftime("%j"))
+                print(
+                    "COMO",
+                    check_out,
+                    res_check_out,
+                    expected_return,
+                    res_expected_return,
+                )
+
+                if (
+                    (res_check_out <= check_out and check_out <= res_expected_return)
+                    or (
+                        res_check_out <= expected_return
+                        and expected_return <= res_expected_return
+                    )
+                    or (
+                        res_check_out >= check_out
+                        and res_expected_return <= expected_return
+                    )
+                ):
+                    available = False
+
+            if available:
+                print
+                return item.id
+
+        return -1
 
     def get_active_reservations(self, subject: User):
         """
@@ -151,7 +201,7 @@ class ReservationService:
 
     def check_in_equipment(
         self, id: int, return_date: datetime, description: str, subject: User
-    ) -> EquipmentReservation:
+    ) -> ReservationDetails:
         """
         Update a reservation deactivate ambassador_check_out, add actual_return_date, and add a return_description.
 
@@ -181,7 +231,7 @@ class ReservationService:
 
     def get_user_equipment_reservations(
         self, subject: User
-    ) -> list[EquipmentReservation]:
+    ) -> list[ReservationDetails]:
         """
         Returns all reservation details for a user
 
@@ -198,7 +248,7 @@ class ReservationService:
 
     def activate_reservation(
         self, subject: User, reservation_id: int
-    ) -> EquipmentReservation:
+    ) -> ReservationDetails:
         """
         Activates drafted reservation
 
@@ -217,3 +267,26 @@ class ReservationService:
 
         self._session.commit()
         return entity.to_details_model()
+
+    def admin_cancel_reservation(self, subject: User, id: int) -> bool:
+        """
+        Cancel a reserrvation by providing its id.
+
+        Parameters:
+            subject: user that will be checked for permission
+            id: id number of reservation
+
+        Returns:
+            bool: depending on the success of cancellation
+        """
+        self._permission_svc.enforce(subject, "equipment.reservation", "equipment")
+
+        query = select(EquipmentReservationEntity).where(
+            EquipmentReservationEntity.id == id
+        )
+
+        entity = self._session.scalars(query).first()
+        self._session.delete(entity)
+        self._session.commit()
+
+        return True
