@@ -1,7 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime
 
-from backend.models.equipment.equipment_reservation import EquipmentReservation
+from backend.models.equipment.equipment_reservation import (
+    EquipmentReservation,
+    ReservationDetails,
+)
 from backend.services.equipment.reservation import ReservationService
 from ..authentication import authenticated_pid, registered_user
 from ...services import UserService, ResourceNotFoundException
@@ -19,7 +22,7 @@ def get_reservations(
     type_id: int,
     subject: User = Depends(registered_user),
     reservation_service: ReservationService = Depends(),
-) -> list[EquipmentReservation]:
+) -> list[ReservationDetails]:
     """
     Get all reservations for all items of a specific type.
 
@@ -30,7 +33,7 @@ def get_reservations(
         list[EquipmentReservation]: list of reservations of the supplied type
     """
     try:
-        return reservation_service.get_reservations_by_type(subject, type_id)
+        return reservation_service.get_reservations_by_type(type_id)
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -40,7 +43,7 @@ def create_reservation(
     reservation: EquipmentReservation,
     subject: User = Depends(registered_user),
     reservation_service: ReservationService = Depends(),
-) -> EquipmentReservation:
+) -> ReservationDetails:
     """
     Create a reservation and save it to the database.
 
@@ -48,14 +51,14 @@ def create_reservation(
         reservation: some data in the form of EquipmentReservation.
     """
 
-    return reservation_service.create_reservation(subject, reservation)
+    return reservation_service.create_reservation(reservation)
 
 
 @api.get("/ambassador-get-all-reservations", tags=["Reservation Scheduling System"])
 def ambassador_get_all_reservations(
     subject: User = Depends(registered_user),
     reservation_service: ReservationService = Depends(),
-) -> list[EquipmentReservation]:
+) -> list[ReservationDetails]:
     """
     Get all reservations as an ambassador.
 
@@ -69,7 +72,7 @@ def ambassador_get_all_reservations(
 def ambassador_get_active_reservations(
     subject: User = Depends(registered_user),
     reservation_service: ReservationService = Depends(),
-) -> list[EquipmentReservation]:
+) -> list[ReservationDetails]:
     """
     Get all active reservations as an ambassador.
 
@@ -97,7 +100,7 @@ def cancel_reservation(
     """
 
     try:
-        return reservation_service.cancel_reservation(subject, reservation_id)
+        return reservation_service.cancel_reservation(reservation_id)
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -109,7 +112,7 @@ def check_in_equipment(
     description: str,
     subject: User = Depends(registered_user),
     reservation_service: ReservationService = Depends(),
-) -> EquipmentReservation:
+) -> ReservationDetails:
     """
     Update a reservation deactivate ambassador_check_out, add actual_return_date, and add a return_description.
 
@@ -133,7 +136,7 @@ def check_in_equipment(
 def get_user_equipment_reservations(
     reservation_service: ReservationService = Depends(),
     subject: User = Depends(registered_user),
-) -> list[EquipmentReservation]:
+) -> list[ReservationDetails]:
     """
     Gets all reservation details for a user
 
@@ -148,7 +151,7 @@ def activate_reservation(
     reservation_id: int,
     reservation_service: ReservationService = Depends(),
     subject: User = Depends(registered_user),
-) -> EquipmentReservation:
+) -> ReservationDetails:
     """
     Activates drafted reservation
 
@@ -156,3 +159,25 @@ def activate_reservation(
         reservation_id: Integer id of the reservation
     """
     return reservation_service.activate_reservation(subject, reservation_id)
+
+
+@api.put("/ambassador-cancel-reservation", tags=["Reservation Scheduling System"])
+def admin_cancel_reservation(
+    reservation_id: int,
+    subject: User = Depends(registered_user),
+    reservation_service: ReservationService = Depends(),
+) -> bool:
+    """
+    Cancel a reservation that is inactive - as a student.
+
+    Parameters:
+        reservation_id: the id number of the reservation to cancel
+
+    Returns:
+        bool: depending on the success of cancellation
+    """
+
+    try:
+        return reservation_service.admin_cancel_reservation(subject, reservation_id)
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
