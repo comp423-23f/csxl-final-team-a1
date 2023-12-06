@@ -84,16 +84,13 @@ class ReservationService:
             EquipmentItemEntity.id == reservation.item_id
         )
 
-        if self._session.scalars(query).all() == []:
-            raise KeyError("Item id does not exist.")
-
         query = select(EquipmentTypeEntity).where(
             EquipmentTypeEntity.id == reservation.type_id
         )
         if self._session.scalars(query).all() == []:
-            raise KeyError("Type id does not exist.")
+            raise KeyError("Type id does not contain items or does not exist.")
 
-        reservation.item_id = self.find_available_item(reservation)
+        reservation.item_id = self.find_available_item(reservation, reservation.item_id)
         if reservation.item_id == -1:
             raise NameError("No available items.")
 
@@ -106,42 +103,37 @@ class ReservationService:
     def find_available_item(
         self,
         reservation: EquipmentReservation,
+        item_id: int,
     ) -> int:
         check_out = int(reservation.check_out_date.strftime("%j"))
         expected_return = int(reservation.expected_return_date.strftime("%j"))
-        q = (
-            self._session.query(EquipmentItemEntity)
-            .filter(EquipmentItemEntity.type_id == reservation.type_id)
-            .all()
-        )
 
         available: bool
-        for item in q:
-            reservations = (
-                self._session.query(EquipmentReservationEntity)
-                .filter(EquipmentReservationEntity.item_id == item.id)
-                .all()
-            )
-            available = True
+        reservations = (
+            self._session.query(EquipmentReservationEntity)
+            .filter(EquipmentReservationEntity.item_id == item_id)
+            .all()
+        )
+        available = True
 
-            for res in reservations:
-                res_check_out = int(res.check_out_date.strftime("%j"))
-                res_expected_return = int(res.expected_return_date.strftime("%j"))
-                if (
-                    (res_check_out <= check_out and check_out <= res_expected_return)
-                    or (
-                        res_check_out <= expected_return
-                        and expected_return <= res_expected_return
-                    )
-                    or (
-                        res_check_out >= check_out
-                        and res_expected_return <= expected_return
-                    )
-                ):
-                    available = False
+        for res in reservations:
+            res_check_out = int(res.check_out_date.strftime("%j"))
+            res_expected_return = int(res.expected_return_date.strftime("%j"))
+            if (
+                (res_check_out <= check_out and check_out <= res_expected_return)
+                or (
+                    res_check_out <= expected_return
+                    and expected_return <= res_expected_return
+                )
+                or (
+                    res_check_out >= check_out
+                    and res_expected_return <= expected_return
+                )
+            ):
+                available = False
 
-            if available:
-                return item.id
+        if available:
+            return item_id
 
         return -1
 
@@ -260,7 +252,7 @@ class ReservationService:
         self._session.commit()
         return entity.to_details_model()
 
-    def admin_cancel_reservation(self, subject: User, id: int) -> bool:
+    def ambassador_cancel_reservation(self, subject: User, id: int) -> bool:
         """
         Cancel a reserrvation by providing its id.
 
