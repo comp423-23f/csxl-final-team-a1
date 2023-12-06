@@ -83,6 +83,9 @@ class ReservationService:
         query = select(EquipmentItemEntity).where(
             EquipmentItemEntity.id == reservation.item_id
         )
+        item = self._session.scalars(query).first()
+        if not item.display_status:
+            raise NameError("Item not available")
 
         query = select(EquipmentTypeEntity).where(
             EquipmentTypeEntity.id == reservation.type_id
