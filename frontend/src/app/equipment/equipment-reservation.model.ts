@@ -1,5 +1,5 @@
 export default interface EquipmentReservation {
-  item_id: number;
+  item_id: number | null;
   user_id: number;
   check_out_date: Date;
   ambassador_check_out: boolean;

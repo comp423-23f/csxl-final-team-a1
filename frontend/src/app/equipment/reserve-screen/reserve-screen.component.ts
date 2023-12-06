@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import ItemDetails from '../item-details.model';
 import EquipmentService from '../equipment.service';
 import EquipmentType from '../type.model';
+import { calendarResolver } from '../equipment.resolver';
 
 @Component({
   selector: 'app-reserve-screen',
@@ -15,10 +16,11 @@ export class ReserveScreenComponent {
   public static route = {
     path: 'reserve-screen/:type_id',
     component: ReserveScreenComponent,
-    children: []
+    children: [],
+    resolve: {
+      items: calendarResolver
+    }
   };
-
-  type_id: number;
 
   items: ItemDetails[];
   type: EquipmentType;
@@ -33,10 +35,12 @@ export class ReserveScreenComponent {
     private router: Router,
     private snackBar: MatSnackBar
   ) {
-    const routeParams = this.route.snapshot.paramMap;
-    this.type_id = Number(routeParams.get('type_id'));
+    const data = route.snapshot.data as {
+      items: ItemDetails[];
+    };
 
-    this.items = this.equipment_service.getTypeAvailability(this.type_id);
+    this.items = data.items;
+
     if (this.items.length === 0) {
       this.router.navigate(['/equipment-reservations']);
     }
@@ -93,6 +97,25 @@ export class ReserveScreenComponent {
         });
         return;
       }
+    }
+
+    // Test that the dates are less than or equal to the max
+    let test_date = new Date(
+      this.selected_dates[this.selected_dates.length - 1]
+    );
+    test_date.setDate(test_date.getDate() - this.type.max_reservation_time);
+    if (this.selected_dates[0].getTime() < test_date.getTime()) {
+      this.snackBar.open(
+        'Max Time for ' +
+          this.type.title +
+          ' is ' +
+          this.type.max_reservation_time,
+        'Ok',
+        {
+          duration: 5000
+        }
+      );
+      return;
     }
     // Send API call
   }
