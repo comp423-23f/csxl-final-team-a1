@@ -92,7 +92,7 @@ class ReservationService:
 
         reservation.item_id = self.find_available_item(reservation, reservation.item_id)
         if reservation.item_id == -1:
-            raise NameError("No available items.")
+            raise NameError("Item not available")
 
         entity = EquipmentReservationEntity.from_model(reservation)
         self._session.add(entity)
