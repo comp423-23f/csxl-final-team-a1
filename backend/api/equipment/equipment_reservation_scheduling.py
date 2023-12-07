@@ -17,7 +17,7 @@ openapi_tags = {
 }
 
 
-@api.get("/get-reservations", tags=["Reservation Scheduling System"])
+@api.get("/get-reservations/{type_id}", tags=["Reservation Scheduling System"])
 def get_reservations(
     type_id: int,
     subject: User = Depends(registered_user),
@@ -83,7 +83,9 @@ def ambassador_get_active_reservations(
     return reservation_service.get_active_reservations(subject)
 
 
-@api.delete("/cancel-reservation", tags=["Reservation Scheduling System"])
+@api.delete(
+    "/cancel-reservation/{reservation_id}", tags=["Reservation Scheduling System"]
+)
 def cancel_reservation(
     reservation_id: int,
     subject: User = Depends(registered_user),
@@ -105,7 +107,10 @@ def cancel_reservation(
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@api.put("/check-in-equipment", tags=["Reservation Scheduling System"])
+@api.put(
+    "/check-in-equipment/{reservation_id}/{return_date}",
+    tags=["Reservation Scheduling System"],
+)
 def check_in_equipment(
     reservation_id: int,
     return_date: datetime,
@@ -146,7 +151,9 @@ def get_user_equipment_reservations(
     return reservation_service.get_user_equipment_reservations(subject)
 
 
-@api.put("/activate-reservation", tags=["Reservation Scheduling System"])
+@api.put(
+    "/activate-reservation/{reservation_id}", tags=["Reservation Scheduling System"]
+)
 def activate_reservation(
     reservation_id: int,
     reservation_service: ReservationService = Depends(),
@@ -162,7 +169,7 @@ def activate_reservation(
 
 
 @api.put("/ambassador-cancel-reservation", tags=["Reservation Scheduling System"])
-def admin_cancel_reservation(
+def ambassador_cancel_reservation(
     reservation_id: int,
     subject: User = Depends(registered_user),
     reservation_service: ReservationService = Depends(),
@@ -178,6 +185,8 @@ def admin_cancel_reservation(
     """
 
     try:
-        return reservation_service.admin_cancel_reservation(subject, reservation_id)
+        return reservation_service.ambassador_cancel_reservation(
+            subject, reservation_id
+        )
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
