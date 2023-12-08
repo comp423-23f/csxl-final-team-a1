@@ -153,10 +153,23 @@ export class ReserveScreenComponent {
       return_description: null
     };
 
-    this.equipment_service
-      .createReservation(reservation)
-      .subscribe((value: ReservationDetails) => {
-        console.log(value);
-      });
+    this.equipment_service.createReservation(reservation).subscribe({
+      next: (value: ReservationDetails) => {
+        this.snackBar.open('Reservation Successful!', 'Ok', {
+          duration: 5000
+        });
+        this.router.navigate(['equipment-reservations']);
+      },
+      error: (err) => {
+        let err_bar = this.snackBar.open(
+          'Reservation Failed! Please try again.',
+          'Ok',
+          {
+            duration: 5000
+          }
+        );
+        err_bar.onAction().subscribe(() => location.reload());
+      }
+    });
   }
 }
