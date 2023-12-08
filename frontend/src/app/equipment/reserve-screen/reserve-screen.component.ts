@@ -27,7 +27,7 @@ export class ReserveScreenComponent {
   dates: string[];
 
   selected_items_id: number[] = [];
-  selected_dates: Date[] = [];
+  selected_dates: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -49,10 +49,11 @@ export class ReserveScreenComponent {
   }
 
   toDate(d: string): Date {
-    return new Date(d);
+    let comps: string[] = d.split('-');
+    return new Date(Number(comps[0]), Number(comps[1]) - 1, Number(comps[2]));
   }
 
-  clickSquare(date: Date, item_id: number, selected: boolean): void {
+  clickSquare(date: string, item_id: number, selected: boolean): void {
     if (selected) {
       this.selected_items_id.push(item_id);
       this.selected_dates.push(date);
@@ -84,14 +85,16 @@ export class ReserveScreenComponent {
     }
 
     // Test that dates are consecutive
-    this.selected_dates.sort((a, b) => {
+    let dates_list: Date[] = [];
+    for (let i = 0; i < this.selected_dates.length; i++) {
+      dates_list.push(this.toDate(this.selected_dates[i]));
+    }
+    dates_list.sort((a, b) => {
       return a.getTime() - b.getTime();
     });
-    for (let i = 1; i < this.selected_dates.length; i++) {
-      if (
-        this.selected_dates[i].getDate() - 1 !==
-        this.selected_dates[i - 1].getDate()
-      ) {
+    console.log(dates_list);
+    for (let i = 1; i < dates_list.length; i++) {
+      if (dates_list[i].getDate() - 1 !== dates_list[i - 1].getDate()) {
         this.snackBar.open('Please select consecuitive dates', 'Ok', {
           duration: 5000
         });
@@ -100,16 +103,15 @@ export class ReserveScreenComponent {
     }
 
     // Test that the dates are less than or equal to the max
-    let test_date = new Date(
-      this.selected_dates[this.selected_dates.length - 1]
-    );
-    test_date.setDate(test_date.getDate() - this.type.max_reservation_time);
-    if (this.selected_dates[0].getTime() < test_date.getTime()) {
+    let test_date = new Date(dates_list[dates_list.length - 1]);
+    test_date.setDate(test_date.getDate() - this.type.max_reservation_time + 1);
+    if (dates_list[0].getTime() < test_date.getTime()) {
       this.snackBar.open(
         'Max Time for ' +
           this.type.title +
           ' is ' +
-          this.type.max_reservation_time,
+          this.type.max_reservation_time +
+          ' days.',
         'Ok',
         {
           duration: 5000

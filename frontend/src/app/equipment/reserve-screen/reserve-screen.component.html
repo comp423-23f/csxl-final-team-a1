@@ -20,7 +20,7 @@
         <calendar-square
           [reserved]="!item.availability[date]"
           (selectButtonPressed)="
-            clickSquare(toDate(date), item.id, $event)
+            clickSquare(date, item.id, $event)
           "></calendar-square>
       </td>
     </tr>

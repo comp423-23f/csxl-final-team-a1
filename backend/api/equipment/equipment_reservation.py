@@ -26,7 +26,7 @@ def list_all_equipments(
     """
     return equipment_service.get_all_types()
 
-@api.get("/get-item-details-from-type", tags=["Equipment Reservation System"])
+@api.get("/get-item-details-from-type/{type_id}", tags=["Equipment Reservation System"])
 def get_item_details_from_type(
     type_id: int,
     equipment_service: EquipmentService = Depends()
