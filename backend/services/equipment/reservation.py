@@ -20,6 +20,7 @@ from ...database import db_session
 
 from ...entities import EquipmentItemEntity, EquipmentTypeEntity
 from ...models import User
+from ...services import ResourceNotFoundException
 
 
 class ReservationService:
@@ -34,6 +35,7 @@ class ReservationService:
 
     def get_reservations_by_type(
         self,
+        subject: User,
         type_id: int,
     ) -> list[ReservationDetails]:
         """
@@ -45,10 +47,21 @@ class ReservationService:
         Returns:
             list[EquipmentReservation]: list of reservations of the supplied type
         """
+        self._permission_svc.enforce(subject, "equipment.reservation", "equipment")
+
+        query = select(EquipmentTypeEntity).where(
+            EquipmentTypeEntity.id == type_id
+        )
+        entity = self._session.scalars(query).first()
+
+        if not entity:
+            raise ResourceNotFoundException("Type not found")
+
         query = select(EquipmentReservationEntity).where(
             EquipmentReservationEntity.type_id == type_id
         )
         entities = self._session.scalars(query).all()
+
 
         return [entity.to_details_model() for entity in entities]
 
@@ -83,7 +96,7 @@ class ReservationService:
         """
         # Check that correct user is authenticated
         if reservation.user_id != subject.id:
-            raise Exception("Not authenticated as correct user")
+            raise PermissionError("Not authenticated as correct user")
 
         # Check that user has no active reservations
         query = (
@@ -113,9 +126,9 @@ class ReservationService:
         )
         type_entity = self._session.scalars(query).first()
         if type_entity == None:
-            raise KeyError("Type id does not exist.")
+            raise ResourceNotFoundException("Type id does not exist")
         if reservation.item_id not in [item.id for item in type_entity.items]:
-            raise ValueError("Type does not have item.")
+            raise ResourceNotFoundException("Item does not exist on type")
 
         # Check if max checkout time exceeded
         if reservation.expected_return_date.date() - reservation.check_out_date.date() > timedelta(days=type_entity.max_time):
@@ -130,11 +143,11 @@ class ReservationService:
         )
         item = self._session.scalars(query).first()
         if not item.display_status:
-            raise NameError("Item not available")
+            raise Exception("Item not available")
 
         reservation.item_id = self.find_available_item(reservation, reservation.item_id)
         if reservation.item_id == -1:
-            raise NameError("Item not available")
+            raise Exception("Item not available")
 
         entity = EquipmentReservationEntity.from_model(reservation)
         self._session.add(entity)
@@ -218,9 +231,11 @@ class ReservationService:
         )
 
         entity = self._session.scalars(query).first()
+        if not entity:
+            raise ResourceNotFoundException("Reservation not found")
 
         if entity.user_id != subject.id:
-            raise Exception("Not authenticated as correct user")
+            raise PermissionError("Not authenticated as correct user")
 
         if entity.actual_return_date == None and not entity.ambassador_check_out:
             self._session.delete(entity)
@@ -251,6 +266,12 @@ class ReservationService:
         )
         entity = self._session.scalars(query).first()
 
+        if not entity:
+            raise ResourceNotFoundException("Reservation not found")
+        
+        if return_date < entity.check_out_date:
+            raise Exception("Returned before check out date")
+        
         if entity.ambassador_check_out and entity.actual_return_date == None:
             entity.ambassador_check_out = False
             entity.actual_return_date = return_date
@@ -294,6 +315,9 @@ class ReservationService:
         )
         entity = self._session.scalars(query).first()
 
+        if not entity:
+            raise ResourceNotFoundException("Reservation not found")
+
         entity.ambassador_check_out = True
 
         self._session.commit()
@@ -317,6 +341,10 @@ class ReservationService:
         )
 
         entity = self._session.scalars(query).first()
+
+        if not entity:
+            raise ResourceNotFoundException("Reservation not found")
+
         self._session.delete(entity)
         self._session.commit()
 

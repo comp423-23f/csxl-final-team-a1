@@ -299,7 +299,7 @@ class EquipmentService:
         for time in times:
             availability[time.strftime("%Y-%m-%d")] = True
             for entity in entities:
-                if entity.check_out_date <= time <= entity.expected_return_date:
+                if entity.check_out_date.date() <= time.date() <= entity.expected_return_date.date():
                     availability[time.strftime("%Y-%m-%d")] = False
                     break
 
