@@ -25,6 +25,7 @@ permissions = [
     root_role_permission,
     ambassador_permission,
     ambassador_permission_coworking_reservation,
+    ambassador_permission_equipment_reservation
 ]
 
 
