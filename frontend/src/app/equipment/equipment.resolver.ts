@@ -2,6 +2,7 @@ import ItemDetails from './item-details.model';
 import EquipmentService from './equipment.service';
 import { ResolveFn } from '@angular/router';
 import { inject } from '@angular/core';
+import ReservationDetails from './reservation-details';
 
 export const calendarResolver: ResolveFn<ItemDetails[]> = (route, state) => {
   let type_id = Number(route.paramMap.get('type_id'));

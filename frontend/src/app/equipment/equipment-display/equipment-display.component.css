@@ -1,8 +1,7 @@
-.equipment-cards {
+.equipment-cards, .reservation_cards {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    row-gap: 1rem;
 }
 
 .base {

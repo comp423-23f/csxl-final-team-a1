@@ -3,6 +3,7 @@ import EquipmentItem from './equipment-item.model';
 import EquipmentType from './type.model';
 
 export default interface ReservationDetails {
+  id: number;
   item_id: number | null;
   user_id: number;
   check_out_date: Date;

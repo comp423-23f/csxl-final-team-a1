@@ -1,15 +1,17 @@
 <div class="base">
-  <h2>Available Equipment</h2>
+  <h2>Reserve Equipment</h2>
   <div class="equipment-cards">
     <div *ngFor="let type of types$ | async">
-      <equipment-card [type]="type" *ngIf="type.num_available > 0" />
+      <equipment-card [type]="type" />
     </div>
   </div>
 
-  <h2>Unavailable Equipment</h2>
+  <h2>My Reservations</h2>
   <div class="equipment-cards">
-    <div *ngFor="let type of types$ | async">
-      <equipment-card [type]="type" *ngIf="type.num_available <= 0" />
+    <div *ngFor="let reservation of reservations$ | async">
+      <equipment-reservation-card
+        [reservation]="reservation"
+        *ngIf="notTooFar(reservation)" />
     </div>
   </div>
 </div>

@@ -1,0 +1,69 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title
+      *ngIf="
+        !reservation.ambassador_check_out &&
+        reservation.actual_return_date === null
+      ">
+      Reservation Pending!
+    </mat-card-title>
+    <mat-card-title
+      *ngIf="
+        reservation.ambassador_check_out &&
+        reservation.actual_return_date === null
+      ">
+      Equipment Checked Out!
+    </mat-card-title>
+    <mat-card-title *ngIf="reservation.actual_return_date !== null">
+      Reservation Complete!
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <h3>
+      <label>Who</label>
+      <strong>
+        {{ reservation.user.first_name }} {{ reservation.user.last_name }}
+      </strong>
+    </h3>
+    <mat-divider></mat-divider>
+    <h3>
+      <label>Equipment</label>
+      <strong>
+        {{ reservation.type.title + ', id: ' + reservation.item_id }}
+      </strong>
+    </h3>
+    <mat-divider></mat-divider>
+
+    <h3>
+      <label>Check-Out Date</label>
+      <strong>{{ reservation.check_out_date | date: 'EE MMM d, yyyy' }}</strong>
+    </h3>
+    <mat-divider></mat-divider>
+
+    <h3 *ngIf="reservation.actual_return_date === null">
+      <label>Due Date</label>
+      <strong>
+        {{ reservation.expected_return_date | date: 'EE MM d, yyyy' }}
+      </strong>
+    </h3>
+    <p>Check-Ins are due before the XL closes on the date listed.</p>
+    <h3 *ngIf="reservation.actual_return_date !== null">
+      <label>Returned Date</label>
+      <strong>
+        {{ reservation.actual_return_date | date: 'EE MM d, yyyy' }}
+      </strong>
+    </h3>
+    <mat-divider></mat-divider>
+
+    <h3>
+      <label>Where</label>
+      <strong>The XL Colab Front Desk in Sitterson 156</strong>
+    </h3>
+  </mat-card-content>
+  <mat-card-actions *ngIf="!reservation.ambassador_check_out">
+    <button mat-stroked-button class="cancel" (click)="cancel()">
+      Cancel Reservation
+    </button>
+  </mat-card-actions>
+</mat-card>

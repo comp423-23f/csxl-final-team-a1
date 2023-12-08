@@ -70,4 +70,16 @@ export default class EquipmentService {
       reservation
     );
   }
+
+  cancelReservation(reservation_id: number): Observable<boolean> {
+    return this.http.delete<boolean>(
+      '/api/equipment/cancel-reservation/' + reservation_id
+    );
+  }
+
+  getUserReservations(): Observable<ReservationDetails[]> {
+    return this.http.get<ReservationDetails[]>(
+      '/api/equipment/get-user-equipment-reservations'
+    );
+  }
 }
