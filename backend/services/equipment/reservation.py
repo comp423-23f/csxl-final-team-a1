@@ -161,6 +161,7 @@ class ReservationService:
     def cancel_reservation(
         self,
         id: int,
+        subject: User,
     ) -> bool:
         """
         Cancel a reserrvation by providing its id.
@@ -177,6 +178,9 @@ class ReservationService:
         )
 
         entity = self._session.scalars(query).first()
+
+        if entity.user_id != subject.id:
+            raise Exception("Not authenticated as correct user")
 
         if entity.actual_return_date == None and not entity.ambassador_check_out:
             self._session.delete(entity)

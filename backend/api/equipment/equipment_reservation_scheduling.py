@@ -102,7 +102,7 @@ def cancel_reservation(
     """
 
     try:
-        return reservation_service.cancel_reservation(reservation_id)
+        return reservation_service.cancel_reservation(reservation_id, subject)
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
 
