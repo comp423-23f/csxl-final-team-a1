@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from backend.models.equipment.equipment_reservation import (
     EquipmentReservation,
@@ -51,7 +51,7 @@ def create_reservation(
         reservation: some data in the form of EquipmentReservation.
     """
 
-    return reservation_service.create_reservation(reservation)
+    return reservation_service.create_reservation(reservation, subject)
 
 
 @api.get("/ambassador-get-all-reservations", tags=["Reservation Scheduling System"])

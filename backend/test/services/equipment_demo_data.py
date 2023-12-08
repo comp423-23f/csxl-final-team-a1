@@ -1,7 +1,7 @@
 """Mock Data for Equipment Reservation System Demos"""
 
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytest
 from backend.entities.equipment.reservation_entity import EquipmentReservationEntity
 
@@ -35,6 +35,29 @@ i1 = EquipmentItem(id=None, display_status=False, type_id=2)
 types = [quest, ipad]
 
 items = [q1, q2, q3, i1]
+
+reservations = [
+    EquipmentReservation(
+        item_id=1,
+        type_id=1,
+        user_id=1,
+        check_out_date=datetime.now(),
+        ambassador_check_out=False,
+        expected_return_date=datetime.now(),
+        actual_return_date=None,
+        return_description="",
+    ),
+    EquipmentReservation(
+        item_id=2,
+        type_id=1,
+        user_id=1,
+        check_out_date=datetime.now(),
+        ambassador_check_out=False,
+        expected_return_date=datetime.now() + timedelta(days=1),
+        actual_return_date=None,
+        return_description="",
+    ),
+]
 
 # Data functions
 

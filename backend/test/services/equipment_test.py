@@ -6,6 +6,7 @@ from unittest.mock import create_autospec
 from ...models.equipment import EquipmentItem, EquipmentType, TypeDetails
 from .fixtures import equipment_svc_integration
 from ...services.equipment.equipment import EquipmentService
+from ...services.equipment.reservation import ReservationService
 from ...services.exceptions import UserPermissionException, ResourceNotFoundException
 from .equipment_demo_data import types, items, quest
 
@@ -310,3 +311,22 @@ def test_delete_item_invalid(equipment_svc_integration: EquipmentService):
     with pytest.raises(ResourceNotFoundException):
         equipment_svc_integration.delete_item(root, 700000)
         pytest.fail()
+
+# Test get_item_details_from_type()
+# add after reservations tests
+
+# RESERVATIONS TESTS
+
+# Test get_all_reservations()
+def test_get_reservations_as_user(reservation_svc_integration: ReservationService):
+    """Tests that all reservations CANNOT be retrieved as a base user"""
+    with pytest.raises(UserPermissionException):
+        reservation_svc_integration.get_all_reservations(user)
+        pytest.fail()
+
+def test_get_reservations_as_ambassador(reservation_svc_integration: ReservationService):
+    """Tests that all reservations CAN be retrieved as an ambassador"""
+    reservations = reservation_svc_integration.get_all_reservations(ambassador)
+    
+
+
