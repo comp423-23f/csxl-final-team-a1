@@ -42,20 +42,20 @@ reservations = [
         type_id=1,
         user_id=1,
         check_out_date=datetime.now(),
-        ambassador_check_out=False,
+        ambassador_check_out=True,
         expected_return_date=datetime.now(),
-        actual_return_date=None,
+        actual_return_date=datetime.now(),
         return_description="",
     ),
     EquipmentReservation(
         item_id=2,
         type_id=1,
         user_id=1,
-        check_out_date=datetime.now(),
-        ambassador_check_out=False,
+        check_out_date=datetime.now() - timedelta(days=1),
+        ambassador_check_out=True,
         expected_return_date=datetime.now() + timedelta(days=1),
         actual_return_date=None,
-        return_description="",
+        return_description="Looks the same",
     ),
 ]
 
@@ -76,19 +76,9 @@ def insert_fake_data(session: Session):
 
     session.commit()
 
-    entity = EquipmentReservationEntity.from_model(
-        EquipmentReservation(
-            item_id=1,
-            type_id=1,
-            user_id=1,
-            check_out_date=datetime.now(),
-            ambassador_check_out=False,
-            expected_return_date=datetime.now(),
-            actual_return_date=None,
-            return_description="",
-        )
-    )
-    session.add(entity)
+    for reservation in reservations:
+        entity = EquipmentReservationEntity.from_model(reservation)
+        session.add(entity)
 
     reset_table_id_seq(
         session, EquipmentTypeEntity, EquipmentTypeEntity.id, len(types) + 1

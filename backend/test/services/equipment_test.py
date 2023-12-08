@@ -1,14 +1,16 @@
 """This file is used to test the EquipmentService functionality"""
 
+from datetime import datetime, timedelta
 import pytest
 from unittest.mock import create_autospec
 
 from ...models.equipment import EquipmentItem, EquipmentType, TypeDetails
-from .fixtures import equipment_svc_integration
+from ...models.equipment.equipment_reservation import EquipmentReservation
+from .fixtures import equipment_svc_integration, reservation_svc_integration
 from ...services.equipment.equipment import EquipmentService
 from ...services.equipment.reservation import ReservationService
 from ...services.exceptions import UserPermissionException, ResourceNotFoundException
-from .equipment_demo_data import types, items, quest
+from .equipment_demo_data import types, items, quest, reservations
 
 from .user_data import root, ambassador, user
 
@@ -33,6 +35,115 @@ modified_quest = EquipmentType(
     max_reservation_time=quest.max_reservation_time,
 )
 
+valid_new_reservation = EquipmentReservation(
+    item_id=1,
+    type_id=1,
+    user_id=3,
+    actual_return_date=None,
+    ambassador_check_out=False,
+    check_out_date=datetime.now(),
+    expected_return_date=datetime.now() + timedelta(days=3),
+    return_description="",
+)
+
+invalid_user_mismatch_new_reservation = EquipmentReservation(
+    item_id=1,
+    type_id=1,
+    user_id=2,
+    actual_return_date=None,
+    ambassador_check_out=False,
+    check_out_date=datetime.now(),
+    expected_return_date=datetime.now() + timedelta(days=3),
+    return_description="",
+)
+
+invalid_excess_time_new_reservation = EquipmentReservation(
+    item_id=1,
+    type_id=1,
+    user_id=3,
+    actual_return_date=None,
+    ambassador_check_out=False,
+    check_out_date=datetime.now(),
+    expected_return_date=datetime.now() + timedelta(days=6),
+    return_description="",
+)
+
+invalid_past_checkout_new_reservation = EquipmentReservation(
+    item_id=1,
+    type_id=1,
+    user_id=3,
+    actual_return_date=None,
+    ambassador_check_out=False,
+    check_out_date=datetime.now() - timedelta(days=1),
+    expected_return_date=datetime.now() + timedelta(days=1),
+    return_description="",
+)
+
+invalid_item_id_new_reservation = EquipmentReservation(
+    item_id=13424,
+    type_id=1,
+    user_id=3,
+    actual_return_date=None,
+    ambassador_check_out=False,
+    check_out_date=datetime.now(),
+    expected_return_date=datetime.now() + timedelta(days=3),
+    return_description="",
+)
+
+invalid_type_new_reservation = EquipmentReservation(
+    item_id=1,
+    type_id=433434,
+    user_id=3,
+    actual_return_date=None,
+    ambassador_check_out=False,
+    check_out_date=datetime.now() - timedelta(days=1),
+    expected_return_date=datetime.now() + timedelta(days=1),
+    return_description="",
+)
+
+invalid_dates_new_reservation = EquipmentReservation(
+    item_id=1,
+    type_id=1,
+    user_id=3,
+    actual_return_date=None,
+    ambassador_check_out=False,
+    check_out_date=datetime.now() + timedelta(days=1),
+    expected_return_date=datetime.now() - timedelta(days=1),
+    return_description="",
+)
+
+invalid_hidden_item_new_reservation = EquipmentReservation(
+    item_id=3,
+    type_id=1,
+    user_id=3,
+    actual_return_date=None,
+    ambassador_check_out=False,
+    check_out_date=datetime.now(),
+    expected_return_date=datetime.now(),
+    return_description="",
+)
+
+invalid_checked_out_new_reservation = EquipmentReservation(
+    item_id=2,
+    type_id=1,
+    user_id=3,
+    actual_return_date=None,
+    ambassador_check_out=False,
+    check_out_date=datetime.now(),
+    expected_return_date=datetime.now(),
+    return_description="",
+)
+
+invalid_illegal_values_reservation = EquipmentReservation(
+    item_id=1,
+    type_id=1,
+    user_id=3,
+    actual_return_date=datetime.now(),
+    ambassador_check_out=True,
+    check_out_date=datetime.now(),
+    expected_return_date=datetime.now() + timedelta(days=3),
+    return_description="",
+)
 
 def test_get_all_types(equipment_svc_integration: EquipmentService):
     """Test that all types can be retrieved"""
@@ -312,10 +423,12 @@ def test_delete_item_invalid(equipment_svc_integration: EquipmentService):
         equipment_svc_integration.delete_item(root, 700000)
         pytest.fail()
 
+
 # Test get_item_details_from_type()
 # add after reservations tests
 
 # RESERVATIONS TESTS
+
 
 # Test get_all_reservations()
 def test_get_reservations_as_user(reservation_svc_integration: ReservationService):
@@ -324,9 +437,110 @@ def test_get_reservations_as_user(reservation_svc_integration: ReservationServic
         reservation_svc_integration.get_all_reservations(user)
         pytest.fail()
 
-def test_get_reservations_as_ambassador(reservation_svc_integration: ReservationService):
+
+def test_get_reservations_as_ambassador(
+    reservation_svc_integration: ReservationService,
+):
     """Tests that all reservations CAN be retrieved as an ambassador"""
-    reservations = reservation_svc_integration.get_all_reservations(ambassador)
-    
+    reserves = reservation_svc_integration.get_all_reservations(ambassador)
+    assert len(reservations) == len(reserves)
+    assert reserves[0].item_id == 1
+    assert reserves[1].item_id == 2
+
+
+# Test create_reservation()
+def test_create_reservation_valid(reservation_svc_integration: ReservationService):
+    """Tests that a valid reservation can be made as a base user"""
+    reservation_svc_integration.create_reservation(valid_new_reservation, user)
+    # Need to add assertions here
+
+
+def test_create_reservation_user_mismatch(reservation_svc_integration: ReservationService):
+    """Tests that exception is thrown when mismatch of user ids occurs"""
+    with pytest.raises(Exception):
+        reservation_svc_integration.create_reservation(invalid_user_mismatch_new_reservation, user)
+        pytest.fail()
+
+
+def test_create_reservation_excess_time(reservation_svc_integration: ReservationService):
+    """Tests that exception is thrown when time exceeds max"""
+    with pytest.raises(Exception):
+        reservation_svc_integration.create_reservation(invalid_excess_time_new_reservation, user)
+        pytest.fail()
+
+
+def test_create_reservation_past_checkout(reservation_svc_integration: ReservationService):
+    """Tests that exception is thrown when checkout is in the past"""
+    with pytest.raises(Exception):
+        reservation_svc_integration.create_reservation(invalid_past_checkout_new_reservation, user)
+        pytest.fail()
+
+
+def test_create_distant_return(reservation_svc_integration: ReservationService):
+    """Tests that exception is thrown when expected return is over a week away"""
+    with pytest.raises(Exception):
+        reservation_svc_integration.create_reservation(invalid_past_checkout_new_reservation, user)
+        pytest.fail()
+
+
+def test_create_quota_exceeded(reservation_svc_integration: ReservationService):
+    """Tests that exception is thrown when user already has active reservation(s)"""
+    with pytest.raises(Exception):
+        # Can reuse this reservation because expected return date is now
+        reservation_svc_integration.create_reservation(valid_new_reservation, user)
+        reservation_svc_integration.create_reservation(valid_new_reservation, user)
+        pytest.fail()
+
+
+def test_create_nonexistent_type(reservation_svc_integration: ReservationService):
+    """Tests that exception is thrown when given invalid type id"""
+    with pytest.raises(Exception):
+        reservation_svc_integration.create_reservation(invalid_type_new_reservation, user)
+        pytest.fail()
+
+
+def test_create_nonexistent_item(reservation_svc_integration: ReservationService):
+    """Tests that exception is thrown when given invalid item id on type"""
+    with pytest.raises(Exception):
+        reservation_svc_integration.create_reservation(invalid_item_id_new_reservation, user)
+        pytest.fail()
+
+
+def test_create_checkout_after_return(reservation_svc_integration: ReservationService):
+    """Tests that exception is thrown when given invalid item id on type"""
+    with pytest.raises(Exception):
+        reservation_svc_integration.create_reservation(invalid_dates_new_reservation, user)
+        pytest.fail()
+
+
+def test_create_hidden_item(reservation_svc_integration: ReservationService):
+    """Tests that exception is thrown when given hidden item id"""
+    with pytest.raises(Exception):
+        reservation_svc_integration.create_reservation(invalid_hidden_item_new_reservation, user)
+        pytest.fail()
+
+
+def test_create_unavailable_item(reservation_svc_integration: ReservationService):
+    """Tests that exception is thrown when given already checked out item id"""
+    with pytest.raises(Exception):
+        reservation_svc_integration.create_reservation(invalid_checked_out_new_reservation, user)
+        pytest.fail()
+        
+
+def test_create_illegal_values(reservation_svc_integration: ReservationService):
+    """Tests that exception is thrown when given illegal values - set actual_return_date, ambassador_check_out or return_description"""
+    with pytest.raises(Exception):
+        reservation_svc_integration.create_reservation(invalid_illegal_values_reservation, user)
+        pytest.fail()
+
+
+
+
+
+
+
+
+
+
 
 

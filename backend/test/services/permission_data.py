@@ -18,7 +18,7 @@ ambassador_permission = Permission(id=2, action="checkin.create", resource="chec
 ambassador_permission_coworking_reservation = Permission(
     id=3, action="coworking.reservation.*", resource="*"
 )
-ambassador_permission_equipment_reservation = Permission(id=4, action="equipment.reservation.*", resource="equipment")
+ambassador_permission_equipment_reservation = Permission(id=4, action="equipment.reservation", resource="equipment")
 
 
 permissions = [

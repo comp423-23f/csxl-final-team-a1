@@ -81,6 +81,10 @@ class ReservationService:
         Parameters:
             reservation: some data in the form of EquipmentReservation.
         """
+        # Check that correct user is authenticated
+        if reservation.user_id != subject.id:
+            raise Exception("Not authenticated as correct user")
+
         # Check that user has no active reservations
         query = (
             select(EquipmentReservationEntity)
@@ -95,23 +99,31 @@ class ReservationService:
         if datetime.now().date() > reservation.check_out_date.date():
             raise Exception("Checkout date is in the past")
         
+        # Check that checkout date is before or at the same time as expected return
+        if reservation.check_out_date > reservation.expected_return_date:
+            raise Exception("Checkout is after return")
+        
         # Check that return date is not more than 7 days from current day
         if reservation.expected_return_date.date() > datetime.now().date() + timedelta(days=7):
             raise Exception("Return date is too far in the future")
         
-        # Check if type_id has items and exists
+        # Check if type_id has item and exists
         query = select(EquipmentTypeEntity).where(
             EquipmentTypeEntity.id == reservation.type_id
         )
         type_entity = self._session.scalars(query).first()
         if type_entity == None:
             raise KeyError("Type id does not exist.")
-        if type_entity.items == []:
-            raise ValueError("Type id has no items.")
+        if reservation.item_id not in [item.id for item in type_entity.items]:
+            raise ValueError("Type does not have item.")
 
         # Check if max checkout time exceeded
         if reservation.expected_return_date.date() - reservation.check_out_date.date() > timedelta(days=type_entity.max_time):
             raise Exception("Checkout for too many days")
+        
+        # Check to make sure some variables are empty
+        if reservation.actual_return_date != None or reservation.ambassador_check_out or reservation.return_description != "":
+            raise Exception("Illegal values set")
 
         query = select(EquipmentItemEntity).where(
             EquipmentItemEntity.id == reservation.item_id
@@ -139,14 +151,15 @@ class ReservationService:
         expected_return = int(reservation.expected_return_date.strftime("%j"))
 
         available: bool
-        reservations = (
+        active_reservations = (
             self._session.query(EquipmentReservationEntity)
-            .filter(EquipmentReservationEntity.item_id == item_id)
+            .where(EquipmentReservationEntity.item_id == item_id)
+            .where(EquipmentReservationEntity.actual_return_date==None)
             .all()
         )
         available = True
 
-        for res in reservations:
+        for res in active_reservations:
             res_check_out = int(res.check_out_date.strftime("%j"))
             res_expected_return = int(res.expected_return_date.strftime("%j"))
             if (
