@@ -1,9 +1,11 @@
 export default interface EquipmentReservation {
-  item_id: number | null;
+  id: number | null;
+  item_id: number;
+  type_id: number;
   user_id: number;
-  check_out_date: Date;
+  check_out_date: string;
   ambassador_check_out: boolean;
-  expected_return_date: Date;
-  actual_return_date: Date | null;
-  return_description: string;
+  expected_return_date: string;
+  actual_return_date: string | null;
+  return_description: string | null;
 }

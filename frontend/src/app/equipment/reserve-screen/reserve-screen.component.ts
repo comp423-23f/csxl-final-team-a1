@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DatePipe } from '@angular/common';
 
 import ItemDetails from '../item-details.model';
 import EquipmentService from '../equipment.service';
 import EquipmentType from '../type.model';
+import EquipmentReservation from '../equipment-reservation.model';
 import { calendarResolver } from '../equipment.resolver';
+import { profileResolver } from 'src/app/profile/profile.resolver';
+import { Profile } from 'src/app/models.module';
+import ReservationDetails from '../reservation-details';
 
 @Component({
   selector: 'app-reserve-screen',
@@ -18,13 +23,16 @@ export class ReserveScreenComponent {
     component: ReserveScreenComponent,
     children: [],
     resolve: {
-      items: calendarResolver
+      items: calendarResolver,
+      profile: profileResolver
     }
   };
 
   items: ItemDetails[];
   type: EquipmentType;
   dates: string[];
+
+  profile_id: number;
 
   selected_items_id: number[] = [];
   selected_dates: string[] = [];
@@ -33,13 +41,16 @@ export class ReserveScreenComponent {
     private route: ActivatedRoute,
     private equipment_service: EquipmentService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private datePipe: DatePipe
   ) {
     const data = route.snapshot.data as {
       items: ItemDetails[];
+      profile: Profile;
     };
 
     this.items = data.items;
+    this.profile_id = Number(data.profile.id);
 
     if (this.items.length === 0) {
       this.router.navigate(['/equipment-reservations']);
@@ -120,5 +131,32 @@ export class ReserveScreenComponent {
       return;
     }
     // Send API call
+    let start_str = this.datePipe.transform(
+      dates_list[0],
+      'yyyy-MM-ddTHH:MM:ss.000'
+    );
+    let end_str = this.datePipe.transform(
+      dates_list[dates_list.length - 1],
+      'yyyy-MM-ddTHH:MM:ss.000'
+    );
+    console.log(start_str);
+    console.log(end_str);
+    let reservation: EquipmentReservation = {
+      id: null,
+      item_id: this.selected_items_id[0],
+      type_id: Number(this.type.id),
+      user_id: this.profile_id,
+      check_out_date: String(start_str),
+      ambassador_check_out: false,
+      expected_return_date: String(end_str),
+      actual_return_date: null,
+      return_description: null
+    };
+
+    this.equipment_service
+      .createReservation(reservation)
+      .subscribe((value: ReservationDetails) => {
+        console.log(value);
+      });
   }
 }
