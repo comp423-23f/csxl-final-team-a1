@@ -3,7 +3,7 @@ The Reservation Service allows the API to manipulate equipment reservation relat
 """
 
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -73,6 +73,7 @@ class ReservationService:
     def create_reservation(
         self,
         reservation: EquipmentReservation,
+        subject: User,
     ) -> ReservationDetails:
         """
         Create a reservation and save it to the database.
@@ -80,18 +81,44 @@ class ReservationService:
         Parameters:
             reservation: some data in the form of EquipmentReservation.
         """
+        # Check that user has no active reservations
+        query = (
+            select(EquipmentReservationEntity)
+            .where(EquipmentReservationEntity.user_id == subject.id)
+            .where(EquipmentReservationEntity.actual_return_date == None)
+        )
+        user_reservations = self._session.scalars(query).all()
+        if len(user_reservations) >= 1:
+            raise Exception("User already has active reservation(s)")
+
+        # Check that checkout date is not before current day
+        if datetime.now().date() > reservation.check_out_date.date():
+            raise Exception("Checkout date is in the past")
+        
+        # Check that return date is not more than 7 days from current day
+        if reservation.expected_return_date.date() > datetime.now().date() + timedelta(days=7):
+            raise Exception("Return date is too far in the future")
+        
+        # Check if type_id has items and exists
+        query = select(EquipmentTypeEntity).where(
+            EquipmentTypeEntity.id == reservation.type_id
+        )
+        type_entity = self._session.scalars(query).first()
+        if type_entity == None:
+            raise KeyError("Type id does not exist.")
+        if type_entity.items == []:
+            raise ValueError("Type id has no items.")
+
+        # Check if max checkout time exceeded
+        if reservation.expected_return_date.date() - reservation.check_out_date.date() > timedelta(days=type_entity.max_time):
+            raise Exception("Checkout for too many days")
+
         query = select(EquipmentItemEntity).where(
             EquipmentItemEntity.id == reservation.item_id
         )
         item = self._session.scalars(query).first()
         if not item.display_status:
             raise NameError("Item not available")
-
-        query = select(EquipmentTypeEntity).where(
-            EquipmentTypeEntity.id == reservation.type_id
-        )
-        if self._session.scalars(query).all() == []:
-            raise KeyError("Type id does not contain items or does not exist.")
 
         reservation.item_id = self.find_available_item(reservation, reservation.item_id)
         if reservation.item_id == -1:
@@ -161,6 +188,7 @@ class ReservationService:
     def cancel_reservation(
         self,
         id: int,
+        subject: User,
     ) -> bool:
         """
         Cancel a reservation by providing its id.
@@ -177,6 +205,9 @@ class ReservationService:
         )
 
         entity = self._session.scalars(query).first()
+
+        if entity.user_id != subject.id:
+            raise Exception("Not authenticated as correct user")
 
         if entity.actual_return_date == None and not entity.ambassador_check_out:
             self._session.delete(entity)

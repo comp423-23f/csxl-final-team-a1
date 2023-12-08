@@ -29,6 +29,7 @@ class EquipmentService:
         self._session = session
         self._permission_svc = permission_svc
 
+
     def get_all(self) -> list[TypeDetails]:
         """
         Retrieves all TypeDetails views from the database
@@ -301,6 +302,7 @@ class EquipmentService:
                 if entity.check_out_date <= time <= entity.expected_return_date:
                     availability[time.strftime("%Y-%m-%d")] = False
                     break
+
 
         return availability
 
