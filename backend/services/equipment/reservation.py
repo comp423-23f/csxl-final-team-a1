@@ -204,7 +204,7 @@ class ReservationService:
         subject: User,
     ) -> bool:
         """
-        Cancel a reserrvation by providing its id.
+        Cancel a reservation by providing its id.
 
         Parameters:
             subject: user that will be checked for permission
@@ -236,7 +236,7 @@ class ReservationService:
         """
         Update a reservation deactivate ambassador_check_out, add actual_return_date, and add a return_description.
 
-        Paramaters:
+        Parameters:
             id: id number of the reservation to modify
             return_date: DateTime format of the actual return date
             description: string containing all information about the returned item's state
@@ -301,7 +301,7 @@ class ReservationService:
 
     def ambassador_cancel_reservation(self, subject: User, id: int) -> bool:
         """
-        Cancel a reserrvation by providing its id.
+        Cancel a reservation by providing its id.
 
         Parameters:
             subject: user that will be checked for permission
