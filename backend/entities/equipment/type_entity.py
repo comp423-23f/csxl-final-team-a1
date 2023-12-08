@@ -29,7 +29,7 @@ class EquipmentTypeEntity(EntityBase):
 
     # Stores reservations in a one-to-many relationship
     equipment_reservations: Mapped[list["EquipmentReservationEntity"]] = relationship(
-        back_populates="type"
+        back_populates="equipment_type"
     )
 
     @classmethod

@@ -83,6 +83,30 @@ def ambassador_get_active_reservations(
     return reservation_service.get_active_reservations(subject)
 
 
+@api.delete("/ambassador-cancel-reservation", tags=["Reservation Scheduling System"])
+def ambassador_cancel_reservation(
+    reservation_id: int,
+    subject: User = Depends(registered_user),
+    reservation_service: ReservationService = Depends(),
+) -> bool:
+    """
+    Cancel a reservation that is inactive - as a student.
+
+    Parameters:
+        reservation_id: the id number of the reservation to cancel
+
+    Returns:
+        bool: depending on the success of cancellation
+    """
+
+    try:
+        return reservation_service.ambassador_cancel_reservation(
+            subject, reservation_id
+        )
+    except ResourceNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
 @api.delete(
     "/cancel-reservation/{reservation_id}", tags=["Reservation Scheduling System"]
 )
@@ -121,7 +145,7 @@ def check_in_equipment(
     """
     Update a reservation deactivate ambassador_check_out, add actual_return_date, and add a return_description.
 
-    Paramaters:
+    Parameters:
         reservation_id: id number of the reservation to modify
         return_date: DateTime format of the actual return date
         description: string containing all information about the returned item's state
@@ -166,27 +190,3 @@ def activate_reservation(
         reservation_id: Integer id of the reservation
     """
     return reservation_service.activate_reservation(subject, reservation_id)
-
-
-@api.put("/ambassador-cancel-reservation", tags=["Reservation Scheduling System"])
-def ambassador_cancel_reservation(
-    reservation_id: int,
-    subject: User = Depends(registered_user),
-    reservation_service: ReservationService = Depends(),
-) -> bool:
-    """
-    Cancel a reservation that is inactive - as a student.
-
-    Parameters:
-        reservation_id: the id number of the reservation to cancel
-
-    Returns:
-        bool: depending on the success of cancellation
-    """
-
-    try:
-        return reservation_service.ambassador_cancel_reservation(
-            subject, reservation_id
-        )
-    except ResourceNotFoundException as e:
-        raise HTTPException(status_code=404, detail=str(e))
