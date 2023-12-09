@@ -49,19 +49,16 @@ class ReservationService:
         """
         self._permission_svc.enforce(subject, "equipment.reservation", "equipment")
 
-        query = select(EquipmentTypeEntity).where(
-            EquipmentTypeEntity.id == type_id
-        )
+        query = select(EquipmentTypeEntity).where(EquipmentTypeEntity.id == type_id)
         entity = self._session.scalars(query).first()
 
-        if not entity:
+        if entity is None:
             raise ResourceNotFoundException("Type not found")
 
         query = select(EquipmentReservationEntity).where(
             EquipmentReservationEntity.type_id == type_id
         )
         entities = self._session.scalars(query).all()
-
 
         return [entity.to_details_model() for entity in entities]
 
@@ -111,15 +108,17 @@ class ReservationService:
         # Check that checkout date is not before current day
         if datetime.now().date() > reservation.check_out_date.date():
             raise Exception("Checkout date is in the past")
-        
+
         # Check that checkout date is before or at the same time as expected return
         if reservation.check_out_date > reservation.expected_return_date:
             raise Exception("Checkout is after return")
-        
+
         # Check that return date is not more than 7 days from current day
-        if reservation.expected_return_date.date() > datetime.now().date() + timedelta(days=7):
+        if reservation.expected_return_date.date() > datetime.now().date() + timedelta(
+            days=7
+        ):
             raise Exception("Return date is too far in the future")
-        
+
         # Check if type_id has item and exists
         query = select(EquipmentTypeEntity).where(
             EquipmentTypeEntity.id == reservation.type_id
@@ -131,11 +130,18 @@ class ReservationService:
             raise ResourceNotFoundException("Item does not exist on type")
 
         # Check if max checkout time exceeded
-        if reservation.expected_return_date.date() - reservation.check_out_date.date() > timedelta(days=type_entity.max_time):
+        if (
+            reservation.expected_return_date.date() - reservation.check_out_date.date()
+            > timedelta(days=type_entity.max_time)
+        ):
             raise Exception("Checkout for too many days")
-        
+
         # Check to make sure some variables are empty
-        if reservation.actual_return_date != None or reservation.ambassador_check_out or reservation.return_description != "":
+        if (
+            reservation.actual_return_date != None
+            or reservation.ambassador_check_out
+            or reservation.return_description != ""
+        ):
             raise Exception("Illegal values set")
 
         query = select(EquipmentItemEntity).where(
@@ -167,7 +173,7 @@ class ReservationService:
         active_reservations = (
             self._session.query(EquipmentReservationEntity)
             .where(EquipmentReservationEntity.item_id == item_id)
-            .where(EquipmentReservationEntity.actual_return_date==None)
+            .where(EquipmentReservationEntity.actual_return_date == None)
             .all()
         )
         available = True
@@ -204,8 +210,10 @@ class ReservationService:
             list[EquipmentReservation]: list of reservations where ambassador_check_out is True and actual_return_date is None
         """
         self._permission_svc.enforce(subject, "equipment.reservation", "equipment")
-        query = select(EquipmentReservationEntity).where(
-            EquipmentReservationEntity.ambassador_check_out == True
+        query = (
+            select(EquipmentReservationEntity)
+            .where(EquipmentReservationEntity.ambassador_check_out == True)
+            .where(EquipmentReservationEntity.actual_return_date == None)
         )
         entities = self._session.scalars(query).all()
 
@@ -231,7 +239,7 @@ class ReservationService:
         )
 
         entity = self._session.scalars(query).first()
-        if not entity:
+        if entity is None:
             raise ResourceNotFoundException("Reservation not found")
 
         if entity.user_id != subject.id:
@@ -266,12 +274,12 @@ class ReservationService:
         )
         entity = self._session.scalars(query).first()
 
-        if not entity:
+        if entity is None:
             raise ResourceNotFoundException("Reservation not found")
-        
+
         if return_date < entity.check_out_date:
             raise Exception("Returned before check out date")
-        
+
         if entity.ambassador_check_out and entity.actual_return_date == None:
             entity.ambassador_check_out = False
             entity.actual_return_date = return_date
@@ -315,7 +323,7 @@ class ReservationService:
         )
         entity = self._session.scalars(query).first()
 
-        if not entity:
+        if entity is None:
             raise ResourceNotFoundException("Reservation not found")
 
         entity.ambassador_check_out = True
@@ -342,7 +350,7 @@ class ReservationService:
 
         entity = self._session.scalars(query).first()
 
-        if not entity:
+        if entity is None:
             raise ResourceNotFoundException("Reservation not found")
 
         self._session.delete(entity)

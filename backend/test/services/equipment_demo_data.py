@@ -55,7 +55,17 @@ reservations = [
         ambassador_check_out=True,
         expected_return_date=datetime.now() + timedelta(days=1),
         actual_return_date=None,
-        return_description="Looks the same",
+        return_description="",
+    ),
+    EquipmentReservation(
+        item_id=2,
+        type_id=1,
+        user_id=1,
+        check_out_date=datetime.now() - timedelta(days=1),
+        ambassador_check_out=False,
+        expected_return_date=datetime.now() + timedelta(days=1),
+        actual_return_date=None,
+        return_description="",
     ),
 ]
 
