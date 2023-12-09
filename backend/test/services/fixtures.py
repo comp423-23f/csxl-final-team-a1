@@ -9,8 +9,9 @@ from ...services import (
     RoleService,
     OrganizationService,
     EventService,
-    EquipmentService
+    EquipmentService,
 )
+from ...services.equipment.reservation import ReservationService
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
@@ -56,7 +57,14 @@ def event_svc_integration(session: Session):
     """This fixture is used to test the EventService class with a real PermissionService."""
     return EventService(session, PermissionService(session))
 
+
 @pytest.fixture()
 def equipment_svc_integration(session: Session):
     """This fixture is used to test the EquipmentService class"""
     return EquipmentService(session, PermissionService(session))
+
+
+@pytest.fixture()
+def reservation_svc_integration(session: Session):
+    """This fixture is used to test the ReservationService class"""
+    return ReservationService(session, PermissionService(session))

@@ -4,6 +4,7 @@ from ..entity_base import EntityBase
 from typing import Self
 from ...models.equipment import EquipmentType, TypeDetails
 
+
 class EquipmentTypeEntity(EntityBase):
     """Database model for EquipmentTypes used throughout the Equipment Features"""
 
@@ -24,10 +25,12 @@ class EquipmentTypeEntity(EntityBase):
     max_time: Mapped[int] = mapped_column(Integer, nullable=False, default=3)
 
     # Stores items in a One-to-Many relationship
-    items: Mapped[list["EquipmentItemEntity"]] = relationship(
-        back_populates="eq_type"
-    )
+    items: Mapped[list["EquipmentItemEntity"]] = relationship(back_populates="eq_type")
 
+    # Stores reservations in a one-to-many relationship
+    equipment_reservations: Mapped[list["EquipmentReservationEntity"]] = relationship(
+        back_populates="equipment_type"
+    )
 
     @classmethod
     def from_model(cls, model: EquipmentType) -> Self:
@@ -41,13 +44,13 @@ class EquipmentTypeEntity(EntityBase):
         """
 
         return cls(
-            id = model.id,
-            title = model.title,
-            img_url = model.img_url,
-            desc = model.description,
-            max_time = model.max_reservation_time
+            id=model.id,
+            title=model.title,
+            img_url=model.img_url,
+            desc=model.description,
+            max_time=model.max_reservation_time,
         )
-    
+
     def to_model(self) -> EquipmentType:
         """
         Converts an EquipmentTypeEntity object into an EquipmentType model object.
@@ -55,16 +58,18 @@ class EquipmentTypeEntity(EntityBase):
         Returns:
             EquipmentType: Object created from entity
         """
-        available_items = [item.to_model() for item in self.items if item.display_status]
+        available_items = [
+            item.to_model() for item in self.items if item.display_status
+        ]
         return EquipmentType(
             id=self.id,
             title=self.title,
             img_url=self.img_url,
             num_available=len(available_items),
             description=self.desc,
-            max_reservation_time=self.max_time
+            max_reservation_time=self.max_time,
         )
-    
+
     def to_details_model(self) -> TypeDetails:
         """
         Converts EquipmentTypeEntity into a TypeDetails model
@@ -80,6 +85,5 @@ class EquipmentTypeEntity(EntityBase):
             num_available=len([1 for item in available_items if item.display_status]),
             description=self.desc,
             max_reservation_time=self.max_time,
-            items=available_items
+            items=available_items,
         )
-

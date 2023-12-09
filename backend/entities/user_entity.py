@@ -36,7 +36,9 @@ class UserEntity(EntityBase):
     # Pronouns of the user
     pronouns: Mapped[str] = mapped_column(String(32), nullable=False, default="")
     # Equipment ToS agreement status of the user
-    agreement_status: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    agreement_status: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False
+    )
     # GitHub username of the user
     github: Mapped[str] = mapped_column(String(32), nullable=False, default="")
     # GitHub ID of the user
@@ -54,6 +56,12 @@ class UserEntity(EntityBase):
     # The permissions for the given user.
     # NOTE: This field establishes a one-to-many relationship between the permission and users table.
     permissions: Mapped["PermissionEntity"] = relationship(back_populates="user")
+
+    # The reservations made by the given user
+    # NOTE: This field establishes a one-to-many relationship between the equipment_reservation and users table.
+    equipment_reservations: Mapped[list["EquipmentReservationEntity"]] = relationship(
+        back_populates="user"
+    )
 
     @classmethod
     def from_model(cls, model: User) -> Self:
