@@ -21,6 +21,7 @@ from ...database import db_session
 from ...entities import EquipmentItemEntity, EquipmentTypeEntity
 from ...models import User
 from ...services import ResourceNotFoundException
+from .settings import MAX_RESERVATIONS, AVAILABILITY_DAYS
 
 
 class ReservationService:
@@ -117,8 +118,8 @@ class ReservationService:
             .where(EquipmentReservationEntity.actual_return_date == None)
         )
         user_reservations = self._session.scalars(query).all()
-        if len(user_reservations) >= 1:
-            raise Exception("User already has active reservation(s)")
+        if len(user_reservations) >= MAX_RESERVATIONS:
+            raise Exception("Reserving would exceed active reservation limit")
 
         # Check that checkout date is not before current day
         if datetime.now().date() > reservation.check_out_date.date():
@@ -128,9 +129,9 @@ class ReservationService:
         if reservation.check_out_date > reservation.expected_return_date:
             raise Exception("Checkout is after return")
 
-        # Check that return date is not more than 7 days from current day
+        # Check that return date is not more than settings.AVAILABLE_DAYS days from current day
         if reservation.expected_return_date.date() > datetime.now().date() + timedelta(
-            days=7
+            days=AVAILABILITY_DAYS
         ):
             raise Exception("Return date is too far in the future")
 
@@ -151,13 +152,10 @@ class ReservationService:
         ):
             raise Exception("Checkout for too many days")
 
-        # Check to make sure some variables are empty
-        if (
-            reservation.actual_return_date != None
-            or reservation.ambassador_check_out
-            or reservation.return_description != ""
-        ):
-            raise Exception("Illegal values set")
+        # Reset variables
+        reservation.actual_return_date = None
+        reservation.ambassador_check_out = False
+        reservation.return_description = ""
 
         query = select(EquipmentItemEntity).where(
             EquipmentItemEntity.id == reservation.item_id
@@ -319,7 +317,6 @@ class ReservationService:
             raise Exception("Returned before check out date")
 
         if entity.ambassador_check_out and entity.actual_return_date == None:
-            entity.ambassador_check_out = False
             entity.actual_return_date = return_date
             entity.return_description = description
 

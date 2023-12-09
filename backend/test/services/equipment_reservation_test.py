@@ -13,6 +13,7 @@ from ...services.exceptions import UserPermissionException, ResourceNotFoundExce
 from .equipment_demo_data import types, items, quest, reservations
 
 from .user_data import root, ambassador, user
+from ...services.equipment.settings import MAX_RESERVATIONS, AVAILABILITY_DAYS
 
 # Explicitly import Data Fixture to load entities in database
 from .core_data import setup_insert_data_fixture
@@ -25,6 +26,28 @@ valid_new_reservation = EquipmentReservation(
     ambassador_check_out=False,
     check_out_date=datetime.now(),
     expected_return_date=datetime.now() + timedelta(days=3),
+    return_description="",
+)
+
+valid_new_reservation = EquipmentReservation(
+    item_id=4,
+    type_id=1,
+    user_id=3,
+    actual_return_date=None,
+    ambassador_check_out=False,
+    check_out_date=datetime.now(),
+    expected_return_date=datetime.now() + timedelta(days=3),
+    return_description="",
+)
+
+valid_instant_new_reservation = EquipmentReservation(
+    item_id=1,
+    type_id=1,
+    user_id=3,
+    actual_return_date=None,
+    ambassador_check_out=False,
+    check_out_date=datetime.now(),
+    expected_return_date=datetime.now(),
     return_description="",
 )
 
@@ -69,6 +92,17 @@ invalid_past_checkout_new_reservation = EquipmentReservation(
     ambassador_check_out=False,
     check_out_date=datetime.now() - timedelta(days=1),
     expected_return_date=datetime.now() + timedelta(days=1),
+    return_description="",
+)
+
+invalid_distant_checkout_new_reservation = EquipmentReservation(
+    item_id=1,
+    type_id=1,
+    user_id=3,
+    actual_return_date=None,
+    ambassador_check_out=False,
+    check_out_date=datetime.now() + timedelta(days=1),
+    expected_return_date=datetime.now() + timedelta(days=AVAILABILITY_DAYS + 1),
     return_description="",
 )
 
@@ -214,21 +248,27 @@ def test_create_reservation_past_checkout(
 
 
 def test_create_distant_return(reservation_svc_integration: ReservationService):
-    """Tests that exception is thrown when expected return is over a week away"""
+    """Tests that exception is thrown when expected return date exceeds settings.AVAILABILITY_DAYS from now"""
     with pytest.raises(Exception):
         reservation_svc_integration.create_reservation(
-            invalid_past_checkout_new_reservation, user
+            invalid_distant_checkout_new_reservation, user
         )
         pytest.fail()
 
 
 def test_create_quota_exceeded(reservation_svc_integration: ReservationService):
-    """Tests that exception is thrown when user already has active reservation(s)"""
+    """Tests that exception is thrown when user already has exceeded max reservations - assumes max reservations = 1"""
     with pytest.raises(Exception):
-        # Can reuse this reservation because expected return date is now
-        reservation_svc_integration.create_reservation(valid_new_reservation, user)
+        reservation_svc_integration.create_reservation(
+            valid_instant_new_reservation, user
+        )
         reservation_svc_integration.create_reservation(valid_new_reservation, user)
         pytest.fail()
+
+
+def test_create_quota_met(reservation_svc_integration: ReservationService):
+    """Tests that no exception is thrown when user has max allowed reservations -- assumed to be 1"""
+    reservation_svc_integration.create_reservation(valid_instant_new_reservation, user)
 
 
 def test_create_nonexistent_type(reservation_svc_integration: ReservationService):
@@ -277,12 +317,13 @@ def test_create_unavailable_item(reservation_svc_integration: ReservationService
 
 
 def test_create_illegal_values(reservation_svc_integration: ReservationService):
-    """Tests that exception is thrown when given illegal values - set actual_return_date, ambassador_check_out or return_description"""
-    with pytest.raises(Exception):
-        reservation_svc_integration.create_reservation(
-            invalid_illegal_values_reservation, user
-        )
-        pytest.fail()
+    """Tests that given illegal values are corrected"""
+    reservation = reservation_svc_integration.create_reservation(
+        invalid_illegal_values_reservation, user
+    )
+    assert reservation.actual_return_date == None
+    assert reservation.ambassador_check_out == False
+    assert reservation.return_description == ""
 
 
 # Test find_available_item() - nested in create_reservation()
@@ -407,7 +448,6 @@ def test_check_in_equipment_as_ambassador(
     reservation = reservation_svc_integration.check_in_equipment(
         2, time, "Fine", ambassador
     )
-    assert reservation.ambassador_check_out == False
     assert reservation.actual_return_date == time
     assert reservation.return_description == "Fine"
 

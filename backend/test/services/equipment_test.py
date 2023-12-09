@@ -13,6 +13,7 @@ from ...services.exceptions import UserPermissionException, ResourceNotFoundExce
 from .equipment_demo_data import types, items, quest, reservations
 
 from .user_data import root, ambassador, user
+from ...services.equipment.settings import MAX_RESERVATIONS, AVAILABILITY_DAYS
 
 # Explicitly import Data Fixture to load entities in database
 from .core_data import setup_insert_data_fixture
@@ -34,6 +35,7 @@ modified_quest = EquipmentType(
     description="Quest 2 is actually really bad",
     max_reservation_time=quest.max_reservation_time,
 )
+
 
 # Test get_all_types()
 def test_get_all_types(equipment_svc_integration: EquipmentService):
@@ -321,10 +323,11 @@ def test_get_item_details_from_type_multiple_items(
 ):
     """Tests that item details are returned"""
     item_details = equipment_svc_integration.get_item_details_from_type(1)
-    assert len(item_details) == 3
+    assert len(item_details) == 4
     assert item_details[0].id == 1
     assert item_details[1].id == 2
     assert item_details[2].id == 3
+    assert item_details[3].id == 4
 
 
 def test_get_item_details_from_type_invalid_type(
@@ -341,33 +344,18 @@ def test_get_availability_multiple_items(
     equipment_svc_integration: EquipmentService,
 ):
     """Tests that correct availability is returned for 3 items in a type"""
-    availabilities = [equipment_svc_integration.get_availability(item) for item in range(1, 4)]
-    assert list(availabilities[0].values()) == [
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
+    availabilities = [
+        equipment_svc_integration.get_availability(item) for item in range(1, 4)
     ]
-    assert list(availabilities[1].values()) == [
-        False,
-        False,
-        True,
-        True,
-        True,
-        True,
-        True,
+
+    assert list(availabilities[0].values()) == [
+        True for i in range(0, AVAILABILITY_DAYS)
+    ]
+    assert list(availabilities[1].values()) == [False, False] + [
+        True for i in range(0, AVAILABILITY_DAYS - 2)
     ]
     assert list(availabilities[2].values()) == [
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
+        True for i in range(0, AVAILABILITY_DAYS)
     ]
 
 

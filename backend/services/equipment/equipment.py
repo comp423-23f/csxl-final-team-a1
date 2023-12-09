@@ -2,6 +2,7 @@
 The EquipmentService allows the API to manipulate equipment related data in the database
 """
 
+from typing import Dict
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -15,9 +16,9 @@ from ...models.equipment.item_details import EquipmentItem, ItemDetails
 from ...entities import EquipmentItemEntity, EquipmentTypeEntity
 from ...entities.equipment.reservation_entity import EquipmentReservationEntity
 from ...models import User
+from .settings import MAX_RESERVATIONS, AVAILABILITY_DAYS
 
 from datetime import datetime, timedelta
-
 
 class EquipmentService:
     def __init__(
@@ -299,7 +300,7 @@ class EquipmentService:
         self._session.commit()
         return entity.to_model()
 
-    def get_availability(self, item_id: int):
+    def get_availability(self, item_id: int) -> Dict[str, bool]:
         """
         Returns availability given an item_id
 
@@ -307,12 +308,12 @@ class EquipmentService:
             item_id: int
 
         Returns:
-            Dict[str, bool]: availability for next 7 days
+            Dict[str, bool]: availability for next AVAILABILITY_DAYS days
 
         Raises:
             ResourceNotFoundException - if no such item
         """
-        times = [datetime.now() + timedelta(days=i) for i in range(7)]
+        times = [datetime.now() + timedelta(days=i) for i in range(AVAILABILITY_DAYS)]
 
         query = select(EquipmentItemEntity).where(EquipmentItemEntity.id == item_id)
         entity = self._session.scalars(query).first()

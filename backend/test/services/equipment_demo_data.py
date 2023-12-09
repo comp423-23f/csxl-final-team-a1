@@ -30,11 +30,12 @@ ipad = EquipmentType(
 q1 = EquipmentItem(id=None, display_status=True, type_id=1)
 q2 = EquipmentItem(id=None, display_status=True, type_id=1)
 q3 = EquipmentItem(id=None, display_status=False, type_id=1)
+q4 = EquipmentItem(id=None, display_status=True, type_id=1)
 i1 = EquipmentItem(id=None, display_status=False, type_id=2)
 
 types = [quest, ipad]
 
-items = [q1, q2, q3, i1]
+items = [q1, q2, q3, q4, i1]
 
 reservations = [
     EquipmentReservation(
