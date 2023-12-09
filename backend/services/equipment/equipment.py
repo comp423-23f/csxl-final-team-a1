@@ -301,10 +301,16 @@ class EquipmentService:
 
     def get_availability(self, item_id: int):
         """
-        Returns availability dictionary for current entity
+        Returns availability given an item_id
+
+        Parameters:
+            item_id: int
 
         Returns:
             Dict[str, bool]: availability for next 7 days
+
+        Raises:
+            ResourceNotFoundException - if no such item
         """
         times = [datetime.now() + timedelta(days=i) for i in range(7)]
 

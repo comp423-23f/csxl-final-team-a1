@@ -46,6 +46,10 @@ class ReservationService:
 
         Returns:
             list[EquipmentReservation]: list of reservations of the supplied type
+        
+        Raises:
+            ResourceNotFoundException - thrown if the id is not valid
+            UserPermissionException - If user lacks permission
         """
         self._permission_svc.enforce(subject, "equipment.reservation", "equipment")
 
@@ -71,6 +75,9 @@ class ReservationService:
 
         Returns:
             list[EquipmentReservation]: list of reservations
+
+        Raises:
+            UserPermissionException - If user lacks permission
         """
         self._permission_svc.enforce(subject, "equipment.reservation", "equipment")
 
@@ -90,6 +97,14 @@ class ReservationService:
 
         Parameters:
             reservation: some data in the form of EquipmentReservation.
+
+        Returns:
+            ReservationDetails: Object of created reservation
+
+        Raises:
+            ResourceNotFoundException - thrown if the id is not valid
+            PermissionError - authenticated as wrong user
+            Exception - Other processing errors
         """
         # Check that correct user is authenticated
         if reservation.user_id != subject.id:
@@ -166,6 +181,17 @@ class ReservationService:
         reservation: EquipmentReservation,
         item_id: int,
     ) -> int:
+        """
+        Check to see if an item is available to reserve for specified dates.
+
+        Parameters:
+            reservation: some data in the form of EquipmentReservation.
+            item_id: integer
+
+        Returns: int
+            item_id indicates success
+            -1 indicates failure
+        """
         check_out = int(reservation.check_out_date.strftime("%j"))
         expected_return = int(reservation.expected_return_date.strftime("%j"))
 
@@ -208,6 +234,9 @@ class ReservationService:
 
         Returns:
             list[EquipmentReservation]: list of reservations where ambassador_check_out is True and actual_return_date is None
+        
+        Raises:
+            UserPermissionException - if user does not have permission
         """
         self._permission_svc.enforce(subject, "equipment.reservation", "equipment")
         query = (
@@ -233,6 +262,10 @@ class ReservationService:
 
         Returns:
             bool: depending on the success of cancellation
+
+        Raises:
+            ResourceNotFoundException - thrown if the id is not valid
+            PermissionError - authenticated as wrong user
         """
         query = select(EquipmentReservationEntity).where(
             EquipmentReservationEntity.id == id
@@ -266,6 +299,11 @@ class ReservationService:
 
         Returns:
             EquipmentReservation: the model of the modified entity object
+
+        Raises:
+            UserPermissionException - if user does not have permission
+            ResourceNotFoundException - thrown if the id is not valid
+            Exception - other processing error
         """
         self._permission_svc.enforce(subject, "equipment.reservation", "equipment")
 
@@ -297,6 +335,9 @@ class ReservationService:
 
         Parameters:
             subject: User
+
+        Returns:
+            list[ReservationDetails]: All reservations for a requested user
         """
         # Query reservation entity based on user ID
         query = select(EquipmentReservationEntity).where(
@@ -314,6 +355,13 @@ class ReservationService:
 
         Parameters:
             reservation_id: Integer id of the reservation
+
+        Returns:
+            ReservationDetails: Activated reservation object
+
+        Raises:
+            UserPermissionException - if user does not have permission
+            ResourceNotFoundException - thrown if the id is not valid
         """
         self._permission_svc.enforce(subject, "equipment.reservation", "equipment")
 
@@ -341,6 +389,10 @@ class ReservationService:
 
         Returns:
             bool: depending on the success of cancellation
+
+        Raises:
+            UserPermissionException - if user does not have permission
+            ResourceNotFoundException - thrown if the id is not valid
         """
         self._permission_svc.enforce(subject, "equipment.reservation", "equipment")
 

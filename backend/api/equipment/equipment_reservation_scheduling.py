@@ -32,6 +32,7 @@ def get_reservations(
 
     Returns:
         list[EquipmentReservation]: list of reservations of the supplied type
+        
     Raises:
         HTTP Exception 404 if the type cannot be found
         HTTP Exception 403 if no permissions
@@ -55,6 +56,10 @@ def create_reservation(
 
     Parameters:
         reservation: some data in the form of EquipmentReservation.
+
+    Returns:
+        ReservationDetails: created reservation
+
     Raises:
         HTTP Exception 422 with details for any processing errors
         HTTP Exception 403 if user mismatch
@@ -100,6 +105,9 @@ def ambassador_get_active_reservations(
 
     Returns:
         list[EquipmentReservation]: list of reservations where ambassador_check_out is True and actual_return_date is None.
+
+    Raises:
+        UserPermissionException - if user does not have permission
     """
     try:
         return reservation_service.get_active_reservations(subject)
@@ -152,6 +160,7 @@ def cancel_reservation(
 
     Returns:
         bool: depending on the success of cancellation
+
     Raises:
         HTTP Exception 404 if the reservation cannot be found
         HTTP Exception 403 if user mismatch
@@ -214,6 +223,9 @@ def get_user_equipment_reservations(
 
     Parameters:
         None (User subject automatically sent)
+
+    Returns:
+        list[ReservationDetails]: a list of ReservationDetails for the subject (requesting user)
     """
     return reservation_service.get_user_equipment_reservations(subject)
 
@@ -232,9 +244,13 @@ def activate_reservation(
     Parameters:
         reservation_id: Integer id of the reservation
 
+    Returns:
+        ReservationDetails: object of activated reservation
+
     Raises:
         HTTP Exception 404 if the reservation cannot be found
         HTTP Exception 403 if user mismatch
+
     """
     try:
         return reservation_service.activate_reservation(subject, reservation_id)
