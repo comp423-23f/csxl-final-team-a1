@@ -16,7 +16,7 @@
     </tr>
     <tr *ngFor="let item of items">
       <ng-container *ngIf="item.display_status">
-        <td>{{ item.id }}</td>
+        <td>{{ item.equipment_type.title + ' ' + item.id }}</td>
         <td *ngFor="let date of dates">
           <calendar-square
             [reserved]="!item.availability[date]"
