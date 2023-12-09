@@ -139,8 +139,6 @@ export class ReserveScreenComponent {
       dates_list[dates_list.length - 1],
       'yyyy-MM-ddTHH:MM:ss.000'
     );
-    console.log(start_str);
-    console.log(end_str);
     let reservation: EquipmentReservation = {
       id: null,
       item_id: this.selected_items_id[0],
@@ -161,8 +159,9 @@ export class ReserveScreenComponent {
         this.router.navigate(['equipment-reservations']);
       },
       error: (err) => {
+        console.log(err);
         let err_bar = this.snackBar.open(
-          'Reservation Failed! Please try again.',
+          'Reservation Failed! Please try again.\nError: ' + err.error.detail,
           'Ok',
           {
             duration: 5000
