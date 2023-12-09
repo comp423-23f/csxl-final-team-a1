@@ -29,7 +29,7 @@ class EquipmentReservationEntity(EntityBase):
     # NOTE: This field establishes a one-to-many relationship between the equipment-items and equipment-reservation tables
     item_id: Mapped[int] = mapped_column(ForeignKey("equipment_items.id"))
     item: Mapped["EquipmentItemEntity"] = relationship(
-        back_populates="equipment_reservations"
+        back_populates="equipment_reservations",
     )
     # ID of the type of equipment reserved
     type_id: Mapped[int] = mapped_column(ForeignKey("equipment_type.id"))
