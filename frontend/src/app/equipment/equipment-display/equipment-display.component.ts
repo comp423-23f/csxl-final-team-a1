@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import TypeDetails from '../equipment-type.model';
 import EquipmentService from '../equipment.service';
@@ -11,7 +11,7 @@ import ReservationDetails from '../reservation-details';
   templateUrl: './equipment-display.component.html',
   styleUrls: ['./equipment-display.component.css']
 })
-export class EquipmentDisplayComponent {
+export class EquipmentDisplayComponent implements OnInit {
   public static route = {
     path: '',
     component: EquipmentDisplayComponent,
@@ -22,7 +22,9 @@ export class EquipmentDisplayComponent {
   constructor(
     private equipment: EquipmentService,
     private router: Router
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.equipment.getAgreementStatus().subscribe((res) => {
       if (res === false) {
         this.router.navigate(['/equipment-reservations/agreement']);

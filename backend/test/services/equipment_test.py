@@ -1,15 +1,19 @@
 """This file is used to test the EquipmentService functionality"""
 
+from datetime import datetime, timedelta
 import pytest
 from unittest.mock import create_autospec
 
 from ...models.equipment import EquipmentItem, EquipmentType, TypeDetails
+from ...models.equipment.equipment_reservation import EquipmentReservation
+from ...entities.equipment.item_entity import EquipmentItemEntity
 from .fixtures import equipment_svc_integration
 from ...services.equipment.equipment import EquipmentService
 from ...services.exceptions import UserPermissionException, ResourceNotFoundException
-from .equipment_demo_data import types, items, quest
+from .equipment_demo_data import types, items, quest, reservations
 
 from .user_data import root, ambassador, user
+from ...services.equipment.settings import MAX_RESERVATIONS, AVAILABILITY_DAYS
 
 # Explicitly import Data Fixture to load entities in database
 from .core_data import setup_insert_data_fixture
@@ -31,7 +35,6 @@ modified_quest = EquipmentType(
     description="Quest 2 is actually really bad",
     max_reservation_time=quest.max_reservation_time,
 )
-
 
 def test_get_all_types(equipment_svc_integration: EquipmentService):
     """Test that all types can be retrieved"""
@@ -197,7 +200,7 @@ def test_delete_type_as_user(equipment_svc_integration: EquipmentService):
         pytest.fail()
 
 
-def test_delte_type_not_valid(equipment_svc_integration: EquipmentService):
+def test_delete_type_not_valid(equipment_svc_integration: EquipmentService):
     """Tests delete_type with invalid id fields"""
     with pytest.raises(ResourceNotFoundException):
         equipment_svc_integration.delete_type(root, None)
@@ -309,4 +312,55 @@ def test_delete_item_invalid(equipment_svc_integration: EquipmentService):
 
     with pytest.raises(ResourceNotFoundException):
         equipment_svc_integration.delete_item(root, 700000)
+        pytest.fail()
+
+
+# Test get_item_details_from_type()
+def test_get_item_details_from_type_multiple_items(
+    equipment_svc_integration: EquipmentService,
+):
+    """Tests that item details are returned"""
+    item_details = equipment_svc_integration.get_item_details_from_type(1)
+    assert len(item_details) == 4
+    assert item_details[0].id == 1
+    assert item_details[1].id == 2
+    assert item_details[2].id == 3
+    assert item_details[3].id == 4
+
+
+def test_get_item_details_from_type_invalid_type(
+    equipment_svc_integration: EquipmentService,
+):
+    """Tests that exception is thrown with invalid type id"""
+    with pytest.raises(ResourceNotFoundException):
+        equipment_svc_integration.get_item_details_from_type(-111)
+        pytest.fail()
+
+
+# Test get_availability() - Nested in to_details_model()
+def test_get_availability_multiple_items(
+    equipment_svc_integration: EquipmentService,
+):
+    """Tests that correct availability is returned for 3 items in a type"""
+    availabilities = [
+        equipment_svc_integration.get_availability(item) for item in range(1, 4)
+    ]
+
+    assert list(availabilities[0].values()) == [
+        True for i in range(0, AVAILABILITY_DAYS)
+    ]
+    assert list(availabilities[1].values()) == [False, False] + [
+        True for i in range(0, AVAILABILITY_DAYS - 2)
+    ]
+    assert list(availabilities[2].values()) == [
+        True for i in range(0, AVAILABILITY_DAYS)
+    ]
+
+
+def test_get_availability_invalid_item_id(
+    equipment_svc_integration: EquipmentService,
+):
+    """Tests that exception is raised when given invalid item id"""
+    with pytest.raises(ResourceNotFoundException):
+        equipment_svc_integration.get_availability(-1111)
         pytest.fail()

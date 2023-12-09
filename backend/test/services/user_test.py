@@ -15,6 +15,7 @@ from . import user_data
 from .permission_data import (
     ambassador_permission,
     ambassador_permission_coworking_reservation,
+    ambassador_permission_equipment_reservation
 )
 
 __authors__ = ["Kris Jordan"]
@@ -33,6 +34,7 @@ def test_get(user_svc_integration: UserService):
     assert user.permissions == [
         ambassador_permission,
         ambassador_permission_coworking_reservation,
+        ambassador_permission_equipment_reservation
     ]
 
 
