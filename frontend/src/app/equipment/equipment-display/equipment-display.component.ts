@@ -36,12 +36,10 @@ export class EquipmentDisplayComponent implements OnInit {
   reservations$: Observable<ReservationDetails[]> =
     this.equipment.getUserReservations();
 
-  notTooFar(reservation: ReservationDetails): boolean {
-    let date: Date | null = reservation.actual_return_date;
+  notTooFar(date: Date): boolean {
     return (
-      date === null ||
-      Date.now() - date.getTime() >
-        EquipmentDisplayComponent.DATES_PAST_TO_SHOW * 8.64 * 10 ** 7
+      Date.now() - new Date(date).getTime() >
+      EquipmentDisplayComponent.DATES_PAST_TO_SHOW * 8.64 * 10 ** 7
     );
   }
 }

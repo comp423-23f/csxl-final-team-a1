@@ -13,10 +13,7 @@ export class EquipmentReservationCard {
   @Input() reservation!: ReservationDetails;
 
   /** Constructor */
-  constructor(
-    private equipment_service: EquipmentService,
-    private router: Router
-  ) {}
+  constructor(private equipment_service: EquipmentService) {}
 
   cancel() {
     this.equipment_service
