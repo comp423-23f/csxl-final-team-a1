@@ -18,5 +18,5 @@ export default interface EquipmentReservation {
 export interface EquipmentReservationDetails extends EquipmentReservation {
   item: EquipmentItem;
   user: Profile;
-  type: EquipmentType;
+  equipment_type: EquipmentType;
 }
