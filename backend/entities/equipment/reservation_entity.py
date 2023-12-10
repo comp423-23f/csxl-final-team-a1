@@ -29,11 +29,11 @@ class EquipmentReservationEntity(EntityBase):
     # NOTE: This field establishes a one-to-many relationship between the equipment-items and equipment-reservation tables
     item_id: Mapped[int] = mapped_column(ForeignKey("equipment_items.id"))
     item: Mapped["EquipmentItemEntity"] = relationship(
-        back_populates="equipment_reservations"
+        back_populates="equipment_reservations",
     )
     # ID of the type of equipment reserved
     type_id: Mapped[int] = mapped_column(ForeignKey("equipment_type.id"))
-    type: Mapped["EquipmentTypeEntity"] = relationship(
+    equipment_type: Mapped["EquipmentTypeEntity"] = relationship(
         back_populates="equipment_reservations"
     )
     # ID of the user which will be checking out the item
@@ -111,6 +111,6 @@ class EquipmentReservationEntity(EntityBase):
             actual_return_date=self.actual_return_date,
             return_description=self.return_description,
             item=self.item.to_model(),
-            type=self.type.to_model(),
+            equipment_type=self.equipment_type.to_model(),
             user=self.user.to_model(),
         )

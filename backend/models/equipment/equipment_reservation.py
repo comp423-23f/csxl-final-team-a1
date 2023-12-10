@@ -31,5 +31,5 @@ class ReservationDetails(EquipmentReservation):
     """
 
     item: EquipmentItem
-    type: EquipmentType
+    equipment_type: EquipmentType
     user: User

@@ -19,8 +19,10 @@ ambassador_permission_coworking_reservation = Permission(
     id=3, action="coworking.reservation.*", resource="*"
 )
 ambassador_permission_equipment_reservation = Permission(
-    id=4, action="equipment.reservation.*", resource="equipment"
+    id=4, action="equipment.reservation", resource="equipment"
 )
+
+
 permissions = [
     root_role_permission,
     ambassador_permission,

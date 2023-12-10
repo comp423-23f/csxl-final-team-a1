@@ -2,6 +2,7 @@
 The EquipmentService allows the API to manipulate equipment related data in the database
 """
 
+from typing import Dict
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -15,6 +16,7 @@ from ...models.equipment.item_details import EquipmentItem, ItemDetails
 from ...entities import EquipmentItemEntity, EquipmentTypeEntity
 from ...entities.equipment.reservation_entity import EquipmentReservationEntity
 from ...models import User
+from .settings import MAX_RESERVATIONS, AVAILABILITY_DAYS
 
 from datetime import datetime, timedelta
 
@@ -68,7 +70,7 @@ class EquipmentService:
         entity = self._session.get(EquipmentTypeEntity, type_id)
         return entity.to_details_model().items
 
-    def get_item_details_from_type(self, type_id: None | int) -> list[ItemDetails]:
+    def get_item_details_from_type(self, type_id: int) -> list[ItemDetails]:
         """
         Retrievies all item details of a specific type
 
@@ -81,8 +83,11 @@ class EquipmentService:
         Raises:
             ResourceNotFoundException - thrown if the id is not valid
         """
-        if type_id == None or type_id < 0:
-            raise ResourceNotFoundException("type_id field was not valid")
+        query = select(EquipmentTypeEntity).where(EquipmentTypeEntity.id == type_id)
+        entity = self._session.scalars(query).first()
+
+        if entity is None:
+            raise ResourceNotFoundException("No such type")
 
         query = select(EquipmentItemEntity).where(
             EquipmentItemEntity.type_id == type_id
@@ -183,6 +188,16 @@ class EquipmentService:
         for item in entity.items:
             self.delete_item(subject, item.id)
 
+            # Find reservations with deleted item
+            query = select(EquipmentReservationEntity).where(
+                EquipmentReservationEntity.item_id == item.id
+            )
+            reservation_entities = self._session.scalars(query).all()
+
+            # Delete reservation entities
+            for reservation in reservation_entities:
+                self._session.delete(reservation)
+
         self._session.delete(entity)
         self._session.commit()
         return entity.to_details_model()
@@ -272,18 +287,40 @@ class EquipmentService:
         if entity is None:
             raise ResourceNotFoundException(f"Item of id={item_id} does not exist")
 
+        # Find reservations with deleted item
+        query = select(EquipmentReservationEntity).where(
+            EquipmentReservationEntity.item_id == item_id
+        )
+        reservation_entities = self._session.scalars(query).all()
+
+        # Delete reservation entities
+        for reservation in reservation_entities:
+            self._session.delete(reservation)
+
         self._session.delete(entity)
         self._session.commit()
         return entity.to_model()
 
-    def get_availability(self, item_id: int):
+    def get_availability(self, item_id: int) -> Dict[str, bool]:
         """
-        Returns availability dictionary for current entity
+        Returns availability given an item_id
+
+        Parameters:
+            item_id: int
 
         Returns:
-            Dict[str, bool]: availability for next 7 days
+            Dict[str, bool]: availability for next AVAILABILITY_DAYS days
+
+        Raises:
+            ResourceNotFoundException - if no such item
         """
-        times = [datetime.now() + timedelta(days=i) for i in range(7)]
+        times = [datetime.now() + timedelta(days=i) for i in range(AVAILABILITY_DAYS)]
+
+        query = select(EquipmentItemEntity).where(EquipmentItemEntity.id == item_id)
+        entity = self._session.scalars(query).first()
+
+        if entity is None:
+            raise ResourceNotFoundException("No such item")
 
         # Query all active reservations for the item
         query = (
@@ -298,12 +335,17 @@ class EquipmentService:
         for time in times:
             availability[time.strftime("%Y-%m-%d")] = True
             for entity in entities:
-                if entity.check_out_date <= time <= entity.expected_return_date:
+                if (
+                    entity.check_out_date.date()
+                    <= time.date()
+                    <= entity.expected_return_date.date()
+                ):
                     availability[time.strftime("%Y-%m-%d")] = False
                     break
 
         return availability
 
+    # Here to avoid circular dependencies
     def to_details_model(self, item: EquipmentItemEntity) -> ItemDetails:
         """
         Converts an EquipmentItemEntity into a ItemDetails model

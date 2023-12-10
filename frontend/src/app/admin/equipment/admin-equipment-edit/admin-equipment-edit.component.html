@@ -63,7 +63,7 @@
     </mat-card-actions>
   </mat-card>
 </form>
-<div class="content" *ngIf="items">
+<div class="content" *ngIf="items$ | async as items">
   <table mat-table [dataSource]="items">
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef>
@@ -81,7 +81,8 @@
       </th>
       <td mat-cell *matCellDef="let item">
         <div class="row">
-          <p>{{ item.display_status }}</p>
+          <p *ngIf="item.display_status; else falseBlock">True</p>
+          <ng-template #falseBlock><p>False</p></ng-template>
         </div>
       </td>
     </ng-container>

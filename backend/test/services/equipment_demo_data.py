@@ -1,7 +1,7 @@
 """Mock Data for Equipment Reservation System Demos"""
 
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytest
 from backend.entities.equipment.reservation_entity import EquipmentReservationEntity
 
@@ -30,11 +30,45 @@ ipad = EquipmentType(
 q1 = EquipmentItem(id=None, display_status=True, type_id=1)
 q2 = EquipmentItem(id=None, display_status=True, type_id=1)
 q3 = EquipmentItem(id=None, display_status=False, type_id=1)
+q4 = EquipmentItem(id=None, display_status=True, type_id=1)
 i1 = EquipmentItem(id=None, display_status=False, type_id=2)
 
 types = [quest, ipad]
 
-items = [q1, q2, q3, i1]
+items = [q1, q2, q3, q4, i1]
+
+reservations = [
+    EquipmentReservation(
+        item_id=1,
+        type_id=1,
+        user_id=1,
+        check_out_date=datetime.now(),
+        ambassador_check_out=True,
+        expected_return_date=datetime.now(),
+        actual_return_date=datetime.now(),
+        return_description="",
+    ),
+    EquipmentReservation(
+        item_id=2,
+        type_id=1,
+        user_id=1,
+        check_out_date=datetime.now() - timedelta(days=1),
+        ambassador_check_out=True,
+        expected_return_date=datetime.now() + timedelta(days=1),
+        actual_return_date=None,
+        return_description="",
+    ),
+    EquipmentReservation(
+        item_id=2,
+        type_id=1,
+        user_id=1,
+        check_out_date=datetime.now() - timedelta(days=1),
+        ambassador_check_out=False,
+        expected_return_date=datetime.now() + timedelta(days=1),
+        actual_return_date=None,
+        return_description="",
+    ),
+]
 
 # Data functions
 
@@ -53,19 +87,9 @@ def insert_fake_data(session: Session):
 
     session.commit()
 
-    entity = EquipmentReservationEntity.from_model(
-        EquipmentReservation(
-            item_id=1,
-            type_id=1,
-            user_id=1,
-            check_out_date=datetime.now(),
-            ambassador_check_out=False,
-            expected_return_date=datetime.now(),
-            actual_return_date=None,
-            return_description="",
-        )
-    )
-    session.add(entity)
+    for reservation in reservations:
+        entity = EquipmentReservationEntity.from_model(reservation)
+        session.add(entity)
 
     reset_table_id_seq(
         session, EquipmentTypeEntity, EquipmentTypeEntity.id, len(types) + 1
