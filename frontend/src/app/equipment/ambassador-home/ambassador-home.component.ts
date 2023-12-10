@@ -108,7 +108,6 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
         ? this.DEFAULT_DESCRIPTION
         : reservation.additional_description
     }|`;
-    console.log(new_description);
     this.ambassadorService.returnReservation(reservation, new_description);
   }
 

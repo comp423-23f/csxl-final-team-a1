@@ -103,7 +103,6 @@ export class ReserveScreenComponent {
     dates_list.sort((a, b) => {
       return a.getTime() - b.getTime();
     });
-    console.log(dates_list);
     for (let i = 1; i < dates_list.length; i++) {
       if (dates_list[i].getDate() - 1 !== dates_list[i - 1].getDate()) {
         this.snackBar.open('Please select consecuitive dates', 'Ok', {
@@ -159,7 +158,6 @@ export class ReserveScreenComponent {
         this.router.navigate(['equipment-reservations']);
       },
       error: (err) => {
-        console.log(err);
         let err_bar = this.snackBar.open(
           'Reservation Failed! Please try again.\nError: ' + err.error.detail,
           'Ok',
