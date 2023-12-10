@@ -45,7 +45,7 @@
       <h3>
         <label>Due Date</label>
         <strong>
-          {{ reservation.expected_return_date | date: 'EE MM d, yyyy' }}
+          {{ reservation.expected_return_date | date: 'EE MMM d, yyyy' }}
         </strong>
       </h3>
       <p>Check-Ins are due before the XL closes on the date listed.</p>
@@ -53,7 +53,7 @@
     <h3 *ngIf="reservation.actual_return_date !== null">
       <label>Returned Date</label>
       <strong>
-        {{ reservation.actual_return_date | date: 'EE MM d, yyyy' }}
+        {{ reservation.actual_return_date | date: 'EE MMM d, yyyy' }}
       </strong>
     </h3>
     <mat-divider></mat-divider>
