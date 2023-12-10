@@ -176,9 +176,17 @@ Example of an `EquipmentReservation`:
 }
 ```
 
-The `EquipmentReservation` model represents a reservation request made by a user. A unique integer id represents acts as the primary key for the model. `item_id` holds the id of a many-to-one relationship with `EquipmentItem`s, `type_id` holds the id of a many-to-one relationship with `EquipmentType`s, and `user_id` holds the id of a many-to-one relationship with `User`s. `checkout_date` contains the `datetime` object of the day the requesting user received the item. `expected_return_date` contains the day the user should return the object to the CSXL. The `actual_return_date` contains the day the user officially returned the item to the CSXL, and it should usually start as `None` if the return is not yet completed. The `return_desciprition` is a string that should be inputted by an ambassador or admin to describe the state of the returned item.
+The `EquipmentReservation` model represents a reservation request made by a user. A unique integer id represents acts as the primary key for the model. `item_id` holds the id of a many-to-one relationship with `EquipmentItem`s, `type_id` holds the id of a many-to-one relationship with `EquipmentType`s, and `user_id` holds the id of a many-to-one relationship with `User`s. `checkout_date` contains the `datetime` object of the day the requesting user received the item. `expected_return_date` contains the day the user should return the object to the CSXL. The `actual_return_date` contains the day the user officially returned the item to the CSXL, and it should usually start as `None` if the return is not yet completed. The `return_description` is a string that should be inputted by an ambassador or admin to describe the state of the returned item.
 
 The `ReservationDetails` model relates the `item_id`, `type_id`, and `user_id` to `EquipmentItem`, `EquipmentType`, and `User` entities respectively.
+
+## Permissions
+
+`equipment.create` - allows a user to create/modify/delete `EquipmentItem`, and `EquipmentType`
+
+`equipment.reserve` - allows a user to view the ambassador view screen and activate reservations/check-in items.
+
+Both permissions need to have access to the `equipment` resource.
 
 ## API Routes
 
@@ -225,6 +233,18 @@ We opted for not offering an initial count option for admins when creating an eq
 
 The original plan for the equipment agreement page was to have an API route that retrieved the text of the agreement from the backend and then to use that route to display the agreement to the user but ultimately we decided against it because we figured updates to the agreement would be rare. Instead, we went with a design similar to the existing "About the XL" page where the text is simply stored statically in the html file, where it can still be updated by changes to the codebase itself.
 
+### User Experience: Calendar View
+
+The original plan for reserving equipment was displaying one calendar with dates that the user can select, then we would find a suitable item from those dates to reserve for the student. However, this could cause the user to have to guess to find a date range in which there would be a valid item to reserve. In light of this, we opted for a grid display calendar where each item is listed on it's own row and displays it's own availability separately so the user can easily select the dates that they desire.
+
+### User Experience: Ambassador Return Description
+
+Instead of having ambassador's input their return descriptions on a separate page, we opted to instead have all of that take place on one page. This allows for a more streamlined experience for ambassadors as they wont have to worry about navigating around the website as students come to check out items.
+
+### User Experience: Checkout History
+
+Instead of including checkout history in a separate page, we opted to include only recent history on the main equipment-reservations page in place of the "Unavailable Equipment" section. This section was unnecessary and served only to take up unused space, so replacing it with an easy view for current reservations made the most sense.
+
 ## Development Concerns
 
 ### Frontend
@@ -236,8 +256,11 @@ All frontend components of the Equipment Reservation System can be found in the 
 **`frontend\src\app\equipment`**
 
 - `agreement` component: This component is what users will see before agreeing to the terms of service when attempting to access the equipment home page.
-- `equipment-display` component: This component is what users will see as the home page for the equipment reservation system. The display is made up of `equipment-card` widgets under headers for available and unavailable equipment.
+- `equipment-display` component: This component is what users will see as the home page for the equipment reservation system. The display is made up of `equipment-card` widgets and `equipment-reservation-cards`.
 - `equipment-card` widget: This widget displays the title, image, and number of available units (out of the total units) of equipment for each `EquipmentType`. This card is repeated for each type on the `equipment-display` component.
+- `reserve-screen` component: What users will see after clicking the `Check-Out` button on an `equipment-card`. It serves to allow users to submit a valid reservation for an item. It is made up of `calendar-square` widgets.
+- `calendar-square` widget: handles the selecting and deselecting of date squares in the `reserve-screen`. Emits a T/F value that `reserve-screen` reads in addition to a date and item id.
+- `ambassador-home` component: handles the activation and return of equipment items reserved by students. This page is only available to users with the `equipment.reserve` permission.
 
 **`frontend\src\app\admin\equipment`**
 
@@ -247,8 +270,9 @@ All frontend components of the Equipment Reservation System can be found in the 
 
 #### Services
 
-- `equipment` service: This service is found in `frontend\src\app\equipment` and calls the API routes located in `backend\api\equipment\equipment_reservation.py` to retrieve/update equipment data and agreement status's of users.
+- `equipment` service: This service is found in `frontend\src\app\equipment` and calls the API routes located in `backend\api\equipment\equipment_reservation.py` and `equipment_reservation_scheduling.py` to retrieve/update equipment data and reservation data, as well as agreement status's of users.
 - `admin-equipment` service: This service is found in `frontend\src\app\admin\equipment` and calls the API routes found in `backend\api\equipment\equipment_admin.py` to allow the admin to create, edit, and delete `EquipmentType` and `EquipmentItem` models.
+- `ambassador` service: Found in `frontend\src\app\equipment\ambassador-home` and calls the API routes in `backend\api\equipment\equipment_reservation_scheduling.py` to provide ambassador activate/check-in functionality.
 
 ### Backend
 
