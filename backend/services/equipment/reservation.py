@@ -156,20 +156,12 @@ class ReservationService:
         reservation.actual_return_date = None
         reservation.ambassador_check_out = False
 
-        query = select(EquipmentReservationEntity).where(
-            EquipmentReservationEntity.item_id == reservation.item_id
+        query = select(EquipmentItemEntity).where(
+            EquipmentItemEntity.id == reservation.item_id
         )
-        reservation_entities = self._session.scalars(query).all()
+        item_entity = self._session.scalars(query).first()
 
-        if len(reservation_entities) == 0:
-            reservation.return_description = ""
-        else:
-            latest_reservation_same_item = max(
-                reservation_entities, key=lambda x: x.actual_return_date.timestamp()
-            )
-            reservation.return_description = (
-                latest_reservation_same_item.return_description
-            )
+        reservation.return_description = item_entity.return_description
 
         query = select(EquipmentItemEntity).where(
             EquipmentItemEntity.id == reservation.item_id
@@ -333,6 +325,16 @@ class ReservationService:
         if entity.ambassador_check_out and entity.actual_return_date == None:
             entity.actual_return_date = return_date
             entity.return_description = description
+
+        query = select(EquipmentItemEntity).where(
+            EquipmentItemEntity.id == entity.item_id
+        )
+        item_entity = self._session.scalars(query).first()
+
+        array = entity.return_description.split("|")
+        if len(array) >= 2:
+            additional_info = f"{array[len(array) - 2]}|"
+            item_entity.return_description += additional_info
 
         self._session.commit()
 

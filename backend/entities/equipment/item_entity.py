@@ -1,5 +1,5 @@
 from fastapi import Depends
-from sqlalchemy import Integer, Boolean, ForeignKey, select
+from sqlalchemy import Integer, Boolean, ForeignKey, select, String
 from sqlalchemy.orm import Mapped, Session, mapped_column, relationship
 from ..entity_base import EntityBase
 from typing import Self
@@ -22,6 +22,7 @@ class EquipmentItemEntity(EntityBase):
     # Type of this item
     type_id: Mapped[int] = mapped_column(ForeignKey("equipment_type.id"))
     eq_type: Mapped["EquipmentTypeEntity"] = relationship(back_populates="items")
+    return_description: Mapped[str] = mapped_column(String, nullable=False)
 
     # Stores reservations in a one-to-many relationship
     equipment_reservations: Mapped[list["EquipmentReservationEntity"]] = relationship(
@@ -39,7 +40,10 @@ class EquipmentItemEntity(EntityBase):
             EquipmentItemEntity: Entity that was created
         """
         return cls(
-            id=model.id, display_status=model.display_status, type_id=model.type_id
+            id=model.id,
+            display_status=model.display_status,
+            type_id=model.type_id,
+            return_description=model.return_description,
         )
 
     def to_model(self) -> EquipmentItem:
@@ -50,5 +54,8 @@ class EquipmentItemEntity(EntityBase):
             EquipmentItem: Model object from entity
         """
         return EquipmentItem(
-            id=self.id, display_status=self.display_status, type_id=self.type_id
+            id=self.id,
+            display_status=self.display_status,
+            type_id=self.type_id,
+            return_description=self.return_description,
         )
