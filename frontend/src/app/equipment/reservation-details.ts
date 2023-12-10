@@ -11,6 +11,7 @@ export default interface ReservationDetails {
   expected_return_date: Date;
   actual_return_date: Date | null;
   return_description: string;
+  additional_description: string;
   item: EquipmentItem;
   equipment_type: EquipmentType;
   user: Profile;

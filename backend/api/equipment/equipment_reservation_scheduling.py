@@ -32,7 +32,7 @@ def get_reservations(
 
     Returns:
         list[EquipmentReservation]: list of reservations of the supplied type
-        
+
     Raises:
         HTTP Exception 404 if the type cannot be found
         HTTP Exception 403 if no permissions
@@ -85,7 +85,7 @@ def ambassador_get_all_reservations(
 
     Returns:
         list[EquipmentReservation]: list of reservations
-    
+
     Raises:
         HTTP Exception 403 if no permissions
     """
@@ -115,7 +115,10 @@ def ambassador_get_active_reservations(
         raise HTTPException(status_code=403, detail=str(e))
 
 
-@api.delete("/ambassador-cancel-reservation", tags=["Reservation Scheduling System"])
+@api.delete(
+    "/ambassador-cancel-reservation/{reservation_id}",
+    tags=["Reservation Scheduling System"],
+)
 def ambassador_cancel_reservation(
     reservation_id: int,
     subject: User = Depends(registered_user),
@@ -175,12 +178,11 @@ def cancel_reservation(
 
 
 @api.put(
-    "/check-in-equipment/{reservation_id}/{return_date}",
+    "/check-in-equipment/{reservation_id}/{description}",
     tags=["Reservation Scheduling System"],
 )
 def check_in_equipment(
     reservation_id: int,
-    return_date: datetime,
     description: str,
     subject: User = Depends(registered_user),
     reservation_service: ReservationService = Depends(),
@@ -203,7 +205,7 @@ def check_in_equipment(
     """
     try:
         return reservation_service.check_in_equipment(
-            reservation_id, return_date, description, subject
+            reservation_id, datetime.now(), description, subject
         )
     except ResourceNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))

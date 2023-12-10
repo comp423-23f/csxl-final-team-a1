@@ -1,6 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from ..authentication import authenticated_pid, registered_user
-from ...services.equipment.equipment import EquipmentService, EquipmentType, EquipmentItem
+from ...services.equipment.equipment import (
+    EquipmentService,
+    EquipmentType,
+    EquipmentItem,
+)
 from ...services import UserService, ResourceNotFoundException
 from ...models import UserDetails, User
 from ...models.equipment import TypeDetails, ItemDetails
@@ -26,10 +30,10 @@ def list_all_equipments(
     """
     return equipment_service.get_all_types()
 
+
 @api.get("/get-item-details-from-type/{type_id}", tags=["Equipment Reservation System"])
 def get_item_details_from_type(
-    type_id: int,
-    equipment_service: EquipmentService = Depends()
+    type_id: int, equipment_service: EquipmentService = Depends()
 ) -> list[ItemDetails]:
     """
     Gets all items of a specific type
@@ -58,6 +62,7 @@ def get_all(equipment_service: EquipmentService = Depends()) -> list[TypeDetails
         list[TypeDetails]: List of TypeDetails, which includes an EquipmentType and a list of EquipmentItems of that type
     """
     return equipment_service.get_all()
+
 
 @api.put("/update-user-agreement-status", tags=["Equipment Reservation System"])
 def update_user_agreement_status(

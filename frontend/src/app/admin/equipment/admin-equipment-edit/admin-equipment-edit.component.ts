@@ -73,7 +73,13 @@ export class AdminEquipmentEditComponent {
     };
     this.current = data.type;
 
-    this.items$ = adminEquipment.items$;
+    this.items$ = adminEquipment.items$.pipe(
+      map((items) =>
+        items.slice().sort((a, b) => {
+          return a.id!.valueOf() - b.id!.valueOf();
+        })
+      )
+    );
     if (this.current.id == null) {
       this.router.navigate(['admin', 'equipment']);
     } else {
@@ -135,6 +141,11 @@ export class AdminEquipmentEditComponent {
 
   toggleDamaged(item_id: Number, available: Boolean): void {
     this.adminEquipment.toggleDamaged(item_id, available).subscribe();
-    this.router.navigate(['admin', 'equipment', String(this.current.id)]);
+    this.router.navigate([
+      'admin',
+      'equipment',
+      'edit',
+      String(this.current.id)
+    ]);
   }
 }
