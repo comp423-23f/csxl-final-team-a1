@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
-import EquipmentType from './equipment-type.model';
+import TypeDetails from './equipment-type.model';
 import { Profile } from '../models.module';
 import { AuthenticationService } from '../authentication.service';
 import { ProfileService } from '../profile/profile.service';
+import ItemDetails from './item-details.model';
+import EquipmentReservation from './equipment-reservation.model';
+import ReservationDetails from './reservation-details';
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +27,8 @@ export default class EquipmentService {
   }
 
   //Return equipment types requested from backend.
-  getEquipmentTypes(): Observable<EquipmentType[]> {
-    return this.http.get<EquipmentType[]>('/api/equipment/list-all-equipments');
+  getEquipmentTypes(): Observable<TypeDetails[]> {
+    return this.http.get<TypeDetails[]>('/api/equipment/list-all-equipments');
   }
 
   getAgreementStatus(): Observable<boolean> {
@@ -49,6 +52,33 @@ export default class EquipmentService {
     return this.http.put<boolean>(
       '/api/equipment/update-user-agreement-status',
       [pid, onyen]
+    );
+  }
+
+  getTypeAvailability(type_id: number): Observable<ItemDetails[]> {
+    return this.http.get<ItemDetails[]>(
+      '/api/equipment/get-item-details-from-type/' + type_id
+    );
+  }
+
+  createReservation(
+    reservation: EquipmentReservation
+  ): Observable<ReservationDetails> {
+    return this.http.post<ReservationDetails>(
+      '/api/equipment/create-reservation',
+      reservation
+    );
+  }
+
+  cancelReservation(reservation_id: number): Observable<boolean> {
+    return this.http.delete<boolean>(
+      '/api/equipment/cancel-reservation/' + reservation_id
+    );
+  }
+
+  getUserReservations(): Observable<ReservationDetails[]> {
+    return this.http.get<ReservationDetails[]>(
+      '/api/equipment/get-user-equipment-reservations'
     );
   }
 }

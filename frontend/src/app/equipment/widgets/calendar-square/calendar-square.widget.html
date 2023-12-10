@@ -1,0 +1,14 @@
+<div class="reserved" *ngIf="reserved; else openBlock"></div>
+<ng-template #openBlock>
+  <div *ngIf="!selected; else selectedBlock">
+    <div class="open">
+      <button (click)="click_tile()"></button>
+    </div>
+  </div>
+
+  <ng-template #selectedBlock>
+    <div class="selected">
+      <button (click)="click_tile()"></button>
+    </div>
+  </ng-template>
+</ng-template>

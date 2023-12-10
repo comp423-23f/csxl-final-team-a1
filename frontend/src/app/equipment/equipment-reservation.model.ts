@@ -1,22 +1,11 @@
-import { Profile } from '../models.module';
-import EquipmentItem from './equipment-item.model';
-import EquipmentType from './equipment-type.model';
-
 export default interface EquipmentReservation {
-  id: number;
+  id: number | null;
   item_id: number;
   type_id: number;
   user_id: number;
-  check_out_date: Date;
+  check_out_date: string;
   ambassador_check_out: boolean;
-  expected_return_date: Date;
-  actual_return_date: Date | null;
+  expected_return_date: string;
+  actual_return_date: string | null;
   return_description: string | null;
-  additional_description: string | null;
-}
-
-export interface EquipmentReservationDetails extends EquipmentReservation {
-  item: EquipmentItem;
-  user: Profile;
-  equipment_type: EquipmentType;
 }

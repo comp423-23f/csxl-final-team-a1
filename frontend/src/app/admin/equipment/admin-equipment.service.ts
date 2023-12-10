@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, tap } from 'rxjs';
-import EquipmentType from '../../equipment/equipment-type.model';
+import TypeDetails from '../../equipment/equipment-type.model';
 import BaseEquipmentType from './base-equipment-type.model';
 import EquipmentItem from '../../equipment/equipment-item.model';
 import { AuthenticationService } from 'src/app/authentication.service';
@@ -11,7 +11,10 @@ import { RxItem } from '../../equipment/rx-item';
   providedIn: 'root'
 })
 export class AdminEquipmentService {
-  constructor(private http: HttpClient, protected auth: AuthenticationService) {}
+  constructor(
+    private http: HttpClient,
+    protected auth: AuthenticationService
+  ) {}
 
   private items: RxItem = new RxItem();
   public items$: Observable<EquipmentItem[]> = this.items.value$;
@@ -26,10 +29,10 @@ export class AdminEquipmentService {
     });
   }
 
-  getEquipmentType(id: Number): Observable<EquipmentType> {
+  getEquipmentType(id: Number): Observable<TypeDetails> {
     return this.getEquipmentTypes().pipe(
-      map((types: EquipmentType[]) => {
-        let foundType: EquipmentType = {
+      map((types: TypeDetails[]) => {
+        let foundType: TypeDetails = {
           id: 1,
           description: 'default',
           img_url: 'none',
@@ -54,44 +57,59 @@ export class AdminEquipmentService {
     );
   }
 
-  getEquipmentTypes(): Observable<EquipmentType[]> {
-    return this.http.get<EquipmentType[]>('/api/equipment/get-all');
+  getEquipmentTypes(): Observable<TypeDetails[]> {
+    return this.http.get<TypeDetails[]>('/api/equipment/get-all');
   }
 
   createEquipmentType(new_type: BaseEquipmentType): void {
-    this.http.post<BaseEquipmentType>('/api/equipment/create-type', new_type).subscribe();
+    this.http
+      .post<BaseEquipmentType>('/api/equipment/create-type', new_type)
+      .subscribe();
   }
 
   updateEquipmentType(updated_type: BaseEquipmentType): void {
-    this.http.put<BaseEquipmentType>('/api/equipment/modify-type', updated_type).subscribe();
+    this.http
+      .put<BaseEquipmentType>('/api/equipment/modify-type', updated_type)
+      .subscribe();
   }
 
   deleteEquipmentType(type_id: Number): void {
-    this.http.delete<EquipmentType>(`/api/equipment/delete-type/${type_id}`).subscribe();
+    this.http
+      .delete<TypeDetails>(`/api/equipment/delete-type/${type_id}`)
+      .subscribe();
   }
 
   createEquipmentItem(type_id: Number): Observable<void> {
-    return this.http.post<EquipmentItem>(`/api/equipment/create-item/${type_id}`, {}).pipe(
-      map((item) => {
-        this.items.pushItem(item);
-        this.listItems(type_id);
-      })
-    );
+    return this.http
+      .post<EquipmentItem>(`/api/equipment/create-item/${type_id}`, {})
+      .pipe(
+        map((item) => {
+          this.items.pushItem(item);
+          this.listItems(type_id);
+        })
+      );
   }
 
   deleteEquipmentItem(item_id: Number): Observable<void> {
-    return this.http.delete<EquipmentItem>(`/api/equipment/delete-item/${item_id}`).pipe(
-      map((item) => {
-        this.items.removeItem(item);
-      })
-    );
+    return this.http
+      .delete<EquipmentItem>(`/api/equipment/delete-item/${item_id}`)
+      .pipe(
+        map((item) => {
+          this.items.removeItem(item);
+        })
+      );
   }
 
   toggleDamaged(item_id: Number, available: Boolean): Observable<void> {
-    return this.http.put<EquipmentItem>(`/api/equipment/update-item?item_id=${item_id}&available=${available}`, {}).pipe(
-      map((item) => {
-        this.items.updateItem(item);
-      })
-    );
+    return this.http
+      .put<EquipmentItem>(
+        `/api/equipment/update-item?item_id=${item_id}&available=${available}`,
+        {}
+      )
+      .pipe(
+        map((item) => {
+          this.items.updateItem(item);
+        })
+      );
   }
 }

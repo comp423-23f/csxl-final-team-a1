@@ -3,19 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { EquipmentDisplayComponent } from './equipment-display/equipment-display.component';
 import { AgreementComponent } from './agreement/agreement.component';
 import { AmbassadorHomeComponent } from './ambassador-home/ambassador-home.component';
+import { ReserveScreenComponent } from './reserve-screen/reserve-screen.component';
 
 const routes: Routes = [
   AmbassadorHomeComponent.Route,
-  {
-    path: '',
-    component: EquipmentDisplayComponent,
-    children: []
-  },
-  {
-    path: 'agreement',
-    component: AgreementComponent,
-    children: []
-  }
+  EquipmentDisplayComponent.route,
+  AgreementComponent.route,
+  ReserveScreenComponent.route
 ];
 
 @NgModule({

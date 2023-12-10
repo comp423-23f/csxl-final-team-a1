@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import EquipmentType from '../equipment-type.model';
+import TypeDetails from '../equipment-type.model';
 import EquipmentService from '../equipment.service';
 import { AuthenticationService } from 'src/app/authentication.service';
 import { Router } from '@angular/router';
+import ReservationDetails from '../reservation-details';
 
 @Component({
   selector: 'app-equipment-display',
@@ -11,6 +12,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./equipment-display.component.css']
 })
 export class EquipmentDisplayComponent implements OnInit {
+  public static route = {
+    path: '',
+    component: EquipmentDisplayComponent,
+    children: []
+  };
+  private static DATES_PAST_TO_SHOW: number = 6;
+
   constructor(
     private equipment: EquipmentService,
     private router: Router
@@ -24,5 +32,14 @@ export class EquipmentDisplayComponent implements OnInit {
     });
   }
 
-  types$: Observable<EquipmentType[]> = this.equipment.getEquipmentTypes();
+  types$: Observable<TypeDetails[]> = this.equipment.getEquipmentTypes();
+  reservations$: Observable<ReservationDetails[]> =
+    this.equipment.getUserReservations();
+
+  notTooFar(date: Date): boolean {
+    return (
+      Date.now() - new Date(date).getTime() <=
+      EquipmentDisplayComponent.DATES_PAST_TO_SHOW * 8.64 * 10 ** 7
+    );
+  }
 }

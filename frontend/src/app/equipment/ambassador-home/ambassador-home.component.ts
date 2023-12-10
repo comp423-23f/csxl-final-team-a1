@@ -3,9 +3,8 @@ import { Route } from '@angular/router';
 import { Observable, Subscription, map, tap, timer } from 'rxjs';
 import { permissionGuard } from 'src/app/permission.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import EquipmentReservation from '../equipment-reservation.model';
 import { AmbassadorService } from './ambassador.service';
-import { EquipmentReservationDetails } from '../equipment-reservation.model';
+import ReservationDetails from '../reservation-details';
 import {
   MAT_SNACK_BAR_DATA,
   MatSnackBar,
@@ -26,10 +25,10 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
     resolve: { profile: profileResolver }
   };
 
-  reservations$: Observable<EquipmentReservationDetails[]>;
-  upcomingReservations$: Observable<EquipmentReservationDetails[]>;
-  activeReservations$: Observable<EquipmentReservationDetails[]>;
-  pastReservations$: Observable<EquipmentReservationDetails[]>;
+  reservations$: Observable<ReservationDetails[]>;
+  upcomingReservations$: Observable<ReservationDetails[]>;
+  activeReservations$: Observable<ReservationDetails[]>;
+  pastReservations$: Observable<ReservationDetails[]>;
 
   DEFAULT_DESCRIPTION = 'None';
 
@@ -95,7 +94,7 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
     );
   }
 
-  returnReservation(reservation: EquipmentReservationDetails): void {
+  returnReservation(reservation: ReservationDetails): void {
     let new_description = `${
       reservation.return_description
     }${new Date().toDateString()}: ${

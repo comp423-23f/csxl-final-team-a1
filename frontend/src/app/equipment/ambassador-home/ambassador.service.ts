@@ -3,21 +3,21 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
 import EquipmentReservation from '../equipment-reservation.model';
 import { RxReservations } from './rx-reservations';
-import { EquipmentReservationDetails } from '../equipment-reservation.model';
+import ReservationDetails from '../reservation-details';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AmbassadorService {
   private reservations: RxReservations = new RxReservations();
-  public reservations$: Observable<EquipmentReservationDetails[]> =
+  public reservations$: Observable<ReservationDetails[]> =
     this.reservations.value$;
 
   constructor(private http: HttpClient) {}
 
   getEquipmentReservations(): void {
     this.http
-      .get<EquipmentReservationDetails[]>(
+      .get<ReservationDetails[]>(
         '/api/equipment/ambassador-get-all-reservations'
       )
       .subscribe((reservations) => {
@@ -25,9 +25,9 @@ export class AmbassadorService {
       });
   }
 
-  activateReservation(reservation: EquipmentReservationDetails): void {
+  activateReservation(reservation: ReservationDetails): void {
     this.http
-      .put<EquipmentReservationDetails>(
+      .put<ReservationDetails>(
         `/api/equipment/activate-reservation/${reservation.id}`,
         {}
       )
@@ -37,11 +37,11 @@ export class AmbassadorService {
   }
 
   returnReservation(
-    reservation: EquipmentReservationDetails,
+    reservation: ReservationDetails,
     return_description: string
   ): void {
     this.http
-      .put<EquipmentReservationDetails>(
+      .put<ReservationDetails>(
         `/api/equipment/check-in-equipment/${reservation.id}/${return_description}`,
         {}
       )
@@ -50,9 +50,9 @@ export class AmbassadorService {
       });
   }
 
-  cancelReservation(reservation: EquipmentReservationDetails) {
+  cancelReservation(reservation: ReservationDetails) {
     this.http
-      .delete<EquipmentReservationDetails>(
+      .delete<ReservationDetails>(
         `/api/equipment/ambassador-cancel-reservation/${reservation.id}`,
         {}
       )

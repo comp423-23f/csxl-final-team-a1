@@ -1,0 +1,70 @@
+<mat-card class="calendar">
+  <mat-card-header>
+    <mat-card-title>Reserve a {{ type.title }}</mat-card-title>
+    <mat-card-subtitle>{{ type.description }}</mat-card-subtitle>
+    <mat-card-subtitle
+      >Max Reservation Days: {{ type.max_reservation_time }}</mat-card-subtitle
+    >
+  </mat-card-header>
+
+  <table>
+    <tr>
+      <th>Items</th>
+      <th *ngFor="let date of dates">
+        {{ toDate(date) | date: 'EEE, MMM dd' }}
+      </th>
+    </tr>
+    <tr *ngFor="let item of items">
+      <ng-container *ngIf="item.display_status">
+        <td>{{ item.equipment_type.title + ' ' + item.id }}</td>
+        <td *ngFor="let date of dates">
+          <calendar-square
+            [reserved]="!item.availability[date]"
+            (selectButtonPressed)="
+              clickSquare(date, item.id, $event)
+            "></calendar-square>
+        </td>
+      </ng-container>
+    </tr>
+  </table>
+
+  <mat-card-actions>
+    <button mat-stroked-button (click)="onSubmit()">Submit</button>
+  </mat-card-actions>
+</mat-card>
+
+<div class="row">
+  <mat-card class="key">
+    <h3>Key</h3>
+    <table>
+      <tr>
+        <td><div class="open"></div></td>
+        <td><p>Open</p></td>
+      </tr>
+      <tr>
+        <td><div class="selected"></div></td>
+        <td><p>Selected</p></td>
+      </tr>
+      <tr>
+        <td><div class="reserved"></div></td>
+        <td><p>Reserved</p></td>
+      </tr>
+    </table>
+  </mat-card>
+
+  <mat-card class="how-to">
+    <h3>How-To</h3>
+    <ul>
+      <li>Select squares for desired dates.</li>
+      <li>Do not select squares in multiple rows.</li>
+      <li>Make sure selected squares are for consecutive dates.</li>
+      <li>Items can be picked up on the first selected date in the XL.</li>
+      <li>
+        Items must be returned before the XL closes on the last selected date.
+      </li>
+      <li>
+        Only one item may be checked-out or reserved in the future at once.
+      </li>
+    </ul>
+  </mat-card>
+</div>

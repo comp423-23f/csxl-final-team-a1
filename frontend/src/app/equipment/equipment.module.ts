@@ -14,6 +14,10 @@ import { EquipmentCard } from './widgets/equipment_card/equipment-card.widget';
 import { AgreementComponent } from './agreement/agreement.component';
 import { AmbassadorHomeComponent } from './ambassador-home/ambassador-home.component';
 import { DescriptionComponent } from './ambassador-home/ambassador-home.component';
+import { CalendarSquare } from './widgets/calendar-square/calendar-square.widget';
+import { ReserveScreenComponent } from './reserve-screen/reserve-screen.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { EquipmentReservationCard } from './widgets/equipment-reservation-card/equipment-reservation-card.widget';
 
 @NgModule({
   declarations: [
@@ -21,13 +25,17 @@ import { DescriptionComponent } from './ambassador-home/ambassador-home.componen
     EquipmentCard,
     AgreementComponent,
     AmbassadorHomeComponent,
-    DescriptionComponent
+    DescriptionComponent,
+    CalendarSquare,
+    ReserveScreenComponent,
+    EquipmentReservationCard
   ],
   imports: [
     EquipmentRoutingModule,
     CommonModule,
     MatCardModule,
     MatButtonModule,
+    MatDividerModule,
     MatTableModule,
     MatFormFieldModule,
     MatInputModule,

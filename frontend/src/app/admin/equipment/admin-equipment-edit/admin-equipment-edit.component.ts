@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import EquipmentType from '../../../equipment/equipment-type.model';
+import TypeDetails from '../../../equipment/equipment-type.model';
 import EquipmentItem from '../../../equipment/equipment-item.model';
 import { AdminEquipmentService } from '../admin-equipment.service';
 import { permissionGuard } from 'src/app/permission.guard';
@@ -57,7 +57,7 @@ export class AdminEquipmentEditComponent {
     'actions'
   ];
 
-  public current: EquipmentType;
+  public current: TypeDetails;
 
   constructor(
     private route: ActivatedRoute,
@@ -69,7 +69,7 @@ export class AdminEquipmentEditComponent {
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
 
     const data = this.route.snapshot.data as {
-      type: EquipmentType;
+      type: TypeDetails;
     };
     this.current = data.type;
 

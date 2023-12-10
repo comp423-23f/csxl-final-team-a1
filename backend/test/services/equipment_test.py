@@ -36,8 +36,6 @@ modified_quest = EquipmentType(
     max_reservation_time=quest.max_reservation_time,
 )
 
-
-# Test get_all_types()
 def test_get_all_types(equipment_svc_integration: EquipmentService):
     """Test that all types can be retrieved"""
     fetched_types = equipment_svc_integration.get_all_types()
