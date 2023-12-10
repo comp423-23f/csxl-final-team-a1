@@ -52,7 +52,7 @@ export class AmbassadorService {
 
   cancelReservation(reservation: EquipmentReservationDetails) {
     this.http
-      .put<EquipmentReservationDetails>(
+      .delete<EquipmentReservationDetails>(
         `/api/equipment/ambassador-cancel-reservation/${reservation.id}`,
         {}
       )

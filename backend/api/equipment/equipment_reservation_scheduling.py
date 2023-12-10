@@ -115,7 +115,10 @@ def ambassador_get_active_reservations(
         raise HTTPException(status_code=403, detail=str(e))
 
 
-@api.delete("/ambassador-cancel-reservation", tags=["Reservation Scheduling System"])
+@api.delete(
+    "/ambassador-cancel-reservation/{reservation_id}",
+    tags=["Reservation Scheduling System"],
+)
 def ambassador_cancel_reservation(
     reservation_id: int,
     subject: User = Depends(registered_user),

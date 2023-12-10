@@ -22,7 +22,7 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
     path: 'ambassador',
     component: AmbassadorHomeComponent,
     title: 'XL Equipment',
-    canActivate: [permissionGuard('equipment.reservation.*', 'equipment')],
+    canActivate: [permissionGuard('equipment.reservation', 'equipment')],
     resolve: { profile: profileResolver }
   };
 
@@ -31,6 +31,8 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
   activeReservations$: Observable<EquipmentReservationDetails[]>;
   pastReservations$: Observable<EquipmentReservationDetails[]>;
 
+  DEFAULT_DESCRIPTION = 'None';
+
   columnsToDisplay = [
     'id',
     'name',
@@ -38,6 +40,7 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
     'item_id',
     'check_out_date',
     'expected_end_date',
+    'return_description',
     'actions'
   ];
 
@@ -48,6 +51,7 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
     'item_id',
     'check_out_date',
     'expected_end_date',
+    'return_description',
     'actions',
     'additional_info'
   ];
@@ -94,7 +98,12 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
   returnReservation(reservation: EquipmentReservationDetails): void {
     let new_description = `${
       reservation.return_description
-    }${new Date().toDateString()}: ${reservation.additional_description}\n`;
+    }${new Date().toDateString()}: ${
+      reservation.additional_description === undefined
+        ? this.DEFAULT_DESCRIPTION
+        : reservation.additional_description
+    }|`;
+    console.log(new_description);
     this.ambassadorService.returnReservation(reservation, new_description);
   }
 
@@ -119,7 +128,7 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
   }
 
   openSnackBar(message: string) {
-    let descriptionArray = message.split('\n');
+    let descriptionArray = message.split('|');
     this._snackBar.openFromComponent(DescriptionComponent, {
       data: descriptionArray
     });

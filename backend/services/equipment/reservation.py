@@ -155,7 +155,21 @@ class ReservationService:
         # Reset variables
         reservation.actual_return_date = None
         reservation.ambassador_check_out = False
-        reservation.return_description = ""
+
+        query = select(EquipmentReservationEntity).where(
+            EquipmentReservationEntity.item_id == reservation.item_id
+        )
+        reservation_entities = self._session.scalars(query).all()
+
+        if len(reservation_entities) == 0:
+            reservation.return_description = ""
+        else:
+            latest_reservation_same_item = max(
+                reservation_entities, key=lambda x: x.actual_return_date.timestamp()
+            )
+            reservation.return_description = (
+                latest_reservation_same_item.return_description
+            )
 
         query = select(EquipmentItemEntity).where(
             EquipmentItemEntity.id == reservation.item_id
