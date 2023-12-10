@@ -64,7 +64,7 @@ export class AdminEquipmentEditComponent {
     protected formBuilder: FormBuilder,
     private adminEquipment: AdminEquipmentService,
     private permission: PermissionService,
-    private router: Router,
+    private router: Router
   ) {
     this.adminPermission$ = this.permission.check('admin.view', 'admin/');
 
@@ -72,16 +72,20 @@ export class AdminEquipmentEditComponent {
       type: EquipmentType;
     };
     this.current = data.type;
-    
 
-    this.items$ = adminEquipment.items$;
+    this.items$ = adminEquipment.items$.pipe(
+      map((items) =>
+        items.slice().sort((a, b) => {
+          return a.id!.valueOf() - b.id!.valueOf();
+        })
+      )
+    );
     if (this.current.id == null) {
       this.router.navigate(['admin', 'equipment']);
-    }
-    else {
+    } else {
       adminEquipment.listItems(this.current.id);
     }
-    
+
     this.equipmentTypeForm.setValue({
       title: this.current.title,
       img_url: this.current.img_url,
@@ -100,7 +104,7 @@ export class AdminEquipmentEditComponent {
         max_reservation_time: Number(
           this.equipmentTypeForm.value.max_reservation_time
         ),
-        num_available: Number(this.current.num_available),
+        num_available: Number(this.current.num_available)
       };
 
       this.adminEquipment.updateEquipmentType(type);
@@ -117,16 +121,31 @@ export class AdminEquipmentEditComponent {
 
   deleteEquipmentItem(item_id: Number): void {
     this.adminEquipment.deleteEquipmentItem(item_id).subscribe();
-    this.router.navigate(['admin', 'equipment', 'edit', String(this.current.id)]);
+    this.router.navigate([
+      'admin',
+      'equipment',
+      'edit',
+      String(this.current.id)
+    ]);
   }
 
   createEquipmentItem(type_id: Number): void {
     this.adminEquipment.createEquipmentItem(type_id).subscribe();
-    this.router.navigate(['admin', 'equipment', 'edit', String(this.current.id)]);
+    this.router.navigate([
+      'admin',
+      'equipment',
+      'edit',
+      String(this.current.id)
+    ]);
   }
 
   toggleDamaged(item_id: Number, available: Boolean): void {
     this.adminEquipment.toggleDamaged(item_id, available).subscribe();
-    this.router.navigate(['admin', 'equipment', String(this.current.id)]);
+    this.router.navigate([
+      'admin',
+      'equipment',
+      'edit',
+      String(this.current.id)
+    ]);
   }
 }
