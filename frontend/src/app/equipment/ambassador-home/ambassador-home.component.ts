@@ -122,7 +122,7 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
   }
 
   onBlur(): void {
-    this.refreshSubscription = timer(0, 5000)
+    this.refreshSubscription = timer(10000, 5000)
       .pipe(tap((_) => this.ambassadorService.getEquipmentReservations()))
       .subscribe();
   }
