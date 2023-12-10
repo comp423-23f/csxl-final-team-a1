@@ -2,10 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { EquipmentDisplayComponent } from './equipment-display/equipment-display.component';
 import { AgreementComponent } from './agreement/agreement.component';
-import { AmbassadorHomeComponent } from './ambassador-home/ambassador-home.component';
 
 const routes: Routes = [
-  AmbassadorHomeComponent.Route,
   {
     path: '',
     component: EquipmentDisplayComponent,
