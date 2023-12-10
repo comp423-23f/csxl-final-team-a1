@@ -63,6 +63,7 @@ class EquipmentItem():
     id: int
     type_id: int
     display_status: bool
+    return_description: str
 ```
 
 ```py
@@ -70,7 +71,7 @@ class ItemDetails(EquipmentItem):
     equipment_type: EquipmentType
 ```
 
-The `EquipmentItem` model represents each individual item that is part of an `EquipmentType`. The integer `id` acts as a primary key for the database. `display_status` controls whether or not the item will be part of the available count displayed under each `EquipmentType` card on the equipment home page. Finally, the `type_id` relates the item back to its associated `EquipmentType` using the id of the type.
+The `EquipmentItem` model represents each individual item that is part of an `EquipmentType`. The integer `id` acts as a primary key for the database. `display_status` controls whether or not the item will be part of the available count displayed under each `EquipmentType` card on the equipment home page. Finally, the `type_id` relates the item back to its associated `EquipmentType` using the id of the type. The `return_description` is used exclusively in the backend to compile reservation return descriptions.
 
 The `ItemDetails` model extends the `EquipmentItem` model with an `EquipmentType` field of the item's associated type.
 
@@ -82,6 +83,7 @@ The `ItemDetails` model extends the `EquipmentItem` model with an `EquipmentType
   "id": 3,
   "display_status": false,
   "type_id": 1,
+  "return_description": "Wed Dec 9 2023: None",
   "equipment_type": {
     "id": 1,
     "title": "Quest VR",
@@ -170,7 +172,7 @@ Example of an `EquipmentReservation`:
   "ambassador_check_out": false,
   "expected_return_date": "2023-01-03T03:02:18.545Z",
   "actual_return_date": "2023-01-03T03:02:18.545Z",
-  "return_description": "Some description"
+  "return_description": "Wed Dec 9 2023: Some description"
 }
 ```
 
