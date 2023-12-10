@@ -94,6 +94,12 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
     );
   }
 
+  isFutureCheckOut(reservation: ReservationDetails): boolean {
+    return (
+      new Date(reservation.check_out_date).getDate() > new Date().getDate()
+    );
+  }
+
   returnReservation(reservation: ReservationDetails): void {
     let new_description = `${
       reservation.return_description
