@@ -38,7 +38,7 @@ export class EquipmentDisplayComponent implements OnInit {
 
   notTooFar(date: Date): boolean {
     return (
-      Date.now() - new Date(date).getTime() >
+      Date.now() - new Date(date).getTime() <=
       EquipmentDisplayComponent.DATES_PAST_TO_SHOW * 8.64 * 10 ** 7
     );
   }
