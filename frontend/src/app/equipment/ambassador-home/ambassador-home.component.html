@@ -58,6 +58,7 @@
             <button
               mat-stroked-button
               color="primary"
+              [disabled]="isFutureCheckOut(reservation)"
               (click)="this.ambassadorService.activateReservation(reservation)">
               Activate
             </button>
