@@ -95,7 +95,7 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
     console.log(reservation.additional_description);
     let new_description = `${
       reservation.return_description
-    }${new Date().toDateString()}: ${reservation.additional_description}`;
+    }${new Date().toDateString()}: ${reservation.additional_description}\n`;
     this.ambassadorService.returnReservation(reservation, new_description);
   }
 
