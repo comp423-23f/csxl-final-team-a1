@@ -47,7 +47,7 @@ class ReservationService:
 
         Returns:
             list[EquipmentReservation]: list of reservations of the supplied type
-        
+
         Raises:
             ResourceNotFoundException - thrown if the id is not valid
             UserPermissionException - If user lacks permission
@@ -155,7 +155,13 @@ class ReservationService:
         # Reset variables
         reservation.actual_return_date = None
         reservation.ambassador_check_out = False
-        reservation.return_description = ""
+
+        query = select(EquipmentItemEntity).where(
+            EquipmentItemEntity.id == reservation.item_id
+        )
+        item_entity = self._session.scalars(query).first()
+
+        reservation.return_description = item_entity.return_description
 
         query = select(EquipmentItemEntity).where(
             EquipmentItemEntity.id == reservation.item_id
@@ -232,7 +238,7 @@ class ReservationService:
 
         Returns:
             list[EquipmentReservation]: list of reservations where ambassador_check_out is True and actual_return_date is None
-        
+
         Raises:
             UserPermissionException - if user does not have permission
         """
@@ -319,6 +325,16 @@ class ReservationService:
         if entity.ambassador_check_out and entity.actual_return_date == None:
             entity.actual_return_date = return_date
             entity.return_description = description
+
+        query = select(EquipmentItemEntity).where(
+            EquipmentItemEntity.id == entity.item_id
+        )
+        item_entity = self._session.scalars(query).first()
+
+        array = entity.return_description.split("|")
+        if len(array) >= 2:
+            additional_info = f"{array[len(array) - 2]}|"
+            item_entity.return_description += additional_info
 
         self._session.commit()
 

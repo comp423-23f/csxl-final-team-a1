@@ -20,6 +20,7 @@ from .settings import MAX_RESERVATIONS, AVAILABILITY_DAYS
 
 from datetime import datetime, timedelta
 
+
 class EquipmentService:
     def __init__(
         self,

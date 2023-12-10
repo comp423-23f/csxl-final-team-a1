@@ -45,7 +45,6 @@ export default class EquipmentService {
       pid = this.profile.pid;
       onyen = this.profile.onyen;
     }
-    console.log('here');
 
     return this.http.put<boolean>(
       '/api/equipment/update-user-agreement-status',

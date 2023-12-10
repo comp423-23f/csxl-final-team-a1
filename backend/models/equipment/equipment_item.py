@@ -15,3 +15,4 @@ class EquipmentItem(BaseModel):
     id: int | None = None
     display_status: bool = True
     type_id: int
+    return_description: str = ""
