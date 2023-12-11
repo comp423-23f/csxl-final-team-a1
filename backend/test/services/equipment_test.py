@@ -186,7 +186,7 @@ def test_delete_type_enforces_perms(equipment_svc_integration: EquipmentService)
 
 def test_delete_type_as_root(equipment_svc_integration: EquipmentService):
     """Tests that delete type works as expected as a root user"""
-    deleted = equipment_svc_integration.delete_type(root, quest.id)
+    deleted = equipment_svc_integration.delete_type(root, 1)
     assert deleted is not None
     rest = equipment_svc_integration.get_all()
     for t in rest:
