@@ -46,7 +46,7 @@ reservations = [
         ambassador_check_out=True,
         expected_return_date=datetime.now(),
         actual_return_date=datetime.now(),
-        return_description="",
+        return_description="Hello|Hello|Hello|HELLO",
     ),
     EquipmentReservation(
         item_id=2,
@@ -56,7 +56,7 @@ reservations = [
         ambassador_check_out=True,
         expected_return_date=datetime.now() + timedelta(days=1),
         actual_return_date=None,
-        return_description="",
+        return_description="Hello|Hello|Hello|HELLO",
     ),
     EquipmentReservation(
         item_id=2,
@@ -66,7 +66,7 @@ reservations = [
         ambassador_check_out=False,
         expected_return_date=datetime.now() + timedelta(days=1),
         actual_return_date=None,
-        return_description="",
+        return_description="Hello|Hello|Hello|HELLO",
     ),
 ]
 
