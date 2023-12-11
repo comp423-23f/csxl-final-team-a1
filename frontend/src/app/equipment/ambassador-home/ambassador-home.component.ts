@@ -108,7 +108,6 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
         ? this.DEFAULT_DESCRIPTION
         : reservation.additional_description
     }|`;
-    console.log(new_description);
     this.ambassadorService.returnReservation(reservation, new_description);
   }
 
@@ -123,7 +122,7 @@ export class AmbassadorHomeComponent implements OnInit, OnDestroy {
   }
 
   onBlur(): void {
-    this.refreshSubscription = timer(0, 5000)
+    this.refreshSubscription = timer(10000, 5000)
       .pipe(tap((_) => this.ambassadorService.getEquipmentReservations()))
       .subscribe();
   }
