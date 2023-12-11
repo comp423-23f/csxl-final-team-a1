@@ -183,10 +183,8 @@ class EquipmentService:
         if entity is None:
             raise ResourceNotFoundException(f"Equipment(id={id}) does not exist")
 
-        # Delete all items of type
+        # Delete all items of type and all reservations of type
         for item in entity.items:
-            self.delete_item(subject, item.id)
-
             # Find reservations with deleted item
             query = select(EquipmentReservationEntity).where(
                 EquipmentReservationEntity.item_id == item.id
@@ -196,6 +194,8 @@ class EquipmentService:
             # Delete reservation entities
             for reservation in reservation_entities:
                 self._session.delete(reservation)
+
+            self.delete_item(subject, item.id)
 
         self._session.delete(entity)
         self._session.commit()

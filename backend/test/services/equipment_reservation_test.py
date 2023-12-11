@@ -583,3 +583,46 @@ def test_ambassador_cancel_reservation_as_user(
     with pytest.raises(UserPermissionException):
         reservation_svc_integration.ambassador_cancel_reservation(user, 2)
         pytest.fail()
+
+
+# Test get_reservations_by_type()
+def test_get_reservations_by_type_as_ambassador_valid(
+    reservation_svc_integration: ReservationService,
+):
+    """Tests that reservations are returned correctly when given a valid type as ambassador"""
+    reservations = reservation_svc_integration.get_reservations_by_type(ambassador, 1)
+    assert len(reservations) == 3
+    assert reservations[0].item_id == 1
+    assert reservations[1].item_id == 2
+    assert reservations[2].item_id == 2
+
+
+def test_get_reservations_by_type_as_ambassador_invalid(
+    reservation_svc_integration: ReservationService,
+):
+    """Tests that exception is thrown when invalid type is given as ambassador"""
+    with pytest.raises(ResourceNotFoundException):
+        reservation_svc_integration.get_reservations_by_type(ambassador, -111)
+        pytest.fail()
+
+
+def test_get_reservations_by_type_as_user(
+    reservation_svc_integration: ReservationService,
+):
+    """Tests that exception is thrown when base user attempts"""
+    with pytest.raises(UserPermissionException):
+        reservation_svc_integration.get_reservations_by_type(user, 1)
+        pytest.fail()
+
+
+def test_get_reservations_by_type_enforces_perms(reservation_svc_integration: ReservationService):
+    """Tests that get_reservations_by_type() enforces permissions"""
+    reservation_svc_integration._permission_svc = create_autospec(
+        reservation_svc_integration._permission_svc
+    )
+
+    # Test permissions with ambassador user
+    reservation_svc_integration.get_reservations_by_type(ambassador, 1)
+    reservation_svc_integration._permission_svc.enforce.assert_called_with(
+        ambassador, "equipment.reservation", "equipment"
+    )
